@@ -1,0 +1,41 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Validate BPMN",
+      "type": "shell",
+      "command": "npm run validate",
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Move to Approved",
+      "type": "shell",
+      "command": "mv ${file} ${workspaceFolder}/models/approved/",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "Move to Drafts",
+      "type": "shell",
+      "command": "mv ${file} ${workspaceFolder}/models/drafts/",
+      "group": "none",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+} 

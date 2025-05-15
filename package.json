@@ -1,0 +1,21 @@
+{
+  "name": "mdba-process-models",
+  "version": "0.1.0",
+  "description": "MDBA Process Models workspace",
+  "private": true,
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "validate": "node scripts/validate-bpmn.js"
+  },
+  "keywords": [
+    "bpmn",
+    "process",
+    "models"
+  ],
+  "author": "",
+  "license": "UNLICENSED",
+  "devDependencies": {
+    "bpmn-js": "^18.6.1",
+    "bpmn-moddle": "^8.0.1"
+  }
+}

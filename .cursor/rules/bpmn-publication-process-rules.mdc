@@ -1,0 +1,217 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# BPMN Publication Process Best Practices
+
+@context {
+    "type": "guidelines",
+    "purpose": "bpmn_standards",
+    "format_version": "1.0.0",
+    "target_users": [
+        "process_designers",
+        "developers",
+        "business_analysts",
+        "communications_team"
+    ]
+}
+
+Guidelines for implementing publication processes in BPMN, focusing on multi-channel publication, coordination, and stakeholder communication.
+
+@publication_patterns {
+    "parallel_publication": {
+        "description": "Multiple publication channels running in parallel",
+        "structure": "Parallel gateway → Multiple channels → Join gateway",
+        "example": "Publish to Gazette, Newspapers, and Website simultaneously"
+    },
+    "publication_coordination": {
+        "description": "Coordinating multiple publication channels",
+        "structure": "Coordinator task → Channel tasks → Confirmation tasks",
+        "example": "Coordinate publication across all channels"
+    },
+    "publication_verification": {
+        "description": "Verifying successful publication",
+        "structure": "Publication task → Verification task → Confirmation",
+        "example": "Verify Gazette publication and obtain confirmation"
+    }
+}
+
+<rule>
+name: bpmn_publication_process
+description: Standards for implementing publication processes in BPMN
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+  - type: content
+    pattern: "Task_Publish|Gateway_Publish"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Publication Process Best Practices
+
+      ### Publication Channel Structure
+      
+      - Use parallel gateways for multiple publication channels:
+        ```xml
+        <bpmn:parallelGateway id="Gateway_Publish_Parallel" name="Publish Through All Channels">
+          <bpmn:incoming>Flow_ToPublish</bpmn:incoming>
+          <bpmn:outgoing>Flow_Publish_Channel1</bpmn:outgoing>
+          <bpmn:outgoing>Flow_Publish_Channel2</bpmn:outgoing>
+          <bpmn:outgoing>Flow_Publish_Channel3</bpmn:outgoing>
+        </bpmn:parallelGateway>
+        ```
+      
+      - Include join gateway to ensure all publications complete:
+        ```xml
+        <bpmn:parallelGateway id="Gateway_Publish_Join" name="All Publications Complete">
+          <bpmn:incoming>Flow_Channel1_Join</bpmn:incoming>
+          <bpmn:incoming>Flow_Channel2_Join</bpmn:incoming>
+          <bpmn:incoming>Flow_Channel3_Join</bpmn:incoming>
+          <bpmn:outgoing>Flow_ToNextStep</bpmn:outgoing>
+        </bpmn:parallelGateway>
+        ```
+      
+      ### Publication Tasks
+      
+      - Structure publication tasks with proper documentation:
+        ```xml
+        <bpmn:task id="Task_Publish_Channel" name="Publish in Channel">
+          <bpmn:documentation>
+            Publish content in [Channel Name].
+            Include specific requirements and deadlines.
+            Document any channel-specific considerations.
+          </bpmn:documentation>
+          <camunda:formKey>channel-publication-template</camunda:formKey>
+          <camunda:assignee>${channelCoordinator}</camunda:assignee>
+        </bpmn:task>
+        ```
+      
+      ### Error Handling
+      
+      - Include boundary events for publication timeouts:
+        ```xml
+        <bpmn:boundaryEvent id="BoundaryEvent_PublicationTimeout" 
+                           attachedToRef="Task_Publish_Channel">
+          <bpmn:timerEventDefinition>
+            <bpmn:timeDuration>P7D</bpmn:timeDuration>
+          </bpmn:timerEventDefinition>
+          <bpmn:outgoing>Flow_Timeout_Escalation</bpmn:outgoing>
+        </bpmn:boundaryEvent>
+        ```
+      
+      - Add escalation paths for failed publications:
+        ```xml
+        <bpmn:task id="Task_Escalate_Publication" name="Escalate Publication Delay">
+          <bpmn:documentation>
+            Escalate delayed publication to senior management.
+            Include specific channel and deadline information.
+          </bpmn:documentation>
+          <camunda:formKey>escalation-template</camunda:formKey>
+          <camunda:assignee>${seniorManager}</camunda:assignee>
+        </bpmn:task>
+        ```
+      
+      ### Organizational Structure
+      
+      - Use lanes to show publication responsibilities:
+        ```xml
+        <bpmn:laneSet id="LaneSet_Publication">
+          <bpmn:lane id="Lane_Communications" name="Communications Team">
+            <bpmn:flowNodeRef>Task_Publish_Channel1</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Task_Publish_Channel2</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_Coordination" name="Publication Coordination">
+            <bpmn:flowNodeRef>Task_Coordinate_Publication</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Task_Verify_Publication</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:laneSet>
+        ```
+      
+      ### Best Practices
+      
+      1. **Publication Coordination**
+         - Include coordination tasks for each channel
+         - Document specific requirements per channel
+         - Include verification steps
+      
+      2. **Error Handling**
+         - Add timeouts for each publication channel
+         - Include escalation paths
+         - Document resolution procedures
+      
+      3. **Documentation**
+         - Document channel-specific requirements
+         - Include publication deadlines
+         - Specify verification procedures
+      
+      4. **Monitoring**
+         - Add monitoring points for each channel
+         - Include success criteria
+         - Document tracking procedures
+
+examples:
+  - input: |
+      <bpmn:process id="Process_Publication">
+        <bpmn:task id="Task_Publish" name="Publish Content" />
+      </bpmn:process>
+    output: |
+      <bpmn:process id="Process_Publication" name="Multi-Channel Publication Process">
+        <bpmn:parallelGateway id="Gateway_Publish_Parallel" name="Publish Through All Channels">
+          <bpmn:outgoing>Flow_Publish_Gazette</bpmn:outgoing>
+          <bpmn:outgoing>Flow_Publish_Newspapers</bpmn:outgoing>
+          <bpmn:outgoing>Flow_Publish_Website</bpmn:outgoing>
+        </bpmn:parallelGateway>
+        
+        <bpmn:task id="Task_Publish_Gazette" name="Publish in Gazette">
+          <bpmn:documentation>
+            Submit and confirm publication in Commonwealth Government Gazette.
+            Follow specific formatting and submission requirements.
+          </bpmn:documentation>
+          <camunda:formKey>gazette-publication-template</camunda:formKey>
+          <camunda:assignee>${communicationsOfficer}</camunda:assignee>
+        </bpmn:task>
+        
+        <!-- Similar tasks for other channels -->
+        
+        <bpmn:parallelGateway id="Gateway_Publish_Join" name="All Publications Complete">
+          <bpmn:incoming>Flow_Gazette_Join</bpmn:incoming>
+          <bpmn:incoming>Flow_Newspapers_Join</bpmn:incoming>
+          <bpmn:incoming>Flow_Website_Join</bpmn:incoming>
+        </bpmn:parallelGateway>
+        
+        <bpmn:boundaryEvent id="BoundaryEvent_PublicationTimeout" 
+                           attachedToRef="Task_Publish_Gazette">
+          <bpmn:timerEventDefinition>
+            <bpmn:timeDuration>P7D</bpmn:timeDuration>
+          </bpmn:timerEventDefinition>
+        </bpmn:boundaryEvent>
+      </bpmn:process>
+
+metadata:
+  priority: high
+  version: 1.0.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@validation {
+    "required": [
+        "Parallel gateway for multiple publication channels",
+        "Join gateway to ensure all publications complete",
+        "Documentation for each publication task",
+        "Error handling for publication timeouts",
+        "Clear organizational structure using lanes"
+    ],
+    "recommended": [
+        "Include verification steps for each channel",
+        "Add monitoring points for publication status",
+        "Document channel-specific requirements",
+        "Include escalation paths for failures",
+        "Specify publication deadlines"
+    ]
+}
+
+@version "1.0.0"
+@last_updated "2024-03-20"

@@ -1,0 +1,250 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: BPMN Diagram Coordinates Best Practices
+globs: ["**/*.bpmn"]
+alwaysApply: true
+related_docs: [".cursor/rules/bpmn-logical-process-rules.mdc", ".cursor/rules/bpmn-ai-to-camunda-workflow.mdc"]
+---
+# BPMN Diagram Coordinates Best Practices
+
+@context {
+    "type": "guidelines",
+    "purpose": "bpmn_standards",
+    "format_version": "1.0.0",
+    "workflow": "ai_to_camunda",
+    "target_users": [
+        "process_designers",
+        "developers"
+    ]
+}
+
+Guidelines for creating well-structured BPMN diagram coordinates (bpmndi:BPMNDiagram) that ensure proper visual layout in Camunda Modeler, especially when generating BPMN via AI.
+
+@layout_specifications {
+    "standard_dimensions": {
+        "tasks": {"width": 100, "height": 80},
+        "gateways": {"width": 50, "height": 50},
+        "events": {"width": 36, "height": 36}
+    },
+    "spacing": {
+        "horizontal": "100 units between elements",
+        "vertical": "80-100 units between parallel paths",
+        "labels": "Avoid overlapping with elements"
+    },
+    "flow_direction": {
+        "main_flow": "Left to right",
+        "branches": "Top to bottom or bottom to top",
+        "returns": "Right to left only when necessary"
+    }
+}
+
+<rule>
+name: bpmn_diagram_coordinates
+description: Standards for BPMN diagram coordinates and visual layout
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+  - type: content
+    pattern: "<bpmndi:BPMNDiagram"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Diagram Coordinates Best Practices
+
+      ### Diagram Structure
+      
+      - Always include proper diagram elements for each process element:
+        ```xml
+        <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+          <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_ID">
+            <!-- Shape and edge elements here -->
+          </bpmndi:BPMNPlane>
+        </bpmndi:BPMNDiagram>
+        ```
+      - Include a shape for every process element
+      - Include an edge for every sequence flow
+      
+      ### Coordinates and Dimensions
+      
+      - Use consistent spacing between elements (typically 100 units):
+        ```xml
+        <bpmndi:BPMNShape id="Activity_1a8m0wk_di" bpmnElement="Task_ProcessPayment">
+          <dc:Bounds x="530" y="240" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        ```
+      - Standard dimensions:
+        - Tasks/Activities: 100×80 units
+        - Gateways: 50×50 units
+        - Events: 36×36 units
+      - Place start events at x=150-200 to allow room for annotations
+      
+      ### Flow Layout
+      
+      - Use waypoints for edges to create clean, non-overlapping flows:
+        ```xml
+        <bpmndi:BPMNEdge id="Flow_1h4r0bo_di" bpmnElement="Flow_Approval">
+          <di:waypoint x="630" y="280" />
+          <di:waypoint x="690" y="280" />
+        </bpmndi:BPMNEdge>
+        ```
+      - When flows cross, add intermediate waypoints to create clear paths
+      - For conditional branches, include vertical offsets
+      
+      ### Labels
+      
+      - Position labels to avoid overlap with other elements:
+        ```xml
+        <bpmndi:BPMNEdge id="Flow_0z3yk5n_di" bpmnElement="Flow_Rejection">
+          <di:waypoint x="450" y="305" />
+          <di:waypoint x="450" y="390" />
+          <di:waypoint x="582" y="390" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="458" y="345" width="84" height="14" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNEdge>
+        ```
+      - Consider manual adjustment for gateway labels
+      
+      ### Layout Principles
+      
+      - Maintain left-to-right flow for main process path
+      - Use vertical spacing for branches and alternatives
+      - Create a clear visual hierarchy of sub-processes
+      - Use equal distances between similar elements
+      
+      ### For AI-Generated BPMN
+      
+      - Verify each process element has a corresponding shape
+      - Ensure coordinates don't cause elements to overlap
+      - Check for extreme coordinates that may place elements off-screen
+      - Add proper waypoints for sequence flows to avoid diagonal crossings
+      - When importing to Camunda, expect to adjust layout for readability
+      
+      ### Camunda-Specific Considerations
+      
+      - Camunda will regenerate layout when opened in Modeler
+      - Focus on proper connections rather than exact positions
+      - Ensure all bpmnElement references match actual element IDs
+
+examples:
+  - input: |
+      <bpmndi:BPMNDiagram>
+        <bpmndi:BPMNPlane bpmnElement="Process1">
+          <bpmndi:BPMNShape bpmnElement="start1">
+            <dc:Bounds x="100" y="100" width="36" height="36" />
+          </bpmndi:BPMNShape>
+        </bpmndi:BPMNPlane>
+      </bpmndi:BPMNDiagram>
+    output: |
+      <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+        <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_LoanApplication">
+          <!-- Start Event -->
+          <bpmndi:BPMNShape id="StartEvent_12345_di" bpmnElement="StartEvent_NewApplication">
+            <dc:Bounds x="162" y="232" width="36" height="36" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="142" y="275" width="77" height="27" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNShape>
+          
+          <!-- Review Task -->
+          <bpmndi:BPMNShape id="Activity_12345_di" bpmnElement="Task_ReviewApplication">
+            <dc:Bounds x="250" y="210" width="100" height="80" />
+          </bpmndi:BPMNShape>
+          
+          <!-- Gateway -->
+          <bpmndi:BPMNShape id="Gateway_12345_di" bpmnElement="Gateway_ApprovalDecision" isMarkerVisible="true">
+            <dc:Bounds x="405" y="225" width="50" height="50" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="388" y="195" width="84" height="14" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNShape>
+          
+          <!-- End Events -->
+          <bpmndi:BPMNShape id="Event_12345_di" bpmnElement="EndEvent_ApplicationApproved">
+            <dc:Bounds x="512" y="232" width="36" height="36" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="500" y="275" width="60" height="27" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNShape>
+          
+          <bpmndi:BPMNShape id="Event_67890_di" bpmnElement="EndEvent_ApplicationRejected">
+            <dc:Bounds x="512" y="342" width="36" height="36" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="500" y="385" width="60" height="27" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNShape>
+          
+          <!-- Sequence Flows -->
+          <bpmndi:BPMNEdge id="Flow_12345_di" bpmnElement="Flow_ToReview">
+            <di:waypoint x="198" y="250" />
+            <di:waypoint x="250" y="250" />
+          </bpmndi:BPMNEdge>
+          
+          <bpmndi:BPMNEdge id="Flow_23456_di" bpmnElement="Flow_ToDecision">
+            <di:waypoint x="350" y="250" />
+            <di:waypoint x="405" y="250" />
+          </bpmndi:BPMNEdge>
+          
+          <bpmndi:BPMNEdge id="Flow_34567_di" bpmnElement="Flow_Approved">
+            <di:waypoint x="455" y="250" />
+            <di:waypoint x="512" y="250" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="466" y="232" width="48" height="14" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNEdge>
+          
+          <bpmndi:BPMNEdge id="Flow_45678_di" bpmnElement="Flow_Rejected">
+            <di:waypoint x="430" y="275" />
+            <di:waypoint x="430" y="360" />
+            <di:waypoint x="512" y="360" />
+            <bpmndi:BPMNLabel>
+              <dc:Bounds x="438" y="315" width="54" height="14" />
+            </bpmndi:BPMNLabel>
+          </bpmndi:BPMNEdge>
+        </bpmndi:BPMNPlane>
+      </bpmndi:BPMNDiagram>
+
+metadata:
+  priority: high
+  version: 1.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@common_patterns {
+    "main_sequence": {
+        "pattern": "Horizontal left-to-right flow",
+        "example": "Start → Task → Task → End"
+    },
+    "exclusive_choice": {
+        "pattern": "Gateway with multiple outgoing paths, one return path",
+        "example": "Task → Gateway(split) → [Task, Task] → Gateway(join) → Task"
+    },
+    "parallel_execution": {
+        "pattern": "Parallel gateway with multiple simultaneous paths",
+        "example": "Task → ParallelGateway(split) → [Task, Task] → ParallelGateway(join) → Task"
+    }
+}
+
+@validation {
+    "required": [
+        "Each process element must have a corresponding diagram shape",
+        "Each sequence flow must have a corresponding diagram edge",
+        "All referenced IDs must exist in the process model",
+        "No overlapping elements in the default layout"
+    ],
+    "recommended": [
+        "Maintain left-to-right flow direction",
+        "Use vertical offsets for branches",
+        "Include proper waypoints for complex flows",
+        "Position labels to avoid overlap"
+    ]
+}
+
+@version "1.0.1"
+@last_updated "2024-07-26"

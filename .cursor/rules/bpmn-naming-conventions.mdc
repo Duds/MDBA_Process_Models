@@ -1,0 +1,247 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# BPMN Naming Conventions
+
+@context {
+    "type": "guidelines",
+    "purpose": "bpmn_standards",
+    "format_version": "1.0.0",
+    "target_users": [
+        "process_designers",
+        "developers",
+        "business_analysts"
+    ]
+}
+
+Guidelines for consistent naming of BPMN files and their elements, ensuring clarity, maintainability, and compatibility with Camunda.
+
+@naming_conventions {
+    "file_naming": {
+        "pattern": "kebab-case",
+        "prefix": "Optional domain prefix",
+        "suffix": "Must end with .bpmn",
+        "examples": [
+            "loan-application-process.bpmn",
+            "finance-payment-approval.bpmn",
+            "hr-onboarding-workflow.bpmn"
+        ]
+    },
+    "process_naming": {
+        "id": {
+            "pattern": "Process_[Domain]_[Purpose]",
+            "examples": [
+                "Process_Finance_LoanApplication",
+                "Process_HR_EmployeeOnboarding"
+            ]
+        },
+        "name": {
+            "pattern": "Human-readable description",
+            "examples": [
+                "Loan Application Process",
+                "Employee Onboarding Workflow"
+            ]
+        }
+    },
+    "element_naming": {
+        "tasks": {
+            "id": "Task_[Action]_[Object]",
+            "name": "Action-oriented description",
+            "examples": {
+                "id": "Task_Review_Application",
+                "name": "Review Loan Application"
+            }
+        },
+        "gateways": {
+            "id": "Gateway_[Decision]_[Purpose]",
+            "name": "Question format",
+            "examples": {
+                "id": "Gateway_Approval_Required",
+                "name": "Is Approval Required?"
+            }
+        },
+        "events": {
+            "id": "[Type]Event_[Trigger]_[Purpose]",
+            "name": "Trigger description",
+            "examples": {
+                "id": "StartEvent_Application_Received",
+                "name": "Application Received"
+            }
+        },
+        "flows": {
+            "id": "Flow_[Source]_[Target]",
+            "name": "Condition description",
+            "examples": {
+                "id": "Flow_Review_Approval",
+                "name": "Application Complete"
+            }
+        }
+    }
+}
+
+<rule>
+name: bpmn_naming_conventions
+description: Standards for naming BPMN files and their elements
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+  - type: content
+    pattern: "<bpmn:process"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Naming Conventions
+
+      ### File Naming
+      
+      - Use kebab-case for filenames
+      - Include domain or purpose in filename
+      - Always end with .bpmn extension
+      - Examples:
+        - `loan-application-process.bpmn`
+        - `finance-payment-approval.bpmn`
+        - `hr-onboarding-workflow.bpmn`
+      
+      ### Process Naming
+      
+      - Process ID: `Process_[Domain]_[Purpose]`
+        ```xml
+        <bpmn:process id="Process_Finance_LoanApplication" name="Loan Application Process">
+        ```
+      - Process Name: Human-readable description
+      
+      ### Element Naming
+      
+      1. **Tasks**
+         - ID: `Task_[Action]_[Object]`
+         - Name: Action-oriented description
+         ```xml
+         <bpmn:userTask id="Task_Review_Application" name="Review Loan Application" />
+         <bpmn:serviceTask id="Task_Process_Payment" name="Process Payment" />
+         ```
+      
+      2. **Gateways**
+         - ID: `Gateway_[Decision]_[Purpose]`
+         - Name: Question format
+         ```xml
+         <bpmn:exclusiveGateway id="Gateway_Approval_Required" name="Is Approval Required?" />
+         <bpmn:parallelGateway id="Gateway_Payment_Split" name="Split Payment Processing" />
+         ```
+      
+      3. **Events**
+         - ID: `[Type]Event_[Trigger]_[Purpose]`
+         - Name: Trigger description
+         ```xml
+         <bpmn:startEvent id="StartEvent_Application_Received" name="Application Received" />
+         <bpmn:endEvent id="EndEvent_Application_Approved" name="Application Approved" />
+         <bpmn:intermediateEvent id="IntermediateEvent_Payment_Timeout" name="Payment Timeout" />
+         ```
+      
+      4. **Sequence Flows**
+         - ID: `Flow_[Source]_[Target]`
+         - Name: Condition description
+         ```xml
+         <bpmn:sequenceFlow id="Flow_Review_Approval" name="Application Complete" />
+         <bpmn:sequenceFlow id="Flow_Approval_Process" name="Approval Granted" />
+         ```
+      
+      ### Naming Best Practices
+      
+      1. **Consistency**
+         - Use consistent prefixes for each element type
+         - Maintain consistent casing within each naming pattern
+         - Follow established patterns across all processes
+      
+      2. **Clarity**
+         - Use descriptive, purpose-indicating names
+         - Avoid abbreviations unless widely understood
+         - Include domain context where relevant
+      
+      3. **Uniqueness**
+         - Ensure IDs are unique within the process
+         - Use specific enough names to avoid confusion
+         - Include process context in IDs if needed
+      
+      4. **Camunda Compatibility**
+         - Avoid special characters in IDs
+         - Use only alphanumeric characters and underscores
+         - Keep names concise but descriptive
+      
+      ### Common Mistakes to Avoid
+      
+      1. **Inconsistent Naming**
+         ```xml
+         <!-- Bad -->
+         <bpmn:task id="task1" name="Review" />
+         <bpmn:task id="Task_2" name="Process Application" />
+         
+         <!-- Good -->
+         <bpmn:task id="Task_Review_Application" name="Review Application" />
+         <bpmn:task id="Task_Process_Application" name="Process Application" />
+         ```
+      
+      2. **Unclear Purpose**
+         ```xml
+         <!-- Bad -->
+         <bpmn:gateway id="Gateway_1" name="Check" />
+         
+         <!-- Good -->
+         <bpmn:gateway id="Gateway_Approval_Required" name="Is Approval Required?" />
+         ```
+      
+      3. **Missing Context**
+         ```xml
+         <!-- Bad -->
+         <bpmn:event id="StartEvent_1" name="Start" />
+         
+         <!-- Good -->
+         <bpmn:event id="StartEvent_Application_Received" name="Application Received" />
+         ```
+
+examples:
+  - input: |
+      <bpmn:process id="process1">
+        <bpmn:startEvent id="start1" />
+        <bpmn:task id="task1" />
+        <bpmn:endEvent id="end1" />
+      </bpmn:process>
+    output: |
+      <bpmn:process id="Process_Finance_LoanApplication" name="Loan Application Process">
+        <bpmn:startEvent id="StartEvent_Application_Received" name="Application Received" />
+        <bpmn:userTask id="Task_Review_Application" name="Review Application" />
+        <bpmn:endEvent id="EndEvent_Application_Complete" name="Application Complete" />
+      </bpmn:process>
+
+metadata:
+  priority: high
+  version: 1.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@validation {
+    "required": [
+        "File names must use kebab-case",
+        "File names must end with .bpmn",
+        "Process IDs must follow Process_[Domain]_[Purpose] pattern",
+        "Task IDs must follow Task_[Action]_[Object] pattern",
+        "Gateway IDs must follow Gateway_[Decision]_[Purpose] pattern",
+        "Event IDs must follow [Type]Event_[Trigger]_[Purpose] pattern",
+        "Flow IDs must follow Flow_[Source]_[Target] pattern",
+        "All IDs must be unique within the process",
+        "All IDs must use only alphanumeric characters and underscores"
+    ],
+    "recommended": [
+        "Include domain context in file names",
+        "Use descriptive, purpose-indicating names",
+        "Follow consistent naming patterns across all processes",
+        "Use human-readable names for all elements",
+        "Include proper documentation for complex elements"
+    ]
+}
+
+@version "1.0.0"
+@last_updated "2024-03-19"

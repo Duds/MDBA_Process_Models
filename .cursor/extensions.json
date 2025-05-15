@@ -1,0 +1,12 @@
+{
+  "recommendations": [
+    "redhat.vscode-xml",
+    "janistev.bpmn-io-vscode",
+    "DotJoshJohnson.xml",
+    "formulahendry.auto-close-tag",
+    "formulahendry.auto-rename-tag",
+    "streetsidesoftware.code-spell-checker",
+    "yzhang.markdown-all-in-one"
+  ],
+  "unwantedRecommendations": []
+} 

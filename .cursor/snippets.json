@@ -1,0 +1,66 @@
+{
+  "xml": {
+    "BPMN Process Element": {
+      "prefix": "bpmn-process",
+      "body": [
+        "<bpmn:process id=\"${1:ProcessId}\" name=\"${2:Process Name}\" isExecutable=\"${3:false}\">",
+        "  <bpmn:documentation>",
+        "    ${4:Process documentation}",
+        "    Last updated: ${5:${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}}",
+        "  </bpmn:documentation>",
+        "  $0",
+        "</bpmn:process>"
+      ],
+      "description": "BPMN process element with documentation"
+    },
+    "BPMN Task": {
+      "prefix": "bpmn-task",
+      "body": [
+        "<bpmn:task id=\"${1:TaskId}\" name=\"${2:Task Name}\">",
+        "  <bpmn:documentation>",
+        "    ${3:Task documentation}",
+        "  </bpmn:documentation>",
+        "  $0",
+        "</bpmn:task>"
+      ],
+      "description": "BPMN task element with documentation"
+    },
+    "BPMN Australian Date": {
+      "prefix": "aus-date",
+      "body": [
+        "${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}"
+      ],
+      "description": "Insert current date in Australian format (DD/MM/YYYY)"
+    },
+    "BPMN Australian Time": {
+      "prefix": "aus-time",
+      "body": [
+        "${CURRENT_HOUR}:${CURRENT_MINUTE}"
+      ],
+      "description": "Insert current time in 24-hour format (HH:MM)"
+    },
+    "BPMN Standard Header": {
+      "prefix": "bpmn-header",
+      "body": [
+        "<?xml version=\"1.0\" encoding=\"UTF-8\"?>",
+        "<bpmn:definitions xmlns:bpmn=\"http://www.omg.org/spec/BPMN/20100524/MODEL\"",
+        "                xmlns:bpmndi=\"http://www.omg.org/spec/BPMN/20100524/DI\"",
+        "                xmlns:dc=\"http://www.omg.org/spec/DD/20100524/DC\"",
+        "                xmlns:di=\"http://www.omg.org/spec/DD/20100524/DI\"",
+        "                xmlns:mdba=\"http://mdba.gov.au/bpmn/extensions\"",
+        "                id=\"Definitions_${1:id}\"",
+        "                targetNamespace=\"http://mdba.gov.au/bpmn\">",
+        "  <bpmn:process id=\"${2:ProcessId}\" name=\"${3:Process Name}\" isExecutable=\"false\">",
+        "    <bpmn:documentation>",
+        "      Created: ${CURRENT_DATE}/${CURRENT_MONTH}/${CURRENT_YEAR}",
+        "      Author: ${4:Author}",
+        "      Version: ${5:0.1}",
+        "    </bpmn:documentation>",
+        "    $0",
+        "  </bpmn:process>",
+        "</bpmn:definitions>"
+      ],
+      "description": "Standard BPMN file header with MDBA namespace and Australian date format"
+    }
+  }
+} 

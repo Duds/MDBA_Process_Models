@@ -1,0 +1,49 @@
+{
+  "editor": {
+    "formatOnSave": true,
+    "indentSize": 2,
+    "lineWrapping": true,
+    "rulers": [100]
+  },
+  "files": {
+    "associations": {
+      "*.bpmn": "xml"
+    },
+    "exclude": {
+      "node_modules": true,
+      "**/.DS_Store": true,
+      "**/*.bpmn.bak": true
+    },
+    "watcherExclude": {
+      "node_modules": true
+    }
+  },
+  "search": {
+    "exclude": {
+      "node_modules": true,
+      "**/*.bpmn.bak": true
+    }
+  },
+  "workbench": {
+    "colorTheme": "Cursor Dark+",
+    "iconTheme": "material-icon-theme"
+  },
+  "bpmn": {
+    "validate": {
+      "onSave": true,
+      "command": "npm run validate"
+    },
+    "editor": {
+      "preferredView": "xml"
+    }
+  },
+  "terminal": {
+    "integrated": {
+      "cwd": "${workspaceFolder}"
+    }
+  },
+  "explorer": {
+    "sortOrder": "type",
+    "expandFolders": true
+  }
+} 

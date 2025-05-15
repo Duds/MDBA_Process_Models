@@ -1,0 +1,270 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+---
+description: BPMN Logical Process Best Practices
+globs: ["**/*.bpmn"]
+alwaysApply: true
+related_docs: [".cursor/rules/bpmn-diagram-coordinates-rules.mdc", ".cursor/rules/bpmn-ai-to-camunda-workflow.mdc"]
+---
+# BPMN Logical Process Best Practices
+
+@context {
+    "type": "guidelines",
+    "purpose": "bpmn_standards",
+    "format_version": "1.1.0",
+    "workflow": "ai_to_camunda",
+    "target_users": [
+        "process_designers",
+        "developers",
+        "business_analysts",
+        "stakeholder_coordinators"
+    ]
+}
+
+Guidelines for creating well-structured BPMN logical processes that follow best practices for clarity, maintainability, and compatibility with Camunda Modeler, with a focus on organizational structure and role-based assignments.
+
+@process_rules {
+    "process_attributes": {
+        "id": "Meaningful, prefixed with 'Process_'",
+        "name": "Human-readable, descriptive",
+        "isExecutable": "Set to 'true' for executable processes"
+    },
+    "element_naming": {
+        "tasks": "Prefixed with 'Task_', action-oriented names",
+        "gateways": "Prefixed with 'Gateway_', question-format labels",
+        "events": "Prefixed with type ('StartEvent_', 'EndEvent_'), noun-based",
+        "flows": "Prefixed with 'Flow_', descriptive of condition"
+    },
+    "element_organization": {
+        "sequence": "Logical start-to-end flow",
+        "gateways": "Matched pairs (split/join)",
+        "documentation": "Required for all complex elements",
+        "lanes": "Organizational structure and responsibilities"
+    },
+    "organizational_structure": {
+        "lanes": "Represent organizational units or roles",
+        "assignments": "Role-based task assignments",
+        "coordination": "Cross-lane communication and handoffs"
+    }
+}
+
+<rule>
+name: bpmn_logical_process
+description: Standards for BPMN process elements and structure 
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+  - type: content
+    pattern: "<bpmn:process"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Logical Process Best Practices
+
+      ### Process Identification
+      
+      - Use meaningful IDs for process elements:
+        ```xml
+        <bpmn:process id="ProcessID_MeaningfulName" name="Human Readable Process Name" isExecutable="true">
+        ```
+      - Always include `name` attributes with human-readable descriptions
+      - Set `isExecutable="true"` for processes that will be executed
+      
+      ### Organizational Structure
+      
+      - Use lanes to represent organizational units:
+        ```xml
+        <bpmn:laneSet id="LaneSet_1">
+          <bpmn:lane id="Lane_Team1" name="Team Name">
+            <bpmn:flowNodeRef>Task_Team1_Task1</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Task_Team1_Task2</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_Team2" name="Another Team">
+            <bpmn:flowNodeRef>Task_Team2_Task1</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:laneSet>
+        ```
+      
+      - Assign tasks to appropriate roles:
+        ```xml
+        <bpmn:userTask id="Task_Review_Document" name="Review Document">
+          <camunda:assignee>${reviewCoordinator}</camunda:assignee>
+          <camunda:candidateGroups>reviewers</camunda:candidateGroups>
+        </bpmn:userTask>
+        ```
+      
+      ### Process Documentation
+      
+      - Include comprehensive documentation for processes:
+        ```xml
+        <bpmn:documentation>
+          Purpose: [Clear statement of process purpose]
+          Owner: [Process owner/department]
+          Version: [Current version]
+          Last Updated: [DD/MM/YYYY]
+          Stakeholders: [List of involved teams/roles]
+          Dependencies: [External dependencies]
+        </bpmn:documentation>
+        ```
+      
+      ### Task Elements
+      
+      - Use appropriate task types with role assignments:
+        ```xml
+        <bpmn:userTask id="Task_Review_Application" name="Review Application">
+          <camunda:assignee>${reviewer}</camunda:assignee>
+          <camunda:candidateGroups>reviewers</camunda:candidateGroups>
+          <camunda:formKey>review-form</camunda:formKey>
+        </bpmn:userTask>
+        
+        <bpmn:serviceTask id="Task_Process_Data" name="Process Data">
+          <camunda:class>com.example.ProcessDataDelegate</camunda:class>
+        </bpmn:serviceTask>
+        
+        <bpmn:businessRuleTask id="Task_Evaluate_Criteria" name="Evaluate Criteria">
+          <camunda:decisionRef>evaluation-rules</camunda:decisionRef>
+        </bpmn:businessRuleTask>
+        ```
+      
+      ### Gateway Elements
+      
+      - Use appropriate gateway types with clear decision points:
+        ```xml
+        <bpmn:exclusiveGateway id="Gateway_Approval_Required" name="Is Approval Required?">
+          <bpmn:documentation>
+            Determines if the current task requires additional approval
+            based on predefined criteria.
+          </bpmn:documentation>
+        </bpmn:exclusiveGateway>
+        
+        <bpmn:parallelGateway id="Gateway_Parallel_Tasks" name="Split into Parallel Tasks">
+          <bpmn:documentation>
+            Splits the process into parallel paths for simultaneous
+            task execution by different teams.
+          </bpmn:documentation>
+        </bpmn:parallelGateway>
+        ```
+      
+      ### Sequence Flow
+      
+      - Name conditional flows with the condition they represent:
+        ```xml
+        <bpmn:sequenceFlow id="Flow_ApprovalPath" name="Approval Required" 
+                          sourceRef="Gateway_Decision" targetRef="Task_ProcessApproval">
+          <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+            ${requiresApproval == true}
+          </bpmn:conditionExpression>
+        </bpmn:sequenceFlow>
+        ```
+      
+      ### Cross-Lane Communication
+      
+      - Document handoffs between teams:
+        ```xml
+        <bpmn:sequenceFlow id="Flow_Team1_To_Team2" 
+                          sourceRef="Task_Team1_Complete" 
+                          targetRef="Task_Team2_Start">
+          <bpmn:documentation>
+            Handoff from Team 1 to Team 2.
+            Team 1 must complete all required documentation.
+            Team 2 must acknowledge receipt.
+          </bpmn:documentation>
+        </bpmn:sequenceFlow>
+        ```
+      
+      ### Best Practices
+      
+      1. **Organizational Structure**
+         - Use lanes to represent teams or roles
+         - Assign tasks to appropriate roles
+         - Document team responsibilities
+         - Include handoff procedures
+      
+      2. **Role-Based Assignments**
+         - Use Camunda assignee expressions
+         - Define candidate groups
+         - Document role requirements
+         - Include escalation paths
+      
+      3. **Cross-Team Coordination**
+         - Document handoff requirements
+         - Include verification steps
+         - Define communication channels
+         - Specify escalation procedures
+      
+      4. **Process Documentation**
+         - Document team responsibilities
+         - Include role requirements
+         - Specify handoff procedures
+         - Define escalation paths
+
+examples:
+  - input: |
+      <bpmn:process id="Process_1">
+        <bpmn:task id="Task_1" name="Do Something" />
+      </bpmn:process>
+    output: |
+      <bpmn:process id="Process_ReviewApplication" name="Application Review Process" isExecutable="true">
+        <bpmn:laneSet id="LaneSet_1">
+          <bpmn:lane id="Lane_ReviewTeam" name="Review Team">
+            <bpmn:flowNodeRef>Task_Review_Application</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Task_Evaluate_Criteria</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_ApprovalTeam" name="Approval Team">
+            <bpmn:flowNodeRef>Task_Process_Approval</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:laneSet>
+        
+        <bpmn:userTask id="Task_Review_Application" name="Review Application">
+          <camunda:assignee>${reviewer}</camunda:assignee>
+          <camunda:candidateGroups>reviewers</camunda:candidateGroups>
+          <camunda:formKey>review-form</camunda:formKey>
+        </bpmn:userTask>
+        
+        <bpmn:sequenceFlow id="Flow_Review_To_Approval" 
+                          sourceRef="Task_Review_Application" 
+                          targetRef="Task_Process_Approval">
+          <bpmn:documentation>
+            Handoff from Review Team to Approval Team.
+            Review Team must complete all required documentation.
+            Approval Team must acknowledge receipt.
+          </bpmn:documentation>
+        </bpmn:sequenceFlow>
+      </bpmn:process>
+
+metadata:
+  priority: high
+  version: 1.1.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@validation {
+    "required": [
+        "Process ID must be meaningful and follow naming convention",
+        "Process must have a name attribute",
+        "All tasks must have appropriate type",
+        "All tasks must have name attributes",
+        "All gateways must have appropriate type",
+        "All sequence flows must connect existing elements",
+        "Organizational structure must use lanes",
+        "Tasks must have role assignments"
+    ],
+    "recommended": [
+        "Include comprehensive documentation",
+        "Use Australian date format (DD/MM/YYYY)",
+        "Follow 24-hour time format",
+        "Provide clear labels for conditional flows",
+        "Use appropriate gateway types for decision logic",
+        "Document team responsibilities",
+        "Include handoff procedures",
+        "Define escalation paths"
+    ]
+}
+
+@version "1.1.0"
+@last_updated "2024-03-20"

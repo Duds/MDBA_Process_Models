@@ -1,0 +1,301 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+             id="Definitions_BPR_InvitationProcess"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="Camunda Modeler"
+             exporterVersion="5.0.0">
+  <bpmn:process id="Process_BPR_InvitationPhase" name="2026 Basin Plan Review Invitation Phase" isExecutable="true">
+    <bpmn:documentation>
+      Purpose: Manages the invitation phase of the 2026 Basin Plan Review process
+      Owner: MDBA Basin Plan Review Team
+      Version: 1.0.0
+      Last Updated: 19/03/2024
+      Description: This process coordinates the initial invitation phase of the Basin Plan Review,
+      including preparation and distribution of discussion papers and guidelines to basin states.
+      The process ensures proper communication and documentation of the review requirements.
+    </bpmn:documentation>
+
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_MDBA_Review" name="MDBA Review Team">
+        <bpmn:flowNodeRef>Task_Prepare_DiscussionPaper</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Legal_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Editorial_Review</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Communications" name="Communications Team">
+        <bpmn:flowNodeRef>Task_Publish_OfficialInvitation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Publish_Gazette</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Publish_Newspapers</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Publish_Website</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_States" name="State Coordination">
+        <bpmn:flowNodeRef>Task_Distribute_BasinStates</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Confirm_Receipt</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_Invitation_Phase" name="Start Invitation Phase">
+      <bpmn:documentation>
+        Triggers the invitation phase of the Basin Plan Review process.
+        This event marks the official commencement of the review invitation process.
+      </bpmn:documentation>
+      <bpmn:outgoing>Flow_Start_PreparePaper</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:task id="Task_Prepare_DiscussionPaper" name="Prepare Discussion Paper">
+      <bpmn:documentation>
+        Create the initial discussion paper outlining the scope and objectives
+        of the Basin Plan Review. This document will guide the review process
+        and inform stakeholders of key areas for consideration.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Start_PreparePaper</bpmn:incoming>
+      <bpmn:outgoing>Flow_PreparePaper_LegalReview</bpmn:outgoing>
+      <camunda:formKey>discussion-paper-template</camunda:formKey>
+      <camunda:assignee>${reviewCoordinator}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Legal_Review" name="Legal Review">
+      <bpmn:documentation>
+        Conduct legal review of the Discussion Paper to ensure compliance
+        with legislative requirements and statutory obligations.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_PreparePaper_LegalReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_LegalReview_EditorialReview</bpmn:outgoing>
+      <camunda:formKey>legal-review-template</camunda:formKey>
+      <camunda:assignee>${legalOfficer}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Editorial_Review" name="Editorial Review">
+      <bpmn:documentation>
+        Review and refine the Discussion Paper for clarity, consistency,
+        and accessibility across all stakeholder audiences.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_LegalReview_EditorialReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_EditorialReview_PublishInvitation</bpmn:outgoing>
+      <camunda:formKey>editorial-review-template</camunda:formKey>
+      <camunda:assignee>${editorialOfficer}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:parallelGateway id="Gateway_Publish_Parallel" name="Publish Through All Channels">
+      <bpmn:incoming>Flow_EditorialReview_PublishInvitation</bpmn:incoming>
+      <bpmn:outgoing>Flow_Publish_Gazette</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Publish_Newspapers</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Publish_Website</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:task id="Task_Publish_Gazette" name="Publish in Commonwealth Gazette">
+      <bpmn:documentation>
+        Submit and confirm publication of the invitation in the
+        Commonwealth Government Gazette.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Publish_Gazette</bpmn:incoming>
+      <bpmn:outgoing>Flow_Gazette_Join</bpmn:outgoing>
+      <camunda:formKey>gazette-publication-template</camunda:formKey>
+      <camunda:assignee>${communicationsOfficer}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Publish_Newspapers" name="Publish in Basin State Newspapers">
+      <bpmn:documentation>
+        Coordinate publication of the invitation in newspapers
+        circulating in each Basin State and Territory.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Publish_Newspapers</bpmn:incoming>
+      <bpmn:outgoing>Flow_Newspapers_Join</bpmn:outgoing>
+      <camunda:formKey>newspaper-publication-template</camunda:formKey>
+      <camunda:assignee>${communicationsOfficer}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Publish_Website" name="Publish on MDBA Website">
+      <bpmn:documentation>
+        Upload and publish the invitation and supporting materials
+        to the MDBA website.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Publish_Website</bpmn:incoming>
+      <bpmn:outgoing>Flow_Website_Join</bpmn:outgoing>
+      <camunda:formKey>website-publication-template</camunda:formKey>
+      <camunda:assignee>${webOfficer}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:parallelGateway id="Gateway_Publish_Join" name="All Publications Complete">
+      <bpmn:incoming>Flow_Gazette_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Newspapers_Join</bpmn:incoming>
+      <bpmn:incoming>Flow_Website_Join</bpmn:incoming>
+      <bpmn:outgoing>Flow_Join_Distribute</bpmn:outgoing>
+    </bpmn:parallelGateway>
+
+    <bpmn:task id="Task_Distribute_BasinStates" name="Distribute Paper to Basin States">
+      <bpmn:documentation>
+        Distribute the discussion paper to all basin states and relevant stakeholders.
+        Ensure proper delivery and acknowledgment of receipt from all parties.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Join_Distribute</bpmn:incoming>
+      <bpmn:outgoing>Flow_DistributePaper_SpecifySubmission</bpmn:outgoing>
+      <camunda:formKey>distribution-checklist</camunda:formKey>
+      <camunda:assignee>${stakeholderCoordinator}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Specify_SubmissionProcess" name="Specify Submission Process">
+      <bpmn:documentation>
+        Define and document the submission process requirements, including
+        timelines, formats, and evaluation criteria for stakeholder submissions.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_DistributePaper_SpecifySubmission</bpmn:incoming>
+      <bpmn:outgoing>Flow_SpecifySubmission_DevelopGuideline</bpmn:outgoing>
+      <camunda:formKey>submission-process-specification</camunda:formKey>
+      <camunda:assignee>${processCoordinator}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:task id="Task_Develop_SubmissionsGuideline" name="Develop & Publish Submissions Guideline">
+      <bpmn:documentation>
+        Create and publish comprehensive guidelines for stakeholders to follow
+        when preparing their submissions. Include templates, examples, and
+        best practices to ensure quality and consistency in submissions.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_SpecifySubmission_DevelopGuideline</bpmn:incoming>
+      <bpmn:outgoing>Flow_DevelopGuideline_End</bpmn:outgoing>
+      <camunda:formKey>submission-guidelines-template</camunda:formKey>
+      <camunda:assignee>${guidelinesCoordinator}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:endEvent id="EndEvent_Invitation_Complete" name="Invitation Phase Complete">
+      <bpmn:documentation>
+        Marks the completion of the invitation phase. All necessary documentation
+        has been prepared and distributed, and stakeholders are ready to begin
+        their submissions.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_DevelopGuideline_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <bpmn:boundaryEvent id="BoundaryEvent_PublicationTimeout" attachedToRef="Task_Publish_OfficialInvitation">
+      <bpmn:outgoing>Flow_Timeout_Escalation</bpmn:outgoing>
+      <bpmn:timerEventDefinition>
+        <bpmn:timeDuration>P7D</bpmn:timeDuration>
+      </bpmn:timerEventDefinition>
+    </bpmn:boundaryEvent>
+
+    <bpmn:task id="Task_Escalate_Publication" name="Escalate Publication Delay">
+      <bpmn:documentation>
+        Escalate delayed publication to senior management for resolution.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Timeout_Escalation</bpmn:incoming>
+      <bpmn:outgoing>Flow_Escalation_Resume</bpmn:outgoing>
+      <camunda:formKey>escalation-template</camunda:formKey>
+      <camunda:assignee>${seniorManager}</camunda:assignee>
+    </bpmn:task>
+
+    <bpmn:sequenceFlow id="Flow_Start_PreparePaper" sourceRef="StartEvent_Invitation_Phase" targetRef="Task_Prepare_DiscussionPaper">
+      <bpmn:documentation>Initiates the discussion paper preparation</bpmn:documentation>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_PreparePaper_LegalReview" sourceRef="Task_Prepare_DiscussionPaper" targetRef="Task_Legal_Review"/>
+    <bpmn:sequenceFlow id="Flow_LegalReview_EditorialReview" sourceRef="Task_Legal_Review" targetRef="Task_Editorial_Review"/>
+    <bpmn:sequenceFlow id="Flow_EditorialReview_PublishInvitation" sourceRef="Task_Editorial_Review" targetRef="Gateway_Publish_Parallel"/>
+    <bpmn:sequenceFlow id="Flow_Publish_Gazette" sourceRef="Gateway_Publish_Parallel" targetRef="Task_Publish_Gazette"/>
+    <bpmn:sequenceFlow id="Flow_Publish_Newspapers" sourceRef="Gateway_Publish_Parallel" targetRef="Task_Publish_Newspapers"/>
+    <bpmn:sequenceFlow id="Flow_Publish_Website" sourceRef="Gateway_Publish_Parallel" targetRef="Task_Publish_Website"/>
+    <bpmn:sequenceFlow id="Flow_Gazette_Join" sourceRef="Task_Publish_Gazette" targetRef="Gateway_Publish_Join"/>
+    <bpmn:sequenceFlow id="Flow_Newspapers_Join" sourceRef="Task_Publish_Newspapers" targetRef="Gateway_Publish_Join"/>
+    <bpmn:sequenceFlow id="Flow_Website_Join" sourceRef="Task_Publish_Website" targetRef="Gateway_Publish_Join"/>
+    <bpmn:sequenceFlow id="Flow_Join_Distribute" sourceRef="Gateway_Publish_Join" targetRef="Task_Distribute_BasinStates"/>
+    <bpmn:sequenceFlow id="Flow_DistributePaper_SpecifySubmission" sourceRef="Task_Distribute_BasinStates" targetRef="Task_Specify_SubmissionProcess">
+      <bpmn:documentation>Advances to specify the submission process</bpmn:documentation>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_SpecifySubmission_DevelopGuideline" sourceRef="Task_Specify_SubmissionProcess" targetRef="Task_Develop_SubmissionsGuideline">
+      <bpmn:documentation>Proceeds to develop submission guidelines</bpmn:documentation>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_DevelopGuideline_End" sourceRef="Task_Develop_SubmissionsGuideline" targetRef="EndEvent_Invitation_Complete">
+      <bpmn:documentation>Completes the invitation phase</bpmn:documentation>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_Timeout_Escalation" sourceRef="BoundaryEvent_PublicationTimeout" targetRef="Task_Escalate_Publication"/>
+    <bpmn:sequenceFlow id="Flow_Escalation_Resume" sourceRef="Task_Escalate_Publication" targetRef="Task_Publish_OfficialInvitation"/>
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_BPR_InvitationPhase">
+      <bpmndi:BPMNShape id="StartEvent_Invitation_Phase_di" bpmnElement="StartEvent_Invitation_Phase">
+        <dc:Bounds x="100" y="150" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Prepare_DiscussionPaper_di" bpmnElement="Task_Prepare_DiscussionPaper">
+        <dc:Bounds x="200" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Legal_Review_di" bpmnElement="Task_Legal_Review">
+        <dc:Bounds x="200" y="230" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Editorial_Review_di" bpmnElement="Task_Editorial_Review">
+        <dc:Bounds x="200" y="330" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Publish_OfficialInvitation_di" bpmnElement="Task_Publish_OfficialInvitation">
+        <dc:Bounds x="350" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Distribute_BasinStates_di" bpmnElement="Task_Distribute_BasinStates">
+        <dc:Bounds x="500" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Specify_SubmissionProcess_di" bpmnElement="Task_Specify_SubmissionProcess">
+        <dc:Bounds x="650" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_Develop_SubmissionsGuideline_di" bpmnElement="Task_Develop_SubmissionsGuideline">
+        <dc:Bounds x="800" y="130" width="100" height="80"/>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_Invitation_Complete_di" bpmnElement="EndEvent_Invitation_Complete">
+        <dc:Bounds x="950" y="150" width="36" height="36"/>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNEdge id="Flow_Start_PreparePaper_di" bpmnElement="Flow_Start_PreparePaper">
+        <di:waypoint x="136" y="168"/>
+        <di:waypoint x="200" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_PreparePaper_LegalReview_di" bpmnElement="Flow_PreparePaper_LegalReview">
+        <di:waypoint x="200" y="218"/>
+        <di:waypoint x="200" y="230"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_LegalReview_EditorialReview_di" bpmnElement="Flow_LegalReview_EditorialReview">
+        <di:waypoint x="200" y="280"/>
+        <di:waypoint x="200" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_EditorialReview_PublishInvitation_di" bpmnElement="Flow_EditorialReview_PublishInvitation">
+        <di:waypoint x="300" y="330"/>
+        <di:waypoint x="350" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Publish_Gazette_di" bpmnElement="Flow_Publish_Gazette">
+        <di:waypoint x="450" y="170"/>
+        <di:waypoint x="450" y="230"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Publish_Newspapers_di" bpmnElement="Flow_Publish_Newspapers">
+        <di:waypoint x="450" y="170"/>
+        <di:waypoint x="450" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Publish_Website_di" bpmnElement="Flow_Publish_Website">
+        <di:waypoint x="450" y="170"/>
+        <di:waypoint x="450" y="330"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Join_Distribute_di" bpmnElement="Flow_Join_Distribute">
+        <di:waypoint x="600" y="170"/>
+        <di:waypoint x="650" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DistributePaper_SpecifySubmission_di" bpmnElement="Flow_DistributePaper_SpecifySubmission">
+        <di:waypoint x="600" y="170"/>
+        <di:waypoint x="650" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_SpecifySubmission_DevelopGuideline_di" bpmnElement="Flow_SpecifySubmission_DevelopGuideline">
+        <di:waypoint x="750" y="170"/>
+        <di:waypoint x="800" y="170"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_DevelopGuideline_End_di" bpmnElement="Flow_DevelopGuideline_End">
+        <di:waypoint x="900" y="170"/>
+        <di:waypoint x="950" y="168"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Timeout_Escalation_di" bpmnElement="Flow_Timeout_Escalation">
+        <di:waypoint x="350" y="170"/>
+        <di:waypoint x="350" y="230"/>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_Escalation_Resume_di" bpmnElement="Flow_Escalation_Resume">
+        <di:waypoint x="350" y="230"/>
+        <di:waypoint x="350" y="170"/>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
