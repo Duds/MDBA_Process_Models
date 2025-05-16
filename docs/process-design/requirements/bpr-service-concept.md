@@ -1,3 +1,8 @@
+---
+version: "0.3"
+last_updated: "13/05/2024"
+refactor: section_arrangements
+---
 MDBA Basin Plan Review 2026: Submissions Process Service Concept & Blueprint
 
 Phase 3 Design Deliverable — Service Concept and Blueprint
@@ -276,15 +281,15 @@ Key contextual drivers include:
 
 * **System requirements** for secure, onshore storage (Azure), WCAG AA compliance, and robust consent tracking and redaction workflows.
 
-* **Feedback and transparency expectations**, including *“What We’ve Heard”* reporting and visible submission status tracking.
+* **Feedback and transparency expectations**, including *"What We've Heard"* reporting and visible submission status tracking.
 
-* **Alignment to enterprise frameworks** such as DAMF and MDBA’s Enterprise Architecture principles (e.g., Configure-before-Code, reuse-first approach).
+* **Alignment to enterprise frameworks** such as DAMF and MDBA's Enterprise Architecture principles (e.g., Configure-before-Code, reuse-first approach).
 
 This concept sets the foundation for service delivery planning, governance alignment, and user-centred co-design in the implementation phase.
 
 2. **Objectives for the Service**
 
-The future submissions process described in this service concept is a critical enabler of the MDBA’s statutory obligations under the Water Act 2007 and broader commitments to inclusive, transparent, and ethical consultation. The process must accommodate a wide range of submitters and submission types, while also ensuring compliance, security, and operational efficiency.
+The future submissions process described in this service concept is a critical enabler of the MDBA's statutory obligations under the Water Act 2007 and broader commitments to inclusive, transparent, and ethical consultation. The process must accommodate a wide range of submitters and submission types, while also ensuring compliance, security, and operational efficiency.
 
 This service concept supports the MDBA in delivering a future service model that is:
 
@@ -394,9 +399,9 @@ These journeys are not mutually exclusive — a user may move between them over 
 
 6. **Strategic Alignment with MDBA Digital Strategy**
 
-This service concept has been designed to align closely with the MDBA Digital Strategy 2023–25, ensuring that the solution not only meets the functional needs of stakeholders but is also consistent with the authority’s broader digital, governance, and operational objectives.
+This service concept has been designed to align closely with the MDBA Digital Strategy 2023–25, ensuring that the solution not only meets the functional needs of stakeholders but is also consistent with the authority's broader digital, governance, and operational objectives.
 
-MDBA’s digital strategy outlines four pillars of transformation:
+MDBA's digital strategy outlines four pillars of transformation:
 
 * **Digital Workplace and Service Accessibility**
 
@@ -416,7 +421,7 @@ The submissions service directly contributes to these goals through:
 
 * **Consent, ICIP and publication controls**, supporting CARE principles and transparent consideration.
 
-Design principles such as Compliance by Design, User-Centred Inclusion, and Data Stewardship and Sovereignty are embedded across journey phases and service interactions. These are reinforced by technology features like secure cloud hosting, automated redaction workflows, and real-time intake monitoring — all aligned with MDBA’s ambition to modernise and consolidate digital service delivery.
+Design principles such as Compliance by Design, User-Centred Inclusion, and Data Stewardship and Sovereignty are embedded across journey phases and service interactions. These are reinforced by technology features like secure cloud hosting, automated redaction workflows, and real-time intake monitoring — all aligned with MDBA's ambition to modernise and consolidate digital service delivery.
 
 For a full mapping of design and system features to MDBA strategic priorities, see [**Appendix J.**](#bookmark=id.dpuf99aptdza)
 
@@ -467,7 +472,7 @@ Each design element is specific enough to guide development and decision-making,
 |  | DE17 | Redaction tools are embedded within workflows, enabling in-system removal of sensitive information before publishing. |
 | Design Elements |  | Description |
 | 👁️Transparent Consideration and Feedback | DE18 | Submitters receive confirmation, visibility of process status, and clear reporting on how submissions contributed to outcomes. |
-|  | DE19 | A public-facing explanation of “consideration” is published, along with examples of how submissions informed outcomes. |
+|  | DE19 | A public-facing explanation of "consideration" is published, along with examples of how submissions informed outcomes. |
 |  | DE20 | Contributors can opt-in to receive targeted updates or summaries aligned to their submission theme or archetype. |
 | 🧭Ethical and Respectful Engagement | DE21 | Consent options are time-bound, revocable, and aligned with CARE and FPIC principles. |
 |  | DE22 | Culturally sensitive content is flagged, secured, and excluded from inappropriate publication or reuse. |
@@ -544,7 +549,7 @@ Each product plays a specific role across the submission lifecycle stages and al
 |  | **Post-Process Review** — Evaluates system performance and architecture fit. | System usage analytics Cost-benefit assessment tools | Lack of telemetry and usage analytics |
 | **ComplianceCustodian** | **Pre-launch Review** — Reviews consent, ICIP, and redaction frameworks. | Tiered consent model (broad/narrow/ICIP) Legal sign-off checklist | Interpretation differences across teams Limited legal resources at pace |
 |  | **Submission Monitoring** — Scans for sensitive or high-risk content. | Redaction queue Legal flagging rulesets | Late-stage privacy issues Inconsistent application of defamation and ICIP handling |
-|  | **Consideration Review** — Evaluates if consideration criteria are met. | Clear rules on what constitutes “consideration” Decision traceability tools | Ambiguity around partial or campaign submissions |
+|  | **Consideration Review** — Evaluates if consideration criteria are met. | Clear rules on what constitutes "consideration" Decision traceability tools | Ambiguity around partial or campaign submissions |
 |  | **FoI/Publication Planning** — Applies redactions and eligibility rules. | Consent-aligned publication logic Split views (public/internal) | No shared publication criteria Risk of over or under-exposure |
 |  | **Risk & Audit Reporting** — Maintains logs and reports for audit and governance. | Integrated privacy dashboard Legal defensibility scorecard | Gaps in data lineage or provenance |
 
@@ -552,7 +557,7 @@ Each product plays a specific role across the submission lifecycle stages and al
 | :---: | ----- | ----- | ----- |
 | **StrategicSynthesiser** | Data Preparation — Receives tagged, cleaned dataset. | Pre-configured dashboards and templates Structured themes aligned to discussion paper | Inconsistent metadata Late triage hinders insights timeline |
 |  | **Insights Generation** — Conducts thematic and sentiment analysis. | Power BI with campaign insights Use of keywords and taxonomies | Risk of bias from poorly grouped themes |
-|  | **What We’ve Heard** — Prepares accessible, transparent reports. | Configurable narrative outputs Charts, quotes, sentiment tagging | ICIP content may be excluded from summary Lack of formatting support for mixed media |
+|  | **What We've Heard** — Prepares accessible, transparent reports. | Configurable narrative outputs Charts, quotes, sentiment tagging | ICIP content may be excluded from summary Lack of formatting support for mixed media |
 |  | **Briefings & Reports** — Crafts outputs for executives and stakeholders. | Rapid export into PPT/DOC Highlights linked to raw submission themes | Difficulty evidencing how input shapes decisions |
 |  | **Process Evaluation** — Reflects on what was captured and missed. | Post-review feedback dashboard Lessons learned repository | No clear metrics for evaluation |
 
@@ -599,25 +604,25 @@ This service type does not cover:
 | **Key Activities**The core tasks, actions, and decisions users perform at each stage of the journey. | 📣 | 🌐 | 📰 | 📘 | ❓ | 🔍 | 🧭 | ✍️ | 🗣️ | 🎨 | 📎 |
 |  | Learns about the Review via public campaigns, MDBA newsletter, or local government channels. | Accesses the submissions portal through the MDBA website or a shared link. | Reads supporting content such as emails or community flyers explaining the process. | opens and reads the Discussion Paper, seeking to understand themes and questions. | Scans for key issues of interest. | Tries to determine if their concern is relevant. | Looks for real examples or past submissions to model theirs on. | Begins preparing their thoughts in writing, or recording media on a phone or device. | Gathers community or group input to incorporate. | Selects media to upload (images, PDFs, recordings). | Completes any consent or submission declaration forms. |
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 📢 | 🧾 | 📽️ | 📄 | 🧮 | 📚 | 🔍 | 🧰 | 📱 | 🗂️ | ✅ |
-|  | Broad distribution strategy using digital and community channels including translated content and accessible formats. | Click-through from campaign comms directly to portal home. | Summary explainer videos, visual FAQs and step-by-step process diagrams. | A plain English discussion paper and summary version to support comprehension across literacy levels. | In-scope/out-of-scope filters and examples. | Smart prompts based on common user questions. | *“What to include”* tips and real-world submission samples. | Multi-format templates including written, audio, video and community co-submission pathways. | oral/video upload functionality that is mobile-responsive. | Drag-and-drop upload interface with live preview. | Guided consent and privacy prompts embedded in form. |
+|  | Broad distribution strategy using digital and community channels including translated content and accessible formats. | Click-through from campaign comms directly to portal home. | Summary explainer videos, visual FAQs and step-by-step process diagrams. | A plain English discussion paper and summary version to support comprehension across literacy levels. | In-scope/out-of-scope filters and examples. | Smart prompts based on common user questions. | *"What to include"* tips and real-world submission samples. | Multi-format templates including written, audio, video and community co-submission pathways. | oral/video upload functionality that is mobile-responsive. | Drag-and-drop upload interface with live preview. | Guided consent and privacy prompts embedded in form. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 💡 | 👣 | 👁️ | 🧠 | 🧩 | 🤝 | 🙋‍♀️ | 🗣️ | 🫂 | 🎭 | 📝 |
-|  | *“I received the invite in a community newsletter — it looked important and easy to follow up.”* | *“I clicked the link and was straight into the portal without confusion.”* | *“I feel confident this is something I can participate in — I see people like me have submitted before.”* | *“I’m starting to see how my views connect to the bigger picture — and what they want from me.”* | *“It’s helpful to know what’s in-scope so I don’t waste time.”* | *“I wasn’t sure at first, but the guide helped me feel prepared.”* | *“Seeing a real example gave me the confidence to start.”* | *“I was able to speak my story into my phone and upload it — I wouldn’t have written it down otherwise.”* | *“We had a community conversation and recorded it — the system made it easy to submit.”* | *“I liked being able to attach my artwork and map with my comments.”* | *“The consent part made me feel my input would be treated respectfully.”* |
+|  | *"I received the invite in a community newsletter — it looked important and easy to follow up."* | *"I clicked the link and was straight into the portal without confusion."* | *"I feel confident this is something I can participate in — I see people like me have submitted before."* | *"I'm starting to see how my views connect to the bigger picture — and what they want from me."* | *"It's helpful to know what's in-scope so I don't waste time."* | *"I wasn't sure at first, but the guide helped me feel prepared."* | *"Seeing a real example gave me the confidence to start."* | *"I was able to speak my story into my phone and upload it — I wouldn't have written it down otherwise."* | *"We had a community conversation and recorded it — the system made it easy to submit."* | *"I liked being able to attach my artwork and map with my comments."* | *"The consent part made me feel my input would be treated respectfully."* |
 
 3. **Engaged Contribution Journey (Part 2: Post-Submission Experience)**
 
 | Engaged Contribution | Lodgement & Confirmation |  |  | Waiting & Visibility |  |  |  | Feedback & Influence |  |  |  |
 | :---- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- | ----- |
 | **Key Activities**The core tasks, actions, and decisions users perform at each stage of the journey. | 📤 | 📩 | 🛡️ | ⏳ | 📝 | 🔔 | 🔄 | 📘 | 📢 | 📬 | 🧾 |
-|  | Submits their entry via portal or assisted channel. | Receives confirmation and summary of submission. | Confirms consent settings and visibility preferences. | Waits for response during the consultation window. | Reads reminder about next steps and indicative process timeframes. | Receives alerts on major milestones. | Hopes to be notified about the impact of their input. | Reads the *“What We’ve Heard”* report when published. | Looks for attribution of their themes. | Notices summary content via newsletters. | Downloads outcome documents. |
+|  | Submits their entry via portal or assisted channel. | Receives confirmation and summary of submission. | Confirms consent settings and visibility preferences. | Waits for response during the consultation window. | Reads reminder about next steps and indicative process timeframes. | Receives alerts on major milestones. | Hopes to be notified about the impact of their input. | Reads the *"What We've Heard"* report when published. | Looks for attribution of their themes. | Notices summary content via newsletters. | Downloads outcome documents. |
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 📤 | 📨 | 🔐 | ⏱️ | 📋 | 🔔 | 📈 | 📑 | 📣 | 🗞️ | 💾 |
-|  | Submission receipt screen and email confirmation with timestamp. | Auto-generated summary sent with opt-in to regular community newsletter. | Consent interface includes visibility options. | Estimated timeline shown on portal dashboard. | Static information page "*Submissions will be considered between \[date range\]; you will not receive further updates until reports are published.*" | Notification engine for user-specific milestones. | Analytics dashboard summarises common themes. | *“What We’ve Heard”* formatted for accessibility and distribution. | Contributors’ topics visible in output themes. | Email campaigns summarise insights. | Archive and downloadable final materials. |
+|  | Submission receipt screen and email confirmation with timestamp. | Auto-generated summary sent with opt-in to regular community newsletter. | Consent interface includes visibility options. | Estimated timeline shown on portal dashboard. | Static information page "*Submissions will be considered between \[date range\]; you will not receive further updates until reports are published.*" | Notification engine for user-specific milestones. | Analytics dashboard summarises common themes. | *"What We've Heard"* formatted for accessibility and distribution. | Contributors' topics visible in output themes. | Email campaigns summarise insights. | Archive and downloadable final materials. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 🙌 | 📬 | ✅ | 🧘‍♂️ | 🧐 | 📳 | 🤞 | 🤓 | 😌 | 💌 | 🗂️ |
-|  | *“It was satisfying to get an instant confirmation that my submission was received.”* | *“The summary email helped me remember what I said.”* | *“I appreciated being able to choose how mine would be shown.”* | *“Now I wait… but at least I know when I might hear back.”* | *"I knew I wouldn’t get detailed updates, but it was good to understand what happens next."* | *“Getting that update made me feel included.”* | *“I’m hopeful that what I said made a difference.”* | *“I could actually see my issues reflected in the report — that really matters to me.”* | *“It’s reassuring to see common concerns captured.”* | *“The newsletter update gave me closure.”* | *“I saved the report for future reference.”* |
+|  | *"It was satisfying to get an instant confirmation that my submission was received."* | *"The summary email helped me remember what I said."* | *"I appreciated being able to choose how mine would be shown."* | *"Now I wait… but at least I know when I might hear back."* | *"I knew I wouldn't get detailed updates, but it was good to understand what happens next."* | *"Getting that update made me feel included."* | *"I'm hopeful that what I said made a difference."* | *"I could actually see my issues reflected in the report — that really matters to me."* | *"It's reassuring to see common concerns captured."* | *"The newsletter update gave me closure."* | *"I saved the report for future reference."* |
 
 | Awareness & Motivation | Preparation | Lodgement | Acknowledgement | Feedback |
 | ----- | ----- | ----- | ----- | ----- |
 | **Evidence** |  |  |  |  |
-| Facebook post, flyer, community event | Discussion paper, plain English submission guide, in-scope checklist | Submission form, ICIP and privacy prompt, file upload interface | Confirmation email, dashboard confirmation message | “What We’ve Heard” online report, newsletter update |
+| Facebook post, flyer, community event | Discussion paper, plain English submission guide, in-scope checklist | Submission form, ICIP and privacy prompt, file upload interface | Confirmation email, dashboard confirmation message | "What We've Heard" online report, newsletter update |
 | **Journey** |  |  |  |  |
 | Hears about the Review and considers participating | Reads background material and starts writing | Completes the form and uploads submission | Receives confirmation and feels reassured | Sees their theme mentioned in report and feels acknowledged |
 | **Touchpoints** |  |  |  |  |
@@ -682,7 +687,7 @@ This service type does not cover:
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 🧰 | 📘 | 🧪 | 📨 | 🧮 | 🏷️ | ⚠️ | 📍 | 🗃️ | 📊 | 📋 |
 |  | Pre-configured templates and field mappings for metadata capture. | System preview and internal testing phase. | Feedback loop for portal setup validation. | Dashboard shows incoming submission volumes in real time. | Auto-tagging rules and confidence thresholds. | Suggested topics with training data models. | Built-in redaction or privacy flag prompts. | Integrated triage-to-review workflow with assignments. | Escalation triggers tied to content types. | Real-time dashboards for triage metrics. | Editable triage criteria list in admin view. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 📦 | 🧑‍💼 | 🧪 | 🤹 | 🧾 | 🧠 | 😬 | 🚦 | 🧭 | 📈 | 🧾 |
-|  | *“The setup was smooth — we had all the assets pre-loaded and tested.”* | *“It was helpful to preview the workflow before launch.”* | *“Quick testing revealed some logic gaps we could fix.”* | *“There’s a steady stream of submissions — glad we can see the load daily.”* | *“The checklist makes sure we don’t miss steps.”* | *“Smart tagging saved hours already.”* | *“I know when to flag — the prompts are helpful.”* | *“Routing logic helped us scale — we’re not bottlenecked.”* | *“I know when to escalate and where it goes.”* | *“The dashboard shows where we’re falling behind.”* | *“We’re tweaking triage rules based on what we’re seeing.”* |
+|  | *"The setup was smooth — we had all the assets pre-loaded and tested."* | *"It was helpful to preview the workflow before launch."* | *"Quick testing revealed some logic gaps we could fix."* | *"There's a steady stream of submissions — glad we can see the load daily."* | *"The checklist makes sure we don't miss steps."* | *"Smart tagging saved hours already."* | *"I know when to flag — the prompts are helpful."* | *"Routing logic helped us scale — we're not bottlenecked."* | *"I know when to escalate and where it goes."* | *"The dashboard shows where we're falling behind."* | *"We're tweaking triage rules based on what we're seeing."* |
 
 3. **Process Coordination Journey (Part 2: Closure and Support)**
 
@@ -693,7 +698,7 @@ This service type does not cover:
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 🗃️ | 📑 | 🧾 | 🧰 | 💬 | 📞 | 🛠️ | 📉 | 📤 | 📦 | 📓 |
 |  | Role-based archival permissions and naming conventions. | Metadata schema aligned with DAMF catalogue. | Built-in retention and redaction rules. | Ticketing system for intake support. | Portal support chatbot for common queries. | Helpdesk scripts linked to submission states. | Update comms based on real issues reported. | Dashboard shows processing backlog and response rates. | Auto-generation of summary reports. | Export to long-term archive with metadata. | Internal retrospective template available. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 🗂️ | 🔐 | 🧾 | 🧑‍🚒 | 💬 | 📞 | 🛠️ | 📊 | 🧠 | 📦 | 🧾 |
-|  | *“The recordkeeping setup makes it easier to show compliance.”* | *“We’ve finally aligned metadata with our retention rules.”* | *“We’re audit-ready — that’s peace of mind.”* | *“our team knows how to help submitters quickly.”* | *“The FAQ bot helped resolve most queries instantly.”* | *“Having scripts helps keep things consistent.”* | *“We’re improving our help docs from actual issues.”* | *“We’re getting insight into triage bottlenecks.”* | *“Reporting is now just a few clicks.”* | *“Archival is automatic — no more last-minute scrambles.”* | *“We’ve documented key lessons already.”* |
+|  | *"The recordkeeping setup makes it easier to show compliance."* | *"We've finally aligned metadata with our retention rules."* | *"We're audit-ready — that's peace of mind."* | *"our team knows how to help submitters quickly."* | *"The FAQ bot helped resolve most queries instantly."* | *"Having scripts helps keep things consistent."* | *"We're improving our help docs from actual issues."* | *"We're getting insight into triage bottlenecks."* | *"Reporting is now just a few clicks."* | *"Archival is automatic — no more last-minute scrambles."* | *"We've documented key lessons already."* |
 
    6. 
 
@@ -739,7 +744,7 @@ This service type does not cover:
 
 ○	Public or staff-facing workflows or dashboards  
 (*covered in [**Process Coordination**](#bookmark=id.u8u9holqw271)*).  
-○	The thematic analysis of submission content  
+○	Thematic analysis of submission content  
 (*covered in [**Strategic Synthesiser**](#bookmark=id.cip8me6iz8o8)*).  
 ○	Legal review or redaction decision-making  
 (*covered in [**Compliance Assurance**](#bookmark=id.1qthm6v616sh)*).  
@@ -750,7 +755,7 @@ This service type does not cover:
 
 | Question | Description |
 | :---- | :---- |
-| **What is the purpose of the service type?** | Platform Oversight ensures that the submission system functions consistently, securely, and in alignment with MDBA’s technical and compliance expectations. It supports the safe collection, processing, and storage of submission data across the lifecycle and provides the auditability, privacy, and technical reliability needed to meet regulatory, public trust, and operational efficiency goals. This service ensures the system is not only functional but defensible and sustainable. |
+| **What is the purpose of the service type?** | Platform Oversight ensures that the submission system functions consistently, securely, and in alignment with MDBA's technical and compliance expectations. It supports the safe collection, processing, and storage of submission data across the lifecycle and provides the auditability, privacy, and technical reliability needed to meet regulatory, public trust, and operational efficiency goals. This service ensures the system is not only functional but defensible and sustainable. |
 | **Who will benefit and why?** | ICT custodians, system administrators, data governance staff, and platform integrators benefit from this service through structured controls and monitoring tools that reduce risk and enable rapid response to performance issues. The broader organisation benefits through enhanced security, reduced service outages, and strong defensibility in FOI and audit scenarios. Contributors and reviewers benefit indirectly from a stable, accessible, and secure system they can trust. |
 | **Who will access the service type? (User Personas)** | Primary access will be limited to: Platform Guardian – Oversees the end-to-end technical operation of the platform, including access control, security, and performance. ICT Support Analyst – Supports issue resolution, system health monitoring, and incident triage. Enterprise Architect – Ensures alignment with EA principles, DAMF, and internal IT governance. Compliance Custodian (technical role) – Verifies platform meets retention and privacy requirements. |
 | **What are the primary channels for the service?** | This service operates through: Infrastructure configuration platforms (e.g. Azure, Convalens, SharePoint Online, Power Platform). Monitoring dashboards with uptime alerts, error logs, and telemetry insights. Admin portals for managing roles, permissions, and retention policies. Audit logs and incident response workflows. Internal documentation tools for storing SOPs, configuration registers, and version control records. |
@@ -765,7 +770,7 @@ This service type does not cover:
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 🧱 | 🏷️ | 📚 | 🔑 | 🧮 | 🔌 | ⚙️ | 🖥️ | 🧾 | 🚨 | 🧰 |
 |  | Standardised Azure-hosted architecture with pre-approved infrastructure-as-code templates. | Configurable access logs with retention controls. | Alignment with MDBA ICT stack and governance model. | Federated identity and conditional access policies. | Tiered role-based permissions with read/write/report separation. | APIs for secure system-to-system transfer. | Scalable ingest and validation pipelines. | Live monitoring dashboard with drill-down views. | Scheduled health checks and status reports. | Alerts for volume spikes, downtime, or authentication errors. | Incident triage and root cause analysis tools. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 🧑‍💻 | 🧠 | 🧾 | 🙅‍♂️ | 🧍‍♂️ | 🔐 | 🧰 | 🧮 | 🔍 | 📢 | 🔧 |
-|  | *“The infrastructure is finally clean, compliant, and scalable.”* | *“We followed EA principles — no custom snowflakes.”* | *“It’s reassuring to know the audit trails are complete.”* | *“SSO and MFA make secure login seamless.”* | *“I can grant and revoke access quickly by role.”* | *“Everything plugs in without a fight.”* | *“We’ve got strong ingest and data handling rules.”* | *“I can see errors before they become outages.”* | *“Early warnings helped us catch a misconfigured field.”* | *“The alert was triggered before users were affected.”* | *“We’ve captured logs for the post-mortem.”* |
+|  | *"The infrastructure is finally clean, compliant, and scalable."* | *"We followed EA principles — no custom snowflakes."* | *"It's reassuring to know the audit trails are complete."* | *"SSO and MFA make secure login seamless."* | *"I can grant and revoke access quickly by role."* | *"Everything plugs in without a fight."* | *"We've got strong ingest and data handling rules."* | *"I can see errors before they become outages."* | *"Early warnings helped us catch a misconfigured field."* | *"The alert was triggered before users were affected."* | *"We've captured logs for the post-mortem."* |
 
 3. **Platform oversight Journey (Part 2: Security, Incidents & Evaluation)**
 
@@ -776,7 +781,7 @@ This service type does not cover:
 | **Service Improvements**Enhancements to systems, processes, or tools that support a better experience or reduce risk. | 🔐 | 📜 | 📊 | 🆘 | 🔧 | 🧑‍⚖️ | 🪵 | 📈 | 📑 | 📤 | 🧠 |
 |  | Encryption policy applied across storage, portal, and submission archive. | Device-based policy enforcement. | Monthly access report auto-generated. | System alerts and escalation playbooks. | Automated patches with downtime logging. | Integration with legal review workflows. | Structured post-incident logs. | Weekly and end-of-window usage reports. | Exportable system performance dashboards. | Change log reviewed after consultation closes. | ICIP and Privacy exception tracking reviewed. |
 | **User Experience**How the user feels or reflects on the process — their perceptions, needs, and satisfaction at each stage. | 🧘‍♂️ | 🧱 | 👀 | 🧯 | 🛠️ | 👨‍⚖️ | 📜 | 📊 | 🧠 | 🧾 | 📚 |
-|  | *“I’m confident the data is protected end-to-end.”* | *“Access feels secure without being restrictive.”* | *“I can see what changed, when, and why.”* | *“When something goes wrong, we know exactly what to do.”* | *“We had it patched within the hour.”* | *“We triggered legal review without delay.”* | *“We learned something from every incident.”* | *“I know what parts of the platform were used and where we struggled.”* | *“The usage dashboard showed how we scaled.”* | *“our infrastructure is better than last time.”* | *“We’re building an evidence base for next round.”* |
+|  | *"I'm confident the data is protected end-to-end."* | *"Access feels secure without being restrictive."* | *"I can see what changed, when, and why."* | *"When something goes wrong, we know exactly what to do."* | *"We had it patched within the hour."* | *"We triggered legal review without delay."* | *"We learned something from every incident."* | *"I know what parts of the platform were used and where we struggled."* | *"The usage dashboard showed how we scaled."* | *"our infrastructure is better than last time."* | *"We're building an evidence base for next round."* |
 
    8. 
 
