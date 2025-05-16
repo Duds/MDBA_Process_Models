@@ -1,0 +1,540 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="Definitions_BPR_AnalysisProcess"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="BPMN Studio"
+             exporterVersion="1.0.0">
+
+  <!-- Error Definitions -->
+  <error id="Error_Submission_Invalid" name="Invalid Submission" errorCode="SUB_001">
+    <documentation>
+      Submission validation error indicating non-compliance with requirements.
+      Severity: High
+      Resolution Path: 
+      1. Review submission against requirements
+      2. Contact stakeholder for clarification
+      3. Document resolution
+      4. Update stakeholder guidance if needed
+      Impact: May delay processing and require stakeholder rework.
+    </documentation>
+  </error>
+  
+  <error id="Error_Ingestion_Failed" name="Ingestion Failed" errorCode="ING_001">
+    <documentation>
+      System error during submission ingestion process.
+      Severity: High
+      Resolution Path:
+      1. Check system logs
+      2. Verify file format and size
+      3. Attempt alternative ingestion method
+      4. Escalate to technical support if needed
+      Impact: May require manual intervention and delay processing.
+    </documentation>
+  </error>
+  
+  <error id="Error_Format_Invalid" name="Invalid Format" errorCode="FMT_001">
+    <documentation>
+      Submission format does not meet specified requirements.
+      Severity: Medium
+      Resolution Path:
+      1. Identify format issues
+      2. Convert to required format if possible
+      3. Contact stakeholder for reformatting
+      4. Update format guidelines if needed
+      Impact: May require stakeholder action and delay processing.
+    </documentation>
+  </error>
+  
+  <!-- Message Definitions -->
+  <message id="Message_Submission_Received" name="Submission Received">
+    <documentation>
+      Confirmation message sent to stakeholder upon successful submission receipt.
+      Contains:
+      - Submission reference number
+      - Receipt timestamp
+      - Next steps information
+      - Contact details for queries
+    </documentation>
+  </message>
+  
+  <message id="Message_Submission_Validated" name="Submission Validated">
+    <documentation>
+      Notification sent to stakeholder upon successful validation.
+      Contains:
+      - Validation confirmation
+      - Processing timeline
+      - Expected next steps
+      - Support contact information
+    </documentation>
+  </message>
+
+  <process id="Process_BPR_CollectionPhase" name="2026 Basin Plan Review Collection Phase" isExecutable="false">
+    <documentation>
+      Purpose: Manages the collection and initial processing of submissions for the 2026 Basin Plan Review
+      Owner: MDBA Basin Plan Review Team
+      Version: 1.0.0
+      Last Updated: 20/03/2024
+      Description: This process coordinates the collection and initial processing of submissions
+      through multiple channels (online portal, email, hard copy) and ensures proper registration,
+      validation, and storage of all submissions.
+    </documentation>
+
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_Stakeholders" name="Stakeholders">
+        <flowNodeRef>StartEvent_Collection_Phase</flowNodeRef>
+        <flowNodeRef>Task_Review_Invitation</flowNodeRef>
+        <flowNodeRef>Task_Submit_Online</flowNodeRef>
+        <flowNodeRef>Task_Submit_Email</flowNodeRef>
+        <flowNodeRef>Task_Submit_HardCopy</flowNodeRef>
+      </lane>
+      <lane id="Lane_MDBA_Collection" name="MDBA Collection Team">
+        <flowNodeRef>Task_Register_Submission</flowNodeRef>
+        <flowNodeRef>Task_Validate_Submission</flowNodeRef>
+        <flowNodeRef>Task_Ingest_Submission</flowNodeRef>
+        <flowNodeRef>Task_Quality_Check</flowNodeRef>
+        <flowNodeRef>EndEvent_Collection_Complete</flowNodeRef>
+      </lane>
+      <lane id="Lane_Support" name="Support Team">
+        <flowNodeRef>Task_Assist_Submission</flowNodeRef>
+        <flowNodeRef>Task_Handle_Queries</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <startEvent id="StartEvent_Collection_Phase" name="Start Collection Phase">
+      <documentation>
+        Marks the commencement of the submission collection phase.
+        This event is triggered when the invitation phase is complete
+        and the submission period begins.
+      </documentation>
+      <outgoing>Flow_Start_Review</outgoing>
+    </startEvent>
+
+    <userTask id="Task_Review_Invitation" name="Review Submission Invitation">
+      <documentation>
+        Stakeholders review the BPR Discussion Paper and Submission Guidelines
+        to understand requirements and prepare their submission.
+      </documentation>
+      <incoming>Flow_Start_Review</incoming>
+      <outgoing>Flow_Review_Submit</outgoing>
+    </userTask>
+
+    <exclusiveGateway id="Gateway_Submission_Channel" name="Choose Submission Channel">
+      <documentation>
+        Determines the preferred submission channel based on stakeholder choice
+        and accessibility requirements.
+        
+        Decision Criteria:
+        1. Online Portal (Default):
+           - Preferred for standard submissions
+           - Requires internet access
+           - Supports all file formats
+           - Provides immediate confirmation
+        
+        2. Email Submission:
+           - For stakeholders with email access
+           - Limited to specific file types
+           - Requires manual processing
+           - Suitable for smaller submissions
+        
+        3. Hard Copy:
+           - For stakeholders without digital access
+           - Requires physical delivery
+           - Manual processing required
+           - Suitable for complex submissions
+        
+        4. Assisted Submission:
+           - For stakeholders requiring support
+           - Available for accessibility needs
+           - Includes guidance and assistance
+           - Ensures compliance with requirements
+      </documentation>
+      <incoming>Flow_Review_Submit</incoming>
+      <outgoing>Flow_Channel_Online</outgoing>
+      <outgoing>Flow_Channel_Email</outgoing>
+      <outgoing>Flow_Channel_HardCopy</outgoing>
+      <outgoing>Flow_Channel_Assisted</outgoing>
+    </exclusiveGateway>
+
+    <userTask id="Task_Submit_Online" name="Submit via Online Portal">
+      <documentation>
+        Stakeholders complete and submit their response through the
+        MDBA online submission portal.
+      </documentation>
+      <incoming>Flow_Channel_Online</incoming>
+      <outgoing>Flow_Online_Register</outgoing>
+    </userTask>
+
+    <userTask id="Task_Submit_Email" name="Submit via Email">
+      <documentation>
+        Stakeholders prepare and send their submission via email
+        to the designated submissions inbox.
+      </documentation>
+      <incoming>Flow_Channel_Email</incoming>
+      <outgoing>Flow_Email_Register</outgoing>
+    </userTask>
+
+    <userTask id="Task_Submit_HardCopy" name="Submit Hard Copy">
+      <documentation>
+        Stakeholders prepare and deliver physical submissions
+        to MDBA offices or via postal service.
+      </documentation>
+      <incoming>Flow_Channel_HardCopy</incoming>
+      <outgoing>Flow_HardCopy_Register</outgoing>
+    </userTask>
+
+    <userTask id="Task_Assist_Submission" name="Assist with Submission">
+      <documentation>
+        Support team assists stakeholders who require help
+        completing their submission.
+      </documentation>
+      <incoming>Flow_Channel_Assisted</incoming>
+      <outgoing>Flow_Assisted_Register</outgoing>
+    </userTask>
+
+    <userTask id="Task_Register_Submission" name="Register Submission">
+      <documentation>
+        Collection team registers and assigns unique identifier
+        to each submission received.
+      </documentation>
+      <incoming>Flow_Online_Register</incoming>
+      <incoming>Flow_Email_Register</incoming>
+      <incoming>Flow_HardCopy_Register</incoming>
+      <incoming>Flow_Assisted_Register</incoming>
+      <outgoing>Flow_Received_Register</outgoing>
+    </userTask>
+
+    <userTask id="Task_Validate_Submission" name="Validate Submission">
+      <documentation>
+        Collection team validates submission format, content,
+        and compliance with submission requirements.
+      </documentation>
+      <incoming>Flow_Received_Register</incoming>
+      <outgoing>Flow_Validate_Confirm</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Validation_Error" attachedToRef="Task_Validate_Submission">
+      <errorEventDefinition errorRef="Error_Submission_Invalid" />
+    </boundaryEvent>
+
+    <userTask id="Task_Ingest_Submission" name="Ingest Submission">
+      <documentation>
+        Collection team processes and stores submission in
+        secure repository for analysis.
+      </documentation>
+      <incoming>Flow_Validate_Confirm</incoming>
+      <outgoing>Flow_Confirm_Ingest</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Ingestion_Error" attachedToRef="Task_Ingest_Submission">
+      <errorEventDefinition errorRef="Error_Ingestion_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Quality_Check" name="Quality Check">
+      <documentation>
+        Final quality check ensures submission is properly
+        registered, validated, and stored.
+      </documentation>
+      <incoming>Flow_Confirm_Ingest</incoming>
+      <outgoing>Flow_Quality_End</outgoing>
+    </userTask>
+
+    <endEvent id="EndEvent_Collection_Complete" name="Collection Phase Complete">
+      <documentation>
+        Marks the completion of the collection phase.
+        All submissions have been received, registered,
+        validated, and stored for analysis.
+      </documentation>
+      <incoming>Flow_Quality_End</incoming>
+    </endEvent>
+
+    <!-- Sequence Flows -->
+    <sequenceFlow id="Flow_Start_Review" sourceRef="StartEvent_Collection_Phase" targetRef="Task_Review_Invitation" />
+    <sequenceFlow id="Flow_Review_Submit" sourceRef="Task_Review_Invitation" targetRef="Gateway_Submission_Channel" />
+    <sequenceFlow id="Flow_Channel_Online" sourceRef="Gateway_Submission_Channel" targetRef="Task_Submit_Online">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${submissionPreference == 'online' || defaultChannel == true}
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Channel_Email" sourceRef="Gateway_Submission_Channel" targetRef="Task_Submit_Email">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${submissionPreference == 'email' && hasEmailAccess == true}
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Channel_HardCopy" sourceRef="Gateway_Submission_Channel" targetRef="Task_Submit_HardCopy">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${submissionPreference == 'hardcopy' || requiresPhysicalSubmission == true}
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Channel_Assisted" sourceRef="Gateway_Submission_Channel" targetRef="Task_Assist_Submission">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${requiresAssistance == true || hasAccessibilityNeeds == true}
+      </conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Online_Register" sourceRef="Task_Submit_Online" targetRef="Event_Throw_Submission_Received" />
+    <sequenceFlow id="Flow_Email_Register" sourceRef="Task_Submit_Email" targetRef="Event_Throw_Submission_Received" />
+    <sequenceFlow id="Flow_HardCopy_Register" sourceRef="Task_Submit_HardCopy" targetRef="Event_Throw_Submission_Received" />
+    <sequenceFlow id="Flow_Assisted_Register" sourceRef="Task_Assist_Submission" targetRef="Event_Throw_Submission_Received" />
+    <sequenceFlow id="Flow_Received_Register" sourceRef="Event_Throw_Submission_Received" targetRef="Task_Register_Submission" />
+    <sequenceFlow id="Flow_Validate_Confirm" sourceRef="Task_Validate_Submission" targetRef="Event_Throw_Submission_Validated" />
+    <sequenceFlow id="Flow_Confirm_Ingest" sourceRef="Event_Throw_Submission_Validated" targetRef="Task_Ingest_Submission" />
+    <sequenceFlow id="Flow_Ingest_Quality" sourceRef="Task_Ingest_Submission" targetRef="Task_Quality_Check" />
+    <sequenceFlow id="Flow_Quality_End" sourceRef="Task_Quality_Check" targetRef="EndEvent_Collection_Complete" />
+
+    <!-- Text Annotations -->
+    <textAnnotation id="TextAnnotation_MultiChannel">
+      <text>Multiple submission channels ensure accessibility and inclusivity for all stakeholders</text>
+    </textAnnotation>
+    <association id="Association_MultiChannel" sourceRef="Gateway_Submission_Channel" targetRef="TextAnnotation_MultiChannel" />
+
+    <textAnnotation id="TextAnnotation_Validation">
+      <text>Validation ensures submissions meet requirements and are ready for analysis</text>
+    </textAnnotation>
+    <association id="Association_Validation" sourceRef="Task_Validate_Submission" targetRef="TextAnnotation_Validation" />
+
+    <!-- Message Events -->
+    <intermediateThrowEvent id="Event_Throw_Submission_Received" name="Send Submission Received">
+      <documentation>
+        Sends confirmation message to stakeholder upon successful submission receipt.
+        Triggers after:
+        - Online submission completion
+        - Email submission processing
+        - Hard copy registration
+        - Assisted submission completion
+      </documentation>
+      <messageEventDefinition messageRef="Message_Submission_Received" />
+    </intermediateThrowEvent>
+
+    <intermediateThrowEvent id="Event_Throw_Submission_Validated" name="Send Validation Confirmation">
+      <documentation>
+        Sends validation confirmation to stakeholder.
+        Triggers after:
+        - Successful format validation
+        - Content compliance check
+        - Requirements verification
+        - Quality assessment
+      </documentation>
+      <messageEventDefinition messageRef="Message_Submission_Validated" />
+    </intermediateThrowEvent>
+
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_BPR_CollectionPhase">
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Stakeholders_di" bpmnElement="Lane_Stakeholders" isHorizontal="true">
+        <dc:Bounds x="120" y="120" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="140" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_MDBA_Collection_di" bpmnElement="Lane_MDBA_Collection" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="340" width="150" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Support_di" bpmnElement="Lane_Support" isHorizontal="true">
+        <dc:Bounds x="120" y="520" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="540" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Events -->
+      <bpmndi:BPMNShape id="StartEvent_Collection_Phase_di" bpmnElement="StartEvent_Collection_Phase">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="EndEvent_Collection_Complete_di" bpmnElement="EndEvent_Collection_Complete">
+        <dc:Bounds x="1518" y="442" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1496" y="485" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_Review_Invitation_di" bpmnElement="Task_Review_Invitation">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Gateway_Submission_Channel_di" bpmnElement="Gateway_Submission_Channel">
+        <dc:Bounds x="392" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Submit_Online_di" bpmnElement="Task_Submit_Online">
+        <dc:Bounds x="544" y="120" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Submit_Email_di" bpmnElement="Task_Submit_Email">
+        <dc:Bounds x="544" y="240" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Submit_HardCopy_di" bpmnElement="Task_Submit_HardCopy">
+        <dc:Bounds x="544" y="360" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Assist_Submission_di" bpmnElement="Task_Assist_Submission">
+        <dc:Bounds x="544" y="560" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Register_Submission_di" bpmnElement="Task_Register_Submission">
+        <dc:Bounds x="696" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Validate_Submission_di" bpmnElement="Task_Validate_Submission">
+        <dc:Bounds x="848" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Ingest_Submission_di" bpmnElement="Task_Ingest_Submission">
+        <dc:Bounds x="1000" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Quality_Check_di" bpmnElement="Task_Quality_Check">
+        <dc:Bounds x="1152" y="320" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Message Events -->
+      <bpmndi:BPMNShape id="Event_Throw_Submission_Received_di" bpmnElement="Event_Throw_Submission_Received">
+        <dc:Bounds x="800" y="340" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="796" y="383" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Event_Throw_Submission_Validated_di" bpmnElement="Event_Throw_Submission_Validated">
+        <dc:Bounds x="1000" y="340" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="996" y="383" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="Flow_Start_Review_di" bpmnElement="Flow_Start_Review">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="240" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Review_Submit_di" bpmnElement="Flow_Review_Submit">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="392" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Channel_Online_di" bpmnElement="Flow_Channel_Online">
+        <di:waypoint x="417" y="235" />
+        <di:waypoint x="417" y="160" />
+        <di:waypoint x="544" y="160" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Channel_Email_di" bpmnElement="Flow_Channel_Email">
+        <di:waypoint x="442" y="260" />
+        <di:waypoint x="544" y="280" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Channel_HardCopy_di" bpmnElement="Flow_Channel_HardCopy">
+        <di:waypoint x="417" y="285" />
+        <di:waypoint x="417" y="400" />
+        <di:waypoint x="544" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Channel_Assisted_di" bpmnElement="Flow_Channel_Assisted">
+        <di:waypoint x="417" y="285" />
+        <di:waypoint x="417" y="600" />
+        <di:waypoint x="544" y="600" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Online_Register_di" bpmnElement="Flow_Online_Register">
+        <di:waypoint x="644" y="160" />
+        <di:waypoint x="818" y="160" />
+        <di:waypoint x="818" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Email_Register_di" bpmnElement="Flow_Email_Register">
+        <di:waypoint x="644" y="280" />
+        <di:waypoint x="818" y="280" />
+        <di:waypoint x="818" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_HardCopy_Register_di" bpmnElement="Flow_HardCopy_Register">
+        <di:waypoint x="644" y="400" />
+        <di:waypoint x="818" y="400" />
+        <di:waypoint x="818" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Assisted_Register_di" bpmnElement="Flow_Assisted_Register">
+        <di:waypoint x="644" y="600" />
+        <di:waypoint x="818" y="600" />
+        <di:waypoint x="818" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Received_Register_di" bpmnElement="Flow_Received_Register">
+        <di:waypoint x="836" y="358" />
+        <di:waypoint x="848" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Validate_Confirm_di" bpmnElement="Flow_Validate_Confirm">
+        <di:waypoint x="948" y="358" />
+        <di:waypoint x="1000" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Confirm_Ingest_di" bpmnElement="Flow_Confirm_Ingest">
+        <di:waypoint x="1036" y="358" />
+        <di:waypoint x="1088" y="358" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Ingest_Quality_di" bpmnElement="Flow_Ingest_Quality">
+        <di:waypoint x="1100" y="360" />
+        <di:waypoint x="1152" y="360" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Quality_End_di" bpmnElement="Flow_Quality_End">
+        <di:waypoint x="1252" y="360" />
+        <di:waypoint x="1518" y="460" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Text Annotations -->
+      <bpmndi:BPMNShape id="TextAnnotation_MultiChannel_di" bpmnElement="TextAnnotation_MultiChannel">
+        <dc:Bounds x="392" y="120" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_MultiChannel_di" bpmnElement="Association_MultiChannel">
+        <di:waypoint x="417" y="235" />
+        <di:waypoint x="492" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Validation_di" bpmnElement="TextAnnotation_Validation">
+        <dc:Bounds x="848" y="220" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Validation_di" bpmnElement="Association_Validation">
+        <di:waypoint x="898" y="320" />
+        <di:waypoint x="948" y="280" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add Gateway Condition Labels -->
+      <bpmndi:BPMNLabel id="Flow_Channel_Online_Label_di" bpmnElement="Flow_Channel_Online">
+        <dc:Bounds x="417" y="215" width="100" height="20" />
+      </bpmndi:BPMNLabel>
+
+      <bpmndi:BPMNLabel id="Flow_Channel_Email_Label_di" bpmnElement="Flow_Channel_Email">
+        <dc:Bounds x="417" y="240" width="100" height="20" />
+      </bpmndi:BPMNLabel>
+
+      <bpmndi:BPMNLabel id="Flow_Channel_HardCopy_Label_di" bpmnElement="Flow_Channel_HardCopy">
+        <dc:Bounds x="417" y="265" width="100" height="20" />
+      </bpmndi:BPMNLabel>
+
+      <bpmndi:BPMNLabel id="Flow_Channel_Assisted_Label_di" bpmnElement="Flow_Channel_Assisted">
+        <dc:Bounds x="417" y="290" width="100" height="20" />
+      </bpmndi:BPMNLabel>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>

@@ -88,10 +88,32 @@ Each subdirectory serves a specific purpose in documenting the process design:
 ## Documentation Standards
 
 1. **File Naming**
-   - Use kebab-case for filenames
-   - Include process identifier where relevant
-   - Use descriptive names
-   - Include version numbers for major documents
+   - BPMN Files:
+     - Location: `models/{status}/` (drafts/ or approved/)
+     - Pattern: `mdba-bpr-{process-name}.bpmn`
+     - Examples: 
+       - `mdba-bpr-end-to-end-process.bpmn`
+       - `mdba-bpr-invitation-phase.bpmn`
+       - `mdba-bpr-consent-privacy.bpmn`
+   
+   - Context Documentation:
+     - Location: `docs/process-design/context/`
+     - Pattern: `bpr-{process-name}.md`
+     - Examples:
+       - `bpr-end-to-end-process.md`
+       - `bpr-invitation-phase.md`
+       - `bpr-consent-privacy.md`
+
+   - Naming Rules:
+     - Use kebab-case (lowercase with hyphens)
+     - Use consistent terminology:
+       - `-phase` suffix for major process phases
+       - `-process` suffix for end-to-end and supporting processes
+       - No suffix for specific workflows
+     - Special cases:
+       - End-to-end process: Always use `end-to-end-process`
+       - Supporting processes: Use descriptive names without `-phase` suffix
+       - Workflows: Use specific descriptive names (e.g., `redaction-workflow`)
 
 2. **Content Format**
    - Use Markdown for documentation

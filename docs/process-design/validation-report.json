@@ -1,0 +1,940 @@
+{
+  "timestamp": "2025-05-16T01:41:13.831Z",
+  "totalFiles": 14,
+  "validFiles": 14,
+  "invalidFiles": 0,
+  "results": [
+    {
+      "file": "mdba-bpr-analysis-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_AnalysisPhase",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-collection-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_CollectionPhase",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-consent-privacy.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "ConsentPrivacyCapture",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-consideration-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_ConsiderationPhase",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-data-archiving.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "DataArchiving",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-decision-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_DecisionPhase",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-end-to-end-process.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "MDBA_BPR_EndToEnd",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [
+                "No swimlanes defined"
+              ],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found",
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-invitation-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_InvitationPhase",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-publication-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "PublicationPhaseDetail",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-redaction-workflow.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "RedactionWorkflow",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-reporting-phase.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "ReportingPhaseDetail",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found",
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-sme-legal-review.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "SMELegalReview",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found",
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-submission-tracking.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "Process_BPR_SubmissionTracking",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [
+                "No error boundary events found"
+              ],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [
+                "No swimlanes defined"
+              ],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found",
+                "No quality assurance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    },
+    {
+      "file": "mdba-bpr-triage-categorisation.bpmn",
+      "valid": true,
+      "processes": [
+        {
+          "id": "TriageCategorisation",
+          "valid": true,
+          "categories": {
+            "XML Structure": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Process Definition": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Error Handling": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Message Handling": {
+              "valid": true,
+              "warnings": [
+                "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "Data Management": {
+              "valid": true,
+              "warnings": [
+                "No data objects defined",
+                "No data stores defined"
+              ],
+              "errors": []
+            },
+            "Gateway Logic": {
+              "valid": true,
+              "warnings": [
+                "No gateways defined"
+              ],
+              "errors": []
+            },
+            "Documentation": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
+            "MDBA Requirements": {
+              "valid": true,
+              "warnings": [
+                "No ICIP compliance checks found"
+              ],
+              "errors": []
+            }
+          }
+        }
+      ]
+    }
+  ]
+}

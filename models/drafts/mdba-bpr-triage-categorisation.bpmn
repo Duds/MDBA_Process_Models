@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_InvalidFormat" name="Invalid Submission Format" />
+  <bpmn:error id="Error_IncompleteInfo" name="Incomplete Information" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_UrgentReview" name="Urgent Review Required" />
+  <bpmn:message id="Message_CategoryAssigned" name="Category Assigned" />
+  <bpmn:message id="Message_ReadyForAnalysis" name="Ready for Analysis" />
+  <bpmn:process id="TriageCategorisation" name="MDBA BPR Triage and Categorisation" isExecutable="true">
+    <bpmn:documentation>
+      This process manages the initial assessment, triage, and categorisation of Basin Plan Review submissions. It ensures submissions are properly evaluated, categorized, and routed for appropriate handling based on their content, urgency, and requirements.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_IntakeTeam" name="Intake Team">
+        <bpmn:flowNodeRef>StartEvent_SubmissionReceived</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitialAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ValidateFormat</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_TriageTeam" name="Triage Team">
+        <bpmn:flowNodeRef>Task_AssessUrgency</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DetermineCategory</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_AssignPriority</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QualityTeam" name="Quality Team">
+        <bpmn:flowNodeRef>Task_QualityCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifyCategorisation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordDecisions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_TriageComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_SubmissionReceived" name="Submission Received">
+      <bpmn:documentation>Process commences when a new submission is received for triage.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToAssessment</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_InitialAssessment" name="Initial Assessment">
+      <bpmn:documentation>Perform initial review of submission content and completeness.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToAssessment</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssessmentToValidate</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ValidateFormat" name="Validate Submission Format">
+      <bpmn:documentation>Verify submission meets required format and standards.</bpmn:documentation>
+      <bpmn:incoming>Flow_AssessmentToValidate</bpmn:incoming>
+      <bpmn:outgoing>Flow_ValidateToUrgency</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AssessUrgency" name="Assess Urgency">
+      <bpmn:documentation>Evaluate submission urgency and time sensitivity.</bpmn:documentation>
+      <bpmn:incoming>Flow_ValidateToUrgency</bpmn:incoming>
+      <bpmn:outgoing>Flow_UrgencyToCategory</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_DetermineCategory" name="Determine Category">
+      <bpmn:documentation>Assign appropriate category based on submission content and type.</bpmn:documentation>
+      <bpmn:incoming>Flow_UrgencyToCategory</bpmn:incoming>
+      <bpmn:outgoing>Flow_CategoryToPriority</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_AssignPriority" name="Assign Priority Level">
+      <bpmn:documentation>Set priority level based on urgency and category.</bpmn:documentation>
+      <bpmn:incoming>Flow_CategoryToPriority</bpmn:incoming>
+      <bpmn:outgoing>Flow_PriorityToQuality</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_QualityCheck" name="Quality Check">
+      <bpmn:documentation>Review triage decisions for accuracy and completeness.</bpmn:documentation>
+      <bpmn:incoming>Flow_PriorityToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToVerify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerifyCategorisation" name="Verify Categorisation">
+      <bpmn:documentation>Verify final category and priority assignments.</bpmn:documentation>
+      <bpmn:incoming>Flow_QualityToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToRecord</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RecordDecisions" name="Record Triage Decisions">
+      <bpmn:documentation>Record final triage decisions in system.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerifyToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_TriageComplete" name="Triage Complete">
+      <bpmn:documentation>Triage and categorisation process complete.</bpmn:documentation>
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_FormatError" attachedToRef="Task_ValidateFormat">
+      <bpmn:errorEventDefinition errorRef="Error_InvalidFormat" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_IncompleteError" attachedToRef="Task_InitialAssessment">
+      <bpmn:errorEventDefinition errorRef="Error_IncompleteInfo" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_VerifyCategorisation">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordDecisions">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToAssessment" sourceRef="StartEvent_SubmissionReceived" targetRef="Task_InitialAssessment" />
+    <bpmn:sequenceFlow id="Flow_AssessmentToValidate" sourceRef="Task_InitialAssessment" targetRef="Task_ValidateFormat" />
+    <bpmn:sequenceFlow id="Flow_ValidateToUrgency" sourceRef="Task_ValidateFormat" targetRef="Task_AssessUrgency" />
+    <bpmn:sequenceFlow id="Flow_UrgencyToCategory" sourceRef="Task_AssessUrgency" targetRef="Task_DetermineCategory" />
+    <bpmn:sequenceFlow id="Flow_CategoryToPriority" sourceRef="Task_DetermineCategory" targetRef="Task_AssignPriority" />
+    <bpmn:sequenceFlow id="Flow_PriorityToQuality" sourceRef="Task_AssignPriority" targetRef="Task_QualityCheck" />
+    <bpmn:sequenceFlow id="Flow_QualityToVerify" sourceRef="Task_QualityCheck" targetRef="Task_VerifyCategorisation" />
+    <bpmn:sequenceFlow id="Flow_VerifyToRecord" sourceRef="Task_VerifyCategorisation" targetRef="Task_RecordDecisions" />
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordDecisions" targetRef="EndEvent_TriageComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TriageCategorisation">
+      <bpmndi:BPMNShape id="Shape_StartEvent_SubmissionReceived" bpmnElement="StartEvent_SubmissionReceived">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_TriageComplete" bpmnElement="EndEvent_TriageComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialAssessment" bpmnElement="Task_InitialAssessment">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ValidateFormat" bpmnElement="Task_ValidateFormat">
+        <dc:Bounds x="440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AssessUrgency" bpmnElement="Task_AssessUrgency">
+        <dc:Bounds x="600" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DetermineCategory" bpmnElement="Task_DetermineCategory">
+        <dc:Bounds x="760" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_AssignPriority" bpmnElement="Task_AssignPriority">
+        <dc:Bounds x="920" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_QualityCheck" bpmnElement="Task_QualityCheck">
+        <dc:Bounds x="1080" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VerifyCategorisation" bpmnElement="Task_VerifyCategorisation">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordDecisions" bpmnElement="Task_RecordDecisions">
+        <dc:Bounds x="1400" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToAssessment" bpmnElement="Flow_StartToAssessment">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentToValidate" bpmnElement="Flow_AssessmentToValidate">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ValidateToUrgency" bpmnElement="Flow_ValidateToUrgency">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_UrgencyToCategory" bpmnElement="Flow_UrgencyToCategory">
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="760" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CategoryToPriority" bpmnElement="Flow_CategoryToPriority">
+        <di:waypoint x="860" y="220" />
+        <di:waypoint x="920" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PriorityToQuality" bpmnElement="Flow_PriorityToQuality">
+        <di:waypoint x="1020" y="220" />
+        <di:waypoint x="1080" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QualityToVerify" bpmnElement="Flow_QualityToVerify">
+        <di:waypoint x="1180" y="320" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToRecord" bpmnElement="Flow_VerifyToRecord">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="1400" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1500" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_IntakeTeam" bpmnElement="Lane_IntakeTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_TriageTeam" bpmnElement="Lane_TriageTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_QualityTeam" bpmnElement="Lane_QualityTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

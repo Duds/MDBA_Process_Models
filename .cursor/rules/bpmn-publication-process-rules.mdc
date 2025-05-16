@@ -215,3 +215,327 @@ metadata:
 
 @version "1.0.0"
 @last_updated "2024-03-20"
+
+# BPMN Publication Process Patterns
+
+@context {
+    "type": "patterns",
+    "purpose": "bpmn_standards",
+    "format_version": "1.0.0",
+    "target_users": [
+        "process_designers",
+        "communications_team",
+        "government_agencies"
+    ]
+}
+
+Standard patterns for modeling publication processes in BPMN, particularly for government and regulatory documents that require parallel publication through multiple channels and stakeholder distribution.
+
+@publication_patterns {
+    "multi_channel_publication": {
+        "description": "Pattern for publishing through multiple channels simultaneously",
+        "elements": [
+            "Parallel gateway for channel split",
+            "Publication tasks for each channel",
+            "Parallel gateway join for completion synchronization"
+        ],
+        "channels": [
+            "Official gazette",
+            "Newspapers",
+            "Websites",
+            "Social media",
+            "Direct stakeholder communications"
+        ]
+    },
+    "publication_verification": {
+        "description": "Pattern for verifying publication status across all channels",
+        "elements": [
+            "Verification tasks per channel",
+            "Exception paths for publication failures",
+            "Timeout handling for delayed publications"
+        ]
+    },
+    "distribution_confirmation": {
+        "description": "Pattern for confirming receipt by all stakeholders",
+        "elements": [
+            "Distribution tasks",
+            "Receipt confirmation tasks",
+            "Follow-up for non-responsive stakeholders"
+        ]
+    }
+}
+
+<rule>
+name: bpmn_publication_process_patterns
+description: Standard patterns for modeling publication processes in BPMN
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+  - type: content
+    pattern: "Publish|Publication|Gazette|Distribute"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Publication Process Patterns
+
+      ### Multi-Channel Publication Pattern
+      
+      Use this pattern for simultaneous publication through multiple channels:
+      
+      ```xml
+      <!-- Parallel split for multi-channel publication -->
+      <bpmn:parallelGateway id="Gateway_Publication_Split" name="Publish Through All Channels">
+        <bpmn:incoming>Flow_From_Approval</bpmn:incoming>
+        <bpmn:outgoing>Flow_To_OfficialGazette</bpmn:outgoing>
+        <bpmn:outgoing>Flow_To_Newspapers</bpmn:outgoing>
+        <bpmn:outgoing>Flow_To_Website</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      
+      <!-- Publication tasks -->
+      <bpmn:task id="Task_Publish_Gazette" name="Publish in Official Gazette">
+        <bpmn:incoming>Flow_To_OfficialGazette</bpmn:incoming>
+        <bpmn:outgoing>Flow_Gazette_Complete</bpmn:outgoing>
+      </bpmn:task>
+      
+      <bpmn:task id="Task_Publish_Newspapers" name="Publish in Newspapers">
+        <bpmn:incoming>Flow_To_Newspapers</bpmn:incoming>
+        <bpmn:outgoing>Flow_Newspapers_Complete</bpmn:outgoing>
+      </bpmn:task>
+      
+      <bpmn:task id="Task_Publish_Website" name="Publish on Website">
+        <bpmn:incoming>Flow_To_Website</bpmn:incoming>
+        <bpmn:outgoing>Flow_Website_Complete</bpmn:outgoing>
+      </bpmn:task>
+      
+      <!-- Parallel join for publication completion -->
+      <bpmn:parallelGateway id="Gateway_Publication_Join" name="All Publications Complete">
+        <bpmn:incoming>Flow_Gazette_Complete</bpmn:incoming>
+        <bpmn:incoming>Flow_Newspapers_Complete</bpmn:incoming>
+        <bpmn:incoming>Flow_Website_Complete</bpmn:incoming>
+        <bpmn:outgoing>Flow_All_Publications_Complete</bpmn:outgoing>
+      </bpmn:parallelGateway>
+      ```
+      
+      ### Publication Timeout Handling Pattern
+      
+      Use this pattern to handle publication delays or failures:
+      
+      ```xml
+      <!-- Timeout boundary event -->
+      <bpmn:boundaryEvent id="BoundaryEvent_Publication_Timeout" name="Publication Timeout" attachedToRef="Task_Publish_Gazette">
+        <bpmn:outgoing>Flow_Handle_Timeout</bpmn:outgoing>
+        <bpmn:timerEventDefinition>
+          <bpmn:timeDuration>P3D</bpmn:timeDuration>
+        </bpmn:timerEventDefinition>
+      </bpmn:boundaryEvent>
+      
+      <!-- Escalation handling -->
+      <bpmn:task id="Task_Escalate_Publication" name="Escalate Publication Delay">
+        <bpmn:incoming>Flow_Handle_Timeout</bpmn:incoming>
+        <bpmn:outgoing>Flow_Retry_Publication</bpmn:outgoing>
+      </bpmn:task>
+      ```
+      
+      ### Stakeholder Distribution Pattern
+      
+      Use this pattern for document distribution to stakeholders:
+      
+      ```xml
+      <!-- Distribute to stakeholders -->
+      <bpmn:task id="Task_Distribute_Documents" name="Distribute Documents to Stakeholders">
+        <bpmn:incoming>Flow_All_Publications_Complete</bpmn:incoming>
+        <bpmn:outgoing>Flow_To_ConfirmReceipt</bpmn:outgoing>
+      </bpmn:task>
+      
+      <!-- Confirm receipt from stakeholders -->
+      <bpmn:subProcess id="SubProcess_Confirm_Receipt" name="Confirm Receipt from All Stakeholders">
+        <bpmn:incoming>Flow_To_ConfirmReceipt</bpmn:incoming>
+        <bpmn:outgoing>Flow_Receipt_Confirmed</bpmn:outgoing>
+        <!-- Stakeholder-specific tasks would be defined here -->
+      </bpmn:subProcess>
+      ```
+      
+      ### Organizational Structure for Publication Processes
+      
+      Use these lane patterns for clear responsibility allocation:
+      
+      ```xml
+      <bpmn:laneSet id="LaneSet_Publication">
+        <bpmn:lane id="Lane_DocumentOwnerTeam" name="Document Owner Team">
+          <!-- Elements for document preparation and approval -->
+        </bpmn:lane>
+        <bpmn:lane id="Lane_CommunicationsTeam" name="Communications Team">
+          <!-- Elements for website and social media publication -->
+        </bpmn:lane>
+        <bpmn:lane id="Lane_LegalTeam" name="Legal Team">
+          <!-- Elements for official gazette publication -->
+        </bpmn:lane>
+        <bpmn:lane id="Lane_StakeholderRelations" name="Stakeholder Relations">
+          <!-- Elements for stakeholder distribution and confirmation -->
+        </bpmn:lane>
+      </bpmn:laneSet>
+      ```
+      
+      ### Best Practices for Publication Processes
+      
+      1. **Channel Verification**
+         - Include verification steps for each publication channel
+         - Consider automated verification where possible
+         - Document verification requirements for each channel
+      
+      2. **Timing Coordination**
+         - Ensure synchronized timing across channels when required
+         - Include timeouts for publication delays
+         - Document lead times for each publication channel
+      
+      3. **Stakeholder Management**
+         - Maintain stakeholder lists as process variables
+         - Include confirmation mechanisms
+         - Document escalation paths for non-responsive stakeholders
+      
+      4. **Regulatory Compliance**
+         - Document compliance requirements for each publication
+         - Include verification of regulatory requirements
+         - Maintain audit trail of all publication activities
+
+examples:
+  - input: |
+      <bpmn:process id="Process_Publication">
+        <bpmn:task id="Task_Prepare_Document" name="Prepare Document" />
+        <bpmn:task id="Task_Publish" name="Publish Document" />
+      </bpmn:process>
+    output: |
+      <bpmn:process id="Process_Publication" name="Document Publication Process">
+        <bpmn:laneSet id="LaneSet_1">
+          <bpmn:lane id="Lane_DocumentOwner" name="Document Owner">
+            <bpmn:flowNodeRef>Task_Prepare_Document</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Gateway_Publication_Split</bpmn:flowNodeRef>
+            <bpmn:flowNodeRef>Gateway_Publication_Join</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_Communications" name="Communications Team">
+            <bpmn:flowNodeRef>Task_Publish_Website</bpmn:flowNodeRef>
+          </bpmn:lane>
+          <bpmn:lane id="Lane_Legal" name="Legal Team">
+            <bpmn:flowNodeRef>Task_Publish_Gazette</bpmn:flowNodeRef>
+          </bpmn:lane>
+        </bpmn:laneSet>
+        
+        <bpmn:task id="Task_Prepare_Document" name="Prepare Document">
+          <bpmn:outgoing>Flow_To_Publication</bpmn:outgoing>
+        </bpmn:task>
+        
+        <bpmn:parallelGateway id="Gateway_Publication_Split" name="Publish Through All Channels">
+          <bpmn:incoming>Flow_To_Publication</bpmn:incoming>
+          <bpmn:outgoing>Flow_To_Gazette</bpmn:outgoing>
+          <bpmn:outgoing>Flow_To_Website</bpmn:outgoing>
+        </bpmn:parallelGateway>
+        
+        <bpmn:task id="Task_Publish_Gazette" name="Publish in Official Gazette">
+          <bpmn:incoming>Flow_To_Gazette</bpmn:incoming>
+          <bpmn:outgoing>Flow_Gazette_Complete</bpmn:outgoing>
+        </bpmn:task>
+        
+        <bpmn:task id="Task_Publish_Website" name="Publish on Website">
+          <bpmn:incoming>Flow_To_Website</bpmn:incoming>
+          <bpmn:outgoing>Flow_Website_Complete</bpmn:outgoing>
+        </bpmn:task>
+        
+        <bpmn:parallelGateway id="Gateway_Publication_Join" name="All Publications Complete">
+          <bpmn:incoming>Flow_Gazette_Complete</bpmn:incoming>
+          <bpmn:incoming>Flow_Website_Complete</bpmn:incoming>
+          <bpmn:outgoing>Flow_All_Complete</bpmn:outgoing>
+        </bpmn:parallelGateway>
+      </bpmn:process>
+
+metadata:
+  priority: high
+  version: 1.0.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@channel_types [
+    {
+        "id": "official_gazette",
+        "description": "Official government publications, such as Commonwealth/Federal/State government gazettes",
+        "requirements": [
+            "Legal formatting requirements",
+            "Submission deadlines",
+            "Publication schedule (often weekly)",
+            "Official receipt confirmation"
+        ]
+    },
+    {
+        "id": "newspapers",
+        "description": "Traditional print media in relevant jurisdictions",
+        "requirements": [
+            "Advertisement format",
+            "Submission deadlines",
+            "Publication dates",
+            "Coverage requirements (e.g., all basin states)",
+            "Proof of publication"
+        ]
+    },
+    {
+        "id": "website",
+        "description": "Organizational websites and portals",
+        "requirements": [
+            "Web content format",
+            "Accessibility requirements",
+            "Supporting files and links",
+            "Analytics tracking",
+            "Publication timestamp"
+        ]
+    },
+    {
+        "id": "stakeholder_direct",
+        "description": "Direct distribution to key stakeholders",
+        "requirements": [
+            "Stakeholder list maintenance",
+            "Delivery method (email, post, etc.)",
+            "Receipt confirmation",
+            "Follow-up procedure",
+            "Record keeping"
+        ]
+    }
+]
+
+@distribution_methods [
+    {
+        "id": "email_distribution",
+        "description": "Distribution via email",
+        "requirements": [
+            "Distribution list management",
+            "Email template",
+            "Attachment size limitations",
+            "Delivery/read receipts",
+            "Bounce handling"
+        ]
+    },
+    {
+        "id": "postal_distribution",
+        "description": "Physical mail distribution",
+        "requirements": [
+            "Address verification",
+            "Mail tracking",
+            "Return receipt",
+            "Document packaging standards",
+            "Postal timelines"
+        ]
+    },
+    {
+        "id": "secure_portal",
+        "description": "Distribution via secure online portal",
+        "requirements": [
+            "User authentication",
+            "Document upload",
+            "Access notifications",
+            "Download tracking",
+            "Audit logging"
+        ]
+    }
+]
+
+@version "1.0.0"
+@last_updated "2024-07-28"

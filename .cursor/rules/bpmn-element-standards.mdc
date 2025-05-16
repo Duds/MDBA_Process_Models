@@ -1,0 +1,162 @@
+---
+description: 
+globs: 
+alwaysApply: false
+---
+# BPMN 2.0 Element Standards
+
+## Activities
+
+### Activity Markers
+- Use standard BPMN 2.0 markers to indicate activity characteristics:
+  - Loop marker (↻) for repeating activities
+  - Multi-instance marker (∥) for parallel or sequential multi-instance activities
+  - Compensation marker (↺) for compensation activities
+  - Ad-hoc marker (tilde ~) for non-sequential activities
+
+### Task Types
+- Use specific task types instead of generic tasks:
+  - `userTask` for human interactions
+  - `serviceTask` for automated system services
+  - `sendTask` for message sending
+  - `receiveTask` for message receiving
+  - `businessRuleTask` for rule-based decisions
+  - `scriptTask` for script execution
+  - `manualTask` for non-automated work
+  - `callActivity` for reusable subprocesses
+
+### Flow Types
+- Use appropriate sequence flow types:
+  - Normal sequence flow for standard process flow
+  - Conditional sequence flow for decision paths
+  - Default sequence flow for gateway defaults
+  - Exception flow for error handling
+  - Compensation flow for compensation handling
+
+## Events
+
+### Event Types
+Use specific event types with appropriate triggers:
+
+#### Start Events
+- `messageEventDefinition` for message-triggered starts
+- `timerEventDefinition` for time-based starts
+- `conditionalEventDefinition` for condition-based starts
+- `signalEventDefinition` for signal-triggered starts
+- `escalationEventDefinition` for escalation starts
+- `compensationEventDefinition` for compensation starts
+- `errorEventDefinition` for error-triggered starts
+- `linkEventDefinition` for linked process starts
+
+#### Intermediate Events
+- `messageEventDefinition` for message catching/throwing
+- `timerEventDefinition` for time-based events
+- `conditionalEventDefinition` for condition-based events
+- `signalEventDefinition` for signal catching/throwing
+- `escalationEventDefinition` for escalation handling
+- `compensationEventDefinition` for compensation handling
+- `errorEventDefinition` for error handling
+- `linkEventDefinition` for process linking
+
+#### End Events
+- `messageEventDefinition` for message sending
+- `signalEventDefinition` for signal sending
+- `escalationEventDefinition` for escalation sending
+- `compensationEventDefinition` for compensation triggering
+- `errorEventDefinition` for error throwing
+- `terminateEventDefinition` for process termination
+
+## Gateways
+
+### Gateway Types
+Use specific gateway types for different decision scenarios:
+
+- `exclusiveGateway` (X) for mutually exclusive paths
+- `inclusiveGateway` (O) for multiple possible paths
+- `parallelGateway` (+) for concurrent paths
+- `complexGateway` (*) for complex conditions
+- `eventBasedGateway` (◇) for event-based decisions
+- `exclusiveEventBasedGateway` for exclusive event paths
+- `parallelEventBasedGateway` for parallel event paths
+
+## Data
+
+### Data Elements
+Use appropriate data elements:
+
+- `dataObject` for process data
+- `dataObjectReference` for data object instances
+- `dataStore` for persistent data
+- `dataInput` for process inputs
+- `dataOutput` for process outputs
+- `dataCollection` for grouped data
+- `dataAssociation` for data flow
+
+## Artifacts
+
+### Annotation Elements
+Use artifacts for additional information:
+
+- `textAnnotation` for explanatory text
+- `group` for logical grouping
+- `association` for connecting artifacts to elements
+- Use standard BPMN symbols for:
+  - Data objects
+  - Groups
+  - Annotations
+  - Associations
+
+## Participants
+
+### Collaboration Elements
+Use appropriate participant elements:
+
+- `participant` (pool) for organisations/systems
+- `lane` for organisational roles/departments
+- `messageFlow` for inter-participant communication
+- `collaboration` for multi-participant processes
+- `conversation` for message exchanges
+- `conversationLink` for conversation connections
+
+## Implementation Guidelines
+
+1. **Element Selection**
+   - Choose the most specific element type available
+   - Avoid generic tasks where specific types exist
+   - Use appropriate markers and attributes
+
+2. **Naming Conventions**
+   - Use clear, descriptive names
+   - Follow Australian English spelling
+   - Use consistent naming patterns
+   - Include element type in ID (e.g., Task_, Event_, Gateway_)
+
+3. **Documentation**
+   - Add documentation to complex elements
+   - Use text annotations for process explanations
+   - Document decision criteria in gateways
+   - Include business rules in business rule tasks
+
+4. **Visual Layout**
+   - Maintain clear process flow
+   - Group related elements
+   - Use appropriate spacing
+   - Align elements consistently
+   - Position annotations for readability
+
+5. **Validation**
+   - Ensure all elements have unique IDs
+   - Verify all connections are valid
+   - Check for proper event handling
+   - Validate gateway conditions
+   - Confirm message flow connections
+
+6. **Best Practices**
+   - Keep processes focused and manageable
+   - Use subprocesses for complex sections
+   - Implement proper error handling
+   - Include compensation where needed
+   - Document process variations
+   - Use appropriate event types
+   - Implement proper data handling
+   - Follow collaboration patterns

@@ -1,0 +1,191 @@
+# BPMN Process Rules
+
+## Process Design Standards
+
+### 1. Error Handling
+- All processes MUST include comprehensive error definitions
+- Each error MUST have:
+  - Unique error code (XXX_001 format)
+  - Clear severity level (Critical, High, Medium, Low)
+  - Detailed resolution path
+  - Impact assessment
+  - Defined owner
+  - SLA target
+- Error handling MUST include:
+  - Automated validation where possible
+  - Early detection mechanisms
+  - Clear handoff protocols
+  - Documentation requirements
+  - Training requirements
+
+### 2. Validation Requirements
+- All processes MUST include validation checkpoints
+- Validation MUST cover:
+  - Process compliance
+  - Documentation standards
+  - Data quality
+  - Stakeholder engagement
+  - Legal compliance
+- Validation MUST include:
+  - Automated validation tools
+  - Validation metrics
+  - Validation protocols
+  - Validation training
+  - Quality assurance checks
+
+### 3. Quality Assurance
+- All processes MUST include quality gates
+- Quality checks MUST cover:
+  - Process compliance
+  - Documentation standards
+  - Stakeholder engagement
+  - Legal compliance
+  - Data quality
+- Quality assurance MUST include:
+  - Automated quality checks
+  - Quality metrics
+  - Quality protocols
+  - Quality training
+  - Quality improvement processes
+
+### 4. Documentation Standards
+- All processes MUST include comprehensive documentation
+- Documentation MUST cover:
+  - Process description
+  - Team responsibilities
+  - Error handling
+  - Validation requirements
+  - Quality assurance
+  - Stakeholder engagement
+- Documentation MUST include:
+  - Standardized templates
+  - Automated documentation checks
+  - Documentation quality metrics
+  - Documentation review protocols
+  - Documentation training
+
+### 5. Stakeholder Engagement
+- All processes MUST include stakeholder engagement
+- Engagement MUST cover:
+  - Communication protocols
+  - Feedback collection
+  - Response tracking
+  - Documentation requirements
+  - Training requirements
+- Engagement MUST include:
+  - Structured consultation templates
+  - Automated feedback tracking
+  - Stakeholder engagement metrics
+  - Communication protocols
+  - Stakeholder training
+
+### 6. Process Integration
+- All processes MUST include integration points
+- Integration MUST cover:
+  - Process handoffs
+  - Data flow
+  - Documentation flow
+  - Stakeholder engagement
+  - Quality assurance
+- Integration MUST include:
+  - Automated process checks
+  - Integration metrics
+  - Handoff protocols
+  - Process training
+  - Improvement procedures
+
+## BPMN Element Standards
+
+### 1. Tasks
+- All tasks MUST have:
+  - Unique ID
+  - Clear name
+  - Detailed documentation
+  - Assigned team
+  - Validation requirements
+  - Quality requirements
+- Tasks SHOULD include:
+  - Automated validation
+  - Quality checks
+  - Documentation requirements
+  - Training requirements
+  - Performance metrics
+
+### 2. Events
+- All events MUST have:
+  - Unique ID
+  - Clear name
+  - Detailed documentation
+  - Trigger conditions
+  - Response requirements
+- Events SHOULD include:
+  - Automated validation
+  - Quality checks
+  - Documentation requirements
+  - Training requirements
+  - Performance metrics
+
+### 3. Gateways
+- All gateways MUST have:
+  - Unique ID
+  - Clear name
+  - Detailed documentation
+  - Decision criteria
+  - Validation requirements
+- Gateways SHOULD include:
+  - Automated validation
+  - Quality checks
+  - Documentation requirements
+  - Training requirements
+  - Performance metrics
+
+### 4. Sequence Flows
+- All flows MUST have:
+  - Unique ID
+  - Clear name
+  - Detailed documentation
+  - Condition expressions
+  - Validation requirements
+- Flows SHOULD include:
+  - Automated validation
+  - Quality checks
+  - Documentation requirements
+  - Training requirements
+  - Performance metrics
+
+## Regional Requirements
+
+### 1. Australian Standards
+- All processes MUST follow:
+  - Australian English spelling
+  - Australian date format (DD/MM/YYYY)
+  - Australian regulatory requirements
+  - Australian cultural context
+  - Australian stakeholder engagement
+
+### 2. Documentation
+- All documentation MUST use:
+  - Australian English
+  - Australian date format
+  - Australian regulatory references
+  - Australian cultural context
+  - Australian stakeholder terminology
+
+### 3. Stakeholder Engagement
+- All engagement MUST consider:
+  - Australian cultural context
+  - Australian stakeholder needs
+  - Australian communication styles
+  - Australian regulatory requirements
+  - Australian engagement protocols
+
+## Version Control
+- Version: 2.0.0
+- Last Updated: 20/03/2024
+- Owner: MDBA Basin Plan Review Team
+
+## Notes
+- All rules follow Australian standards
+- Documentation uses Australian English
+- Processes align with Australian regulations
+- Stakeholder engagement considers Australian context 

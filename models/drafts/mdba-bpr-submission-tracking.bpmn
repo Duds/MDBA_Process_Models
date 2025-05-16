@@ -1,0 +1,203 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_SubmissionTracking" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_RegistrationFailed" name="Registration Failed" errorCode="ST001" />
+  <bpmn:error id="Error_StatusUpdateFailed" name="Status Update Failed" errorCode="ST002" />
+  <bpmn:error id="Error_NotificationFailed" name="Notification Failed" errorCode="ST003" />
+  <bpmn:message id="Message_SubmissionRegistered" name="Submission Registered" />
+  <bpmn:message id="Message_StatusUpdated" name="Status Updated" />
+  <bpmn:message id="Message_NotificationSent" name="Notification Sent" />
+  <bpmn:process id="Process_BPR_SubmissionTracking" name="Submission Status Tracking" isExecutable="false">
+    <bpmn:documentation>
+      Process: BPR Submission Tracking
+      Purpose: Manages the tracking and status monitoring of submissions throughout the Basin Plan Review process
+      Owner: MDBA Collection Team
+      Description: This process handles the tracking of submissions from receipt through to final disposition,
+      ensuring proper status updates, validation, and monitoring of all submissions.
+      Roles:
+      - Collection Team: Manages submission tracking and status updates
+      - Support Team: Provides technical support for tracking system
+      - Quality Team: Validates tracking accuracy
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_SubmissionTracking">
+      <bpmn:lane id="Lane_ReportingTeam" name="Reporting Team">
+        <bpmn:flowNodeRef>Task_LogForReporting</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_TrackingComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_NotificationTeam" name="Notification Team">
+        <bpmn:flowNodeRef>Task_SendNotification</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ProcessingTeam" name="Processing Team">
+        <bpmn:flowNodeRef>Task_UpdateStatus</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_StatusValid</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_TrackingError</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_IntakeTeam" name="Intake Team">
+        <bpmn:flowNodeRef>Task_RegisterSubmission</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>StartEvent_ReceiveSubmission</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ReceiveSubmission" name="Submission Received">
+      <bpmn:outgoing>Flow_ReceiveToRegister</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:userTask id="Task_RegisterSubmission" name="Register Submission">
+      <bpmn:documentation>
+        Register new submission in tracking system
+        - Assign unique identifier
+        - Record submission details
+        - Set initial status
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ReceiveToRegister</bpmn:incoming>
+      <bpmn:outgoing>Flow_RegisterToUpdate</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_UpdateStatus" name="Update Submission Status">
+      <bpmn:documentation>
+        Update submission status
+        - Record status change
+        - Update tracking information
+        - Notify relevant teams
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_RegisterToUpdate</bpmn:incoming>
+      <bpmn:outgoing>Flow_UpdateToGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:exclusiveGateway id="Gateway_StatusValid" name="Is Status Valid?">
+      <bpmn:incoming>Flow_UpdateToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToNotify</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToError</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_SendNotification" name="Send Notification">
+      <bpmn:incoming>Flow_GatewayToNotify</bpmn:incoming>
+      <bpmn:outgoing>Flow_NotifyToLog</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:userTask id="Task_LogForReporting" name="Log for Reporting">
+      <bpmn:incoming>Flow_NotifyToLog</bpmn:incoming>
+      <bpmn:outgoing>Flow_LogToEnd</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:endEvent id="EndEvent_TrackingComplete" name="Tracking Complete">
+      <bpmn:incoming>Flow_LogToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:endEvent id="EndEvent_TrackingError" name="Tracking Error">
+      <bpmn:incoming>Flow_GatewayToError</bpmn:incoming>
+      <bpmn:errorEventDefinition errorRef="Error_StatusUpdateFailed" />
+    </bpmn:endEvent>
+    <bpmn:sequenceFlow id="Flow_ReceiveToRegister" sourceRef="StartEvent_ReceiveSubmission" targetRef="Task_RegisterSubmission" />
+    <bpmn:sequenceFlow id="Flow_RegisterToUpdate" sourceRef="Task_RegisterSubmission" targetRef="Task_UpdateStatus" />
+    <bpmn:sequenceFlow id="Flow_UpdateToGateway" sourceRef="Task_UpdateStatus" targetRef="Gateway_StatusValid" />
+    <bpmn:sequenceFlow id="Flow_GatewayToNotify" sourceRef="Gateway_StatusValid" targetRef="Task_SendNotification">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${statusValid}
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToError" sourceRef="Gateway_StatusValid" targetRef="EndEvent_TrackingError">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${!statusValid}
+      </bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_NotifyToLog" sourceRef="Task_SendNotification" targetRef="Task_LogForReporting" />
+    <bpmn:sequenceFlow id="Flow_LogToEnd" sourceRef="Task_LogForReporting" targetRef="EndEvent_TrackingComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_SubmissionTracking">
+    <bpmndi:BPMNPlane id="BPMNPlane_SubmissionTracking" bpmnElement="Process_BPR_SubmissionTracking">
+      <bpmndi:BPMNShape id="Lane_ReportingTeam_di" bpmnElement="Lane_ReportingTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="530" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="460" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_NotificationTeam_di" bpmnElement="Lane_NotificationTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="380" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="310" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ProcessingTeam_di" bpmnElement="Lane_ProcessingTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="230" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="160" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_IntakeTeam_di" bpmnElement="Lane_IntakeTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="80" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="10" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="StartEvent_ReceiveSubmission_di" bpmnElement="StartEvent_ReceiveSubmission">
+        <dc:Bounds x="210" y="130" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="202" y="170" width="57" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_RegisterSubmission_di" bpmnElement="Task_RegisterSubmission">
+        <dc:Bounds x="310" y="110" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="320" y="190" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_UpdateStatus_di" bpmnElement="Task_UpdateStatus">
+        <dc:Bounds x="310" y="260" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="320" y="340" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Gateway_StatusValid_di" bpmnElement="Gateway_StatusValid" isMarkerVisible="true">
+        <dc:Bounds x="460" y="275" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="447" y="251" width="76" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_SendNotification_di" bpmnElement="Task_SendNotification">
+        <dc:Bounds x="310" y="410" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="320" y="490" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Task_LogForReporting_di" bpmnElement="Task_LogForReporting">
+        <dc:Bounds x="310" y="560" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="320" y="640" width="80" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_TrackingError_di" bpmnElement="EndEvent_TrackingError">
+        <dc:Bounds x="560" y="282" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="545" y="322" width="70" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="EndEvent_TrackingComplete_di" bpmnElement="EndEvent_TrackingComplete">
+        <dc:Bounds x="472" y="582" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="468" y="622" width="48" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Flow_ReceiveToRegister_di" bpmnElement="Flow_ReceiveToRegister">
+        <di:waypoint x="246" y="148" />
+        <di:waypoint x="310" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_RegisterToUpdate_di" bpmnElement="Flow_RegisterToUpdate">
+        <di:waypoint x="360" y="190" />
+        <di:waypoint x="360" y="260" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_UpdateToGateway_di" bpmnElement="Flow_UpdateToGateway">
+        <di:waypoint x="410" y="300" />
+        <di:waypoint x="460" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GatewayToNotify_di" bpmnElement="Flow_GatewayToNotify">
+        <di:waypoint x="485" y="325" />
+        <di:waypoint x="485" y="450" />
+        <di:waypoint x="410" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_GatewayToError_di" bpmnElement="Flow_GatewayToError">
+        <di:waypoint x="510" y="300" />
+        <di:waypoint x="560" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_NotifyToLog_di" bpmnElement="Flow_NotifyToLog">
+        <di:waypoint x="360" y="490" />
+        <di:waypoint x="360" y="560" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_LogToEnd_di" bpmnElement="Flow_LogToEnd">
+        <di:waypoint x="410" y="600" />
+        <di:waypoint x="472" y="600" />
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions>

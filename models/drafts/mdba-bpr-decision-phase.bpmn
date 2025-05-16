@@ -1,0 +1,709 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="Definitions_BPR_AnalysisProcess"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="BPMN Studio"
+             exporterVersion="1.0.0">
+
+  <!-- Error Definitions -->
+  <error id="Error_Decision_Invalid" name="Invalid Decision" errorCode="DEC_001">
+    <documentation>
+      Decision validation error indicating non-compliance with requirements.
+      Severity: Critical
+      Resolution Path:
+      1. Review decision against requirements
+      2. Identify specific non-compliance areas
+      3. Consult with legal team
+      4. Revise decision as needed
+      5. Document resolution and lessons learned
+      Impact: May delay decision phase and require rework.
+      Owner: Decision Team Lead
+      SLA: 48 hours resolution target
+    </documentation>
+  </error>
+
+  <error id="Error_Approval_Failed" name="Approval Failed" errorCode="APP_001">
+    <documentation>
+      Error in approval process.
+      Severity: High
+      Resolution Path:
+      1. Review approval criteria
+      2. Identify approval gaps
+      3. Consult approval guidelines
+      4. Revise decision package
+      5. Update approval framework if needed
+      Impact: May affect decision implementation and stakeholder trust.
+      Owner: Approval Team Lead
+      SLA: 72 hours resolution target
+    </documentation>
+  </error>
+
+  <error id="Error_Stakeholder_Notification_Failed" name="Stakeholder Notification Failed" errorCode="NOT_001">
+    <documentation>
+      Error in stakeholder notification process.
+      Severity: High
+      Resolution Path:
+      1. Review notification approach
+      2. Identify communication gaps
+      3. Consult notification guidelines
+      4. Implement corrective actions
+      5. Document lessons learned
+      Impact: May affect stakeholder trust and process transparency.
+      Owner: Communication Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+
+  <error id="Error_Validation_Failed" name="Validation Failed" errorCode="VAL_002">
+    <documentation>
+      Error in decision validation process.
+      Severity: High
+      Resolution Path:
+      1. Review validation criteria
+      2. Identify validation gaps
+      3. Consult validation guidelines
+      4. Implement corrective actions
+      5. Document resolution
+      Impact: May delay process progression.
+      Owner: Quality Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+
+  <error id="Error_Quality_Check_Failed" name="Quality Check Failed" errorCode="QC_002">
+    <documentation>
+      Error in decision quality check process.
+      Severity: Critical
+      Resolution Path:
+      1. Review quality criteria
+      2. Identify quality gaps
+      3. Consult quality guidelines
+      4. Implement improvements
+      5. Verify resolution
+      Impact: May prevent progression to implementation phase.
+      Owner: Quality Team Lead
+      SLA: 48 hours resolution target
+    </documentation>
+  </error>
+
+  <!-- Message Definitions -->
+  <message id="Message_Decision_Complete" name="Decision Complete">
+    <documentation>
+      Notification of decision phase completion.
+      Content:
+      - Decision phase status
+      - Key decisions summary
+      - Approval status
+      - Stakeholder notification status
+      - Next phase information
+      Recipients:
+      - Basin Plan Review Team
+      - Stakeholder Engagement Team
+      - Legal Team
+      - Process Owner
+      Trigger Conditions:
+      - All decisions made
+      - Approvals obtained
+      - Stakeholders notified
+      - Final validation approved
+    </documentation>
+  </message>
+
+  <message id="Message_Approval_Required" name="Approval Required">
+    <documentation>
+      Notification of approval requirement.
+      Content:
+      - Decision package
+      - Approval criteria
+      - Required actions
+      - Timeline
+      - Contact information
+      Recipients:
+      - Approval Authorities
+      - Legal Team
+      - Process Owner
+      Trigger Conditions:
+      - Decision package ready
+      - Approval criteria met
+      - Documentation complete
+      - Stakeholder consultation done
+    </documentation>
+  </message>
+
+  <message id="Message_Stakeholder_Notification" name="Stakeholder Notification">
+    <documentation>
+      Notification to stakeholders of decisions.
+      Content:
+      - Decision summary
+      - Impact assessment
+      - Implementation timeline
+      - Next steps
+      - Contact information
+      Recipients:
+      - All stakeholders
+      - Communication Team
+      - Process Owner
+      Trigger Conditions:
+      - Decisions approved
+      - Notifications prepared
+      - Communication channels ready
+      - Stakeholder list verified
+    </documentation>
+  </message>
+
+  <process id="Process_BPR_DecisionPhase" name="2026 Basin Plan Review Decision Phase" isExecutable="false">
+    <documentation>
+      Purpose: Manages the decision-making process for the 2026 Basin Plan Review
+      Owner: MDBA Basin Plan Review Team
+      Version: 1.0.0
+      Last Updated: 20/03/2024
+      Description: This process coordinates the decision-making process,
+      including approval management, stakeholder notification, and preparation
+      for implementation. Ensures systematic and transparent decision-making
+      with proper stakeholder engagement and legal compliance.
+    </documentation>
+
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_Decision_Team" name="Decision Team">
+        <flowNodeRef>StartEvent_Decision_Phase</flowNodeRef>
+        <flowNodeRef>Task_Review_Recommendations</flowNodeRef>
+        <flowNodeRef>Task_Make_Decisions</flowNodeRef>
+        <flowNodeRef>Task_Prepare_Decision_Package</flowNodeRef>
+        <flowNodeRef>EndEvent_Decision_Complete</flowNodeRef>
+      </lane>
+      <lane id="Lane_Approval_Team" name="Approval Team">
+        <flowNodeRef>Task_Review_Approval_Requirements</flowNodeRef>
+        <flowNodeRef>Task_Seek_Approvals</flowNodeRef>
+        <flowNodeRef>Task_Verify_Approvals</flowNodeRef>
+      </lane>
+      <lane id="Lane_Communication_Team" name="Communication Team">
+        <flowNodeRef>Task_Prepare_Notifications</flowNodeRef>
+        <flowNodeRef>Task_Notify_Stakeholders</flowNodeRef>
+        <flowNodeRef>Task_Track_Responses</flowNodeRef>
+      </lane>
+      <lane id="Lane_Legal_Team" name="Legal Team">
+        <flowNodeRef>Task_Legal_Review_Decisions</flowNodeRef>
+        <flowNodeRef>Task_Verify_Compliance_Decisions</flowNodeRef>
+      </lane>
+      <lane id="Lane_Quality_Team" name="Quality Team">
+        <flowNodeRef>Task_Validate_Decisions</flowNodeRef>
+        <flowNodeRef>Task_Verify_Approval_Process</flowNodeRef>
+        <flowNodeRef>Task_Quality_Check_Decisions</flowNodeRef>
+        <flowNodeRef>Task_Peer_Review_Decisions</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <!-- Start Event -->
+    <startEvent id="StartEvent_Decision_Phase" name="Start Decision Phase">
+      <documentation>
+        Marks the commencement of the decision phase.
+        This event is triggered when the consideration phase is complete
+        and all recommendations are ready for decision-making.
+      </documentation>
+      <outgoing>Flow_Start_Review_Decision</outgoing>
+    </startEvent>
+
+    <!-- Decision Team Tasks -->
+    <userTask id="Task_Review_Recommendations" name="Review Recommendations">
+      <documentation>
+        Decision team reviews recommendations from consideration phase
+        to prepare for decision-making process.
+      </documentation>
+      <incoming>Flow_Start_Review_Decision</incoming>
+      <outgoing>Flow_Review_Requirements</outgoing>
+    </userTask>
+
+    <userTask id="Task_Make_Decisions" name="Make Decisions">
+      <documentation>
+        Decision team makes decisions based on recommendations
+        and approval requirements.
+      </documentation>
+      <incoming>Flow_Requirements_Decide</incoming>
+      <outgoing>Flow_Decide_Prepare</outgoing>
+    </userTask>
+
+    <userTask id="Task_Prepare_Decision_Package" name="Prepare Decision Package">
+      <documentation>
+        Decision team prepares comprehensive decision package
+        for approval and stakeholder notification.
+      </documentation>
+      <incoming>Flow_Decide_Prepare</incoming>
+      <outgoing>Flow_Prepare_Validate</outgoing>
+    </userTask>
+
+    <!-- Approval Team Tasks -->
+    <userTask id="Task_Review_Approval_Requirements" name="Review Approval Requirements">
+      <documentation>
+        Approval team reviews requirements for decision approval
+        and prepares approval strategy.
+      </documentation>
+      <incoming>Flow_Review_Requirements</incoming>
+      <outgoing>Flow_Requirements_Decide</outgoing>
+    </userTask>
+
+    <userTask id="Task_Seek_Approvals" name="Seek Approvals">
+      <documentation>
+        Approval team seeks necessary approvals for decisions
+        from relevant authorities.
+      </documentation>
+      <incoming>Flow_Validate_Seek</incoming>
+      <outgoing>Flow_Seek_Verify</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Approval_Error" attachedToRef="Task_Seek_Approvals">
+      <errorEventDefinition errorRef="Error_Approval_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Verify_Approvals" name="Verify Approvals">
+      <documentation>
+        Approval team verifies all required approvals
+        have been obtained and documented.
+      </documentation>
+      <incoming>Flow_Seek_Verify</incoming>
+      <outgoing>Flow_Verify_Notify</outgoing>
+    </userTask>
+
+    <!-- Communication Team Tasks -->
+    <userTask id="Task_Prepare_Notifications" name="Prepare Notifications">
+      <documentation>
+        Communication team prepares stakeholder notifications
+        for decisions and approvals.
+      </documentation>
+      <incoming>Flow_Verify_Notify</incoming>
+      <outgoing>Flow_Notify_Stakeholders</outgoing>
+    </userTask>
+
+    <userTask id="Task_Notify_Stakeholders" name="Notify Stakeholders">
+      <documentation>
+        Communication team notifies stakeholders of decisions
+        and next steps.
+      </documentation>
+      <incoming>Flow_Notify_Stakeholders</incoming>
+      <outgoing>Flow_Notify_Track</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Notification_Error" attachedToRef="Task_Notify_Stakeholders">
+      <errorEventDefinition errorRef="Error_Stakeholder_Notification_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Track_Responses" name="Track Stakeholder Responses">
+      <documentation>
+        Communication team tracks stakeholder responses
+        to notifications and updates decision team.
+      </documentation>
+      <incoming>Flow_Notify_Track</incoming>
+      <outgoing>Flow_Track_End</outgoing>
+    </userTask>
+
+    <!-- Legal Team Tasks -->
+    <userTask id="Task_Legal_Review_Decisions" name="Legal Review Decisions">
+      <documentation>
+        Legal team reviews decisions for compliance
+        with relevant legislation and regulations.
+      </documentation>
+      <incoming>Flow_Prepare_Legal</incoming>
+      <outgoing>Flow_Legal_Verify_Decisions</outgoing>
+    </userTask>
+
+    <userTask id="Task_Verify_Compliance_Decisions" name="Verify Decision Compliance">
+      <documentation>
+        Legal team verifies compliance of decisions
+        with all applicable requirements.
+      </documentation>
+      <incoming>Flow_Legal_Verify_Decisions</incoming>
+      <outgoing>Flow_Compliance_Validate</outgoing>
+    </userTask>
+
+    <!-- Quality Team Tasks -->
+    <userTask id="Task_Validate_Decisions" name="Validate Decisions">
+      <documentation>
+        Quality team validates decisions for:
+        - Compliance with requirements
+        - Documentation standards
+        - Stakeholder consideration
+        - Legal compliance
+        - Implementation readiness
+      </documentation>
+      <incoming>Flow_Prepare_Validate</incoming>
+      <outgoing>Flow_Validate_Seek</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Validation_Error" attachedToRef="Task_Validate_Decisions">
+      <errorEventDefinition errorRef="Error_Validation_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Verify_Approval_Process" name="Verify Approval Process">
+      <documentation>
+        Quality team verifies approval process for:
+        - Process compliance
+        - Documentation standards
+        - Stakeholder engagement
+        - Legal compliance
+        - Quality standards
+      </documentation>
+      <incoming>Flow_Seek_Verify_Process</incoming>
+      <outgoing>Flow_Verify_Quality</outgoing>
+    </userTask>
+
+    <userTask id="Task_Quality_Check_Decisions" name="Quality Check Decisions">
+      <documentation>
+        Quality team performs final check of decisions for:
+        - Alignment with objectives
+        - Evidence support
+        - Stakeholder input
+        - Legal compliance
+        - Implementation readiness
+      </documentation>
+      <incoming>Flow_Verify_Quality</incoming>
+      <outgoing>Flow_Quality_Peer</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Quality_Error" attachedToRef="Task_Quality_Check_Decisions">
+      <errorEventDefinition errorRef="Error_Quality_Check_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Peer_Review_Decisions" name="Peer Review Decisions">
+      <documentation>
+        Independent peer review of decision process:
+        - Process compliance
+        - Documentation standards
+        - Decision rationale
+        - Stakeholder engagement
+        - Implementation readiness
+      </documentation>
+      <incoming>Flow_Quality_Peer</incoming>
+      <outgoing>Flow_Peer_End</outgoing>
+    </userTask>
+
+    <!-- End Event -->
+    <endEvent id="EndEvent_Decision_Complete" name="Decision Phase Complete">
+      <documentation>
+        Marks the completion of the decision phase.
+        All decisions have been made, approved, and stakeholders
+        notified for implementation phase.
+      </documentation>
+      <incoming>Flow_Peer_End</incoming>
+    </endEvent>
+
+    <!-- Sequence Flows -->
+    <sequenceFlow id="Flow_Start_Review_Decision" sourceRef="StartEvent_Decision_Phase" targetRef="Task_Review_Recommendations" />
+    <sequenceFlow id="Flow_Review_Requirements" sourceRef="Task_Review_Recommendations" targetRef="Task_Review_Approval_Requirements" />
+    <sequenceFlow id="Flow_Requirements_Decide" sourceRef="Task_Review_Approval_Requirements" targetRef="Task_Make_Decisions" />
+    <sequenceFlow id="Flow_Decide_Prepare" sourceRef="Task_Make_Decisions" targetRef="Task_Prepare_Decision_Package" />
+    <sequenceFlow id="Flow_Prepare_Validate" sourceRef="Task_Prepare_Decision_Package" targetRef="Task_Validate_Decisions" />
+    <sequenceFlow id="Flow_Validate_Seek" sourceRef="Task_Validate_Decisions" targetRef="Task_Seek_Approvals" />
+    <sequenceFlow id="Flow_Seek_Verify" sourceRef="Task_Seek_Approvals" targetRef="Task_Verify_Approvals" />
+    <sequenceFlow id="Flow_Verify_Notify" sourceRef="Task_Verify_Approvals" targetRef="Task_Prepare_Notifications" />
+    <sequenceFlow id="Flow_Notify_Stakeholders" sourceRef="Task_Prepare_Notifications" targetRef="Task_Notify_Stakeholders" />
+    <sequenceFlow id="Flow_Notify_Track" sourceRef="Task_Notify_Stakeholders" targetRef="Task_Track_Responses" />
+    <sequenceFlow id="Flow_Track_End" sourceRef="Task_Track_Responses" targetRef="EndEvent_Decision_Complete" />
+    <sequenceFlow id="Flow_Prepare_Legal" sourceRef="Task_Prepare_Decision_Package" targetRef="Task_Legal_Review_Decisions" />
+    <sequenceFlow id="Flow_Legal_Verify_Decisions" sourceRef="Task_Legal_Review_Decisions" targetRef="Task_Verify_Compliance_Decisions" />
+    <sequenceFlow id="Flow_Compliance_Validate" sourceRef="Task_Verify_Compliance_Decisions" targetRef="Task_Validate_Decisions" />
+    <sequenceFlow id="Flow_Seek_Verify_Process" sourceRef="Task_Seek_Approvals" targetRef="Task_Verify_Approval_Process" />
+    <sequenceFlow id="Flow_Verify_Quality" sourceRef="Task_Verify_Approval_Process" targetRef="Task_Quality_Check_Decisions" />
+    <sequenceFlow id="Flow_Quality_Peer" sourceRef="Task_Quality_Check_Decisions" targetRef="Task_Peer_Review_Decisions" />
+    <sequenceFlow id="Flow_Peer_End" sourceRef="Task_Peer_Review_Decisions" targetRef="EndEvent_Decision_Complete" />
+
+    <!-- Text Annotations -->
+    <textAnnotation id="TextAnnotation_Decision_Process">
+      <text>Decision process ensures systematic and transparent decision-making</text>
+    </textAnnotation>
+    <association id="Association_Decision_Process" sourceRef="Task_Make_Decisions" targetRef="TextAnnotation_Decision_Process" />
+
+    <textAnnotation id="TextAnnotation_Approval_Process">
+      <text>Approval process ensures proper authorisation of decisions</text>
+    </textAnnotation>
+    <association id="Association_Approval_Process" sourceRef="Task_Seek_Approvals" targetRef="TextAnnotation_Approval_Process" />
+
+    <textAnnotation id="TextAnnotation_Stakeholder_Communication">
+      <text>Stakeholder communication ensures transparent decision-making</text>
+    </textAnnotation>
+    <association id="Association_Stakeholder_Communication" sourceRef="Task_Notify_Stakeholders" targetRef="TextAnnotation_Stakeholder_Communication" />
+
+    <textAnnotation id="TextAnnotation_Legal_Compliance">
+      <text>Legal review ensures compliance with all applicable requirements</text>
+    </textAnnotation>
+    <association id="Association_Legal_Compliance" sourceRef="Task_Legal_Review_Decisions" targetRef="TextAnnotation_Legal_Compliance" />
+
+    <textAnnotation id="TextAnnotation_Quality_Process">
+      <text>Quality process ensures reliable and well-supported decisions</text>
+    </textAnnotation>
+    <association id="Association_Quality_Process" sourceRef="Task_Quality_Check_Decisions" targetRef="TextAnnotation_Quality_Process" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_BPR_DecisionPhase">
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Decision_Team_di" bpmnElement="Lane_Decision_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="120" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="140" width="150" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Approval_Team_di" bpmnElement="Lane_Approval_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="340" width="150" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Communication_Team_di" bpmnElement="Lane_Communication_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="520" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="540" width="200" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Legal_Team_di" bpmnElement="Lane_Legal_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="720" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="740" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Quality_Team_di" bpmnElement="Lane_Quality_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="920" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="940" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Events -->
+      <bpmndi:BPMNShape id="StartEvent_Decision_Phase_di" bpmnElement="StartEvent_Decision_Phase">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="EndEvent_Decision_Complete_di" bpmnElement="EndEvent_Decision_Complete">
+        <dc:Bounds x="1518" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1496" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_Review_Recommendations_di" bpmnElement="Task_Review_Recommendations">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Review_Approval_Requirements_di" bpmnElement="Task_Review_Approval_Requirements">
+        <dc:Bounds x="392" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Make_Decisions_di" bpmnElement="Task_Make_Decisions">
+        <dc:Bounds x="544" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Prepare_Decision_Package_di" bpmnElement="Task_Prepare_Decision_Package">
+        <dc:Bounds x="696" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Seek_Approvals_di" bpmnElement="Task_Seek_Approvals">
+        <dc:Bounds x="848" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Approvals_di" bpmnElement="Task_Verify_Approvals">
+        <dc:Bounds x="1000" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Prepare_Notifications_di" bpmnElement="Task_Prepare_Notifications">
+        <dc:Bounds x="1152" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Notify_Stakeholders_di" bpmnElement="Task_Notify_Stakeholders">
+        <dc:Bounds x="1304" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Track_Responses_di" bpmnElement="Task_Track_Responses">
+        <dc:Bounds x="1456" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Legal_Review_Decisions_di" bpmnElement="Task_Legal_Review_Decisions">
+        <dc:Bounds x="848" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Compliance_Decisions_di" bpmnElement="Task_Verify_Compliance_Decisions">
+        <dc:Bounds x="1000" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Validate_Decisions_di" bpmnElement="Task_Validate_Decisions">
+        <dc:Bounds x="848" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Approval_Process_di" bpmnElement="Task_Verify_Approval_Process">
+        <dc:Bounds x="1000" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Quality_Check_Decisions_di" bpmnElement="Task_Quality_Check_Decisions">
+        <dc:Bounds x="1152" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Peer_Review_Decisions_di" bpmnElement="Task_Peer_Review_Decisions">
+        <dc:Bounds x="1304" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="Flow_Start_Review_Decision_di" bpmnElement="Flow_Start_Review_Decision">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="240" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Review_Requirements_di" bpmnElement="Flow_Review_Requirements">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="442" y="260" />
+        <di:waypoint x="442" y="420" />
+        <di:waypoint x="392" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Requirements_Decide_di" bpmnElement="Flow_Requirements_Decide">
+        <di:waypoint x="492" y="420" />
+        <di:waypoint x="594" y="420" />
+        <di:waypoint x="594" y="260" />
+        <di:waypoint x="544" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Decide_Prepare_di" bpmnElement="Flow_Decide_Prepare">
+        <di:waypoint x="644" y="260" />
+        <di:waypoint x="696" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Prepare_Validate_di" bpmnElement="Flow_Prepare_Validate">
+        <di:waypoint x="796" y="260" />
+        <di:waypoint x="898" y="260" />
+        <di:waypoint x="898" y="1020" />
+        <di:waypoint x="848" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Validate_Seek_di" bpmnElement="Flow_Validate_Seek">
+        <di:waypoint x="948" y="1020" />
+        <di:waypoint x="1000" y="1020" />
+        <di:waypoint x="1000" y="420" />
+        <di:waypoint x="848" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Seek_Verify_di" bpmnElement="Flow_Seek_Verify">
+        <di:waypoint x="948" y="420" />
+        <di:waypoint x="1000" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Verify_Notify_di" bpmnElement="Flow_Verify_Notify">
+        <di:waypoint x="1100" y="420" />
+        <di:waypoint x="1202" y="420" />
+        <di:waypoint x="1202" y="620" />
+        <di:waypoint x="1152" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Notify_Stakeholders_di" bpmnElement="Flow_Notify_Stakeholders">
+        <di:waypoint x="1252" y="620" />
+        <di:waypoint x="1304" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Notify_Track_di" bpmnElement="Flow_Notify_Track">
+        <di:waypoint x="1404" y="620" />
+        <di:waypoint x="1456" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Track_End_di" bpmnElement="Flow_Track_End">
+        <di:waypoint x="1556" y="620" />
+        <di:waypoint x="1608" y="620" />
+        <di:waypoint x="1608" y="260" />
+        <di:waypoint x="1518" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Prepare_Legal_di" bpmnElement="Flow_Prepare_Legal">
+        <di:waypoint x="796" y="260" />
+        <di:waypoint x="898" y="260" />
+        <di:waypoint x="898" y="820" />
+        <di:waypoint x="848" y="820" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Legal_Verify_Decisions_di" bpmnElement="Flow_Legal_Verify_Decisions">
+        <di:waypoint x="948" y="820" />
+        <di:waypoint x="1000" y="820" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Compliance_Validate_di" bpmnElement="Flow_Compliance_Validate">
+        <di:waypoint x="1100" y="820" />
+        <di:waypoint x="1202" y="820" />
+        <di:waypoint x="1202" y="1020" />
+        <di:waypoint x="848" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Seek_Verify_Process_di" bpmnElement="Flow_Seek_Verify_Process">
+        <di:waypoint x="948" y="420" />
+        <di:waypoint x="1000" y="420" />
+        <di:waypoint x="1000" y="1020" />
+        <di:waypoint x="1000" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Verify_Quality_di" bpmnElement="Flow_Verify_Quality">
+        <di:waypoint x="1100" y="1020" />
+        <di:waypoint x="1152" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Quality_Peer_di" bpmnElement="Flow_Quality_Peer">
+        <di:waypoint x="1252" y="1020" />
+        <di:waypoint x="1304" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Peer_End_di" bpmnElement="Flow_Peer_End">
+        <di:waypoint x="1404" y="1020" />
+        <di:waypoint x="1456" y="1020" />
+        <di:waypoint x="1456" y="260" />
+        <di:waypoint x="1518" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Text Annotations -->
+      <bpmndi:BPMNShape id="TextAnnotation_Decision_Process_di" bpmnElement="TextAnnotation_Decision_Process">
+        <dc:Bounds x="544" y="120" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Decision_Process_di" bpmnElement="Association_Decision_Process">
+        <di:waypoint x="594" y="220" />
+        <di:waypoint x="644" y="180" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Approval_Process_di" bpmnElement="TextAnnotation_Approval_Process">
+        <dc:Bounds x="848" y="320" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Approval_Process_di" bpmnElement="Association_Approval_Process">
+        <di:waypoint x="898" y="420" />
+        <di:waypoint x="948" y="380" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Stakeholder_Communication_di" bpmnElement="TextAnnotation_Stakeholder_Communication">
+        <dc:Bounds x="1304" y="520" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Stakeholder_Communication_di" bpmnElement="Association_Stakeholder_Communication">
+        <di:waypoint x="1354" y="620" />
+        <di:waypoint x="1404" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Legal_Compliance_di" bpmnElement="TextAnnotation_Legal_Compliance">
+        <dc:Bounds x="848" y="720" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Legal_Compliance_di" bpmnElement="Association_Legal_Compliance">
+        <di:waypoint x="898" y="820" />
+        <di:waypoint x="948" y="780" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Quality_Process_di" bpmnElement="TextAnnotation_Quality_Process">
+        <dc:Bounds x="1152" y="920" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Quality_Process_di" bpmnElement="Association_Quality_Process">
+        <di:waypoint x="1202" y="1020" />
+        <di:waypoint x="1252" y="980" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions> 

@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_DataIncomplete" name="Incomplete Data" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:error id="Error_ApprovalRequired" name="Approval Required" />
+  <bpmn:message id="Message_DataReady" name="Analytics Data Ready" />
+  <bpmn:message id="Message_ReportDraft" name="Report Draft Complete" />
+  <bpmn:message id="Message_ReportApproved" name="Report Approved" />
+  <bpmn:process id="ReportingPhaseDetail" name="MDBA BPR Reporting Phase" isExecutable="true">
+    <bpmn:documentation>
+      This process details the reporting and analytics phase of the Basin Plan Review, including the preparation of What We've Heard Report and Final Report, along with analytics and metrics generation. The process ensures comprehensive documentation of the review outcomes and stakeholder engagement.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_AnalyticsTeam" name="Analytics Team">
+        <bpmn:flowNodeRef>StartEvent_ReportingPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CollectData</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ProcessAnalytics</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_GenerateMetrics</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ReportTeam" name="Report Team">
+        <bpmn:flowNodeRef>Task_PrepareDraft</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ReviewDraft</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FinaliseReport</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ApprovalTeam" name="Approval Team">
+        <bpmn:flowNodeRef>Task_ObtainApproval</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_DistributeReport</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ReportingComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ReportingPhase" name="Reporting Phase Start">
+      <bpmn:documentation>Process commences when all review data is available for reporting.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToCollect</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_CollectData" name="Collect Review Data">
+      <bpmn:documentation>Gather all submission data, feedback, and review outcomes for analysis.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToCollect</bpmn:incoming>
+      <bpmn:outgoing>Flow_CollectToProcess</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ProcessAnalytics" name="Process Analytics">
+      <bpmn:documentation>Analyse submission patterns, stakeholder engagement, and review outcomes.</bpmn:documentation>
+      <bpmn:incoming>Flow_CollectToProcess</bpmn:incoming>
+      <bpmn:outgoing>Flow_ProcessToMetrics</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_GenerateMetrics" name="Generate Metrics">
+      <bpmn:documentation>Create key performance indicators and engagement metrics for reporting.</bpmn:documentation>
+      <bpmn:incoming>Flow_ProcessToMetrics</bpmn:incoming>
+      <bpmn:outgoing>Flow_MetricsToDraft</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PrepareDraft" name="Prepare Report Draft">
+      <bpmn:documentation>Compile initial draft of What We've Heard Report and Final Report.</bpmn:documentation>
+      <bpmn:incoming>Flow_MetricsToDraft</bpmn:incoming>
+      <bpmn:outgoing>Flow_DraftToReview</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ReviewDraft" name="Review Report Draft">
+      <bpmn:documentation>Internal review of report drafts for accuracy and completeness.</bpmn:documentation>
+      <bpmn:incoming>Flow_DraftToReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReviewToFinalise</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_FinaliseReport" name="Finalise Reports">
+      <bpmn:documentation>Incorporate review feedback and prepare final versions of reports.</bpmn:documentation>
+      <bpmn:incoming>Flow_ReviewToFinalise</bpmn:incoming>
+      <bpmn:outgoing>Flow_FinaliseToApproval</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ObtainApproval" name="Obtain Final Approval">
+      <bpmn:documentation>Secure final approval for report publication from authorised stakeholders.</bpmn:documentation>
+      <bpmn:incoming>Flow_FinaliseToApproval</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApprovalToDistribute</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_DistributeReport" name="Distribute Reports">
+      <bpmn:documentation>Publish and distribute final reports to stakeholders and public.</bpmn:documentation>
+      <bpmn:incoming>Flow_ApprovalToDistribute</bpmn:incoming>
+      <bpmn:outgoing>Flow_DistributeToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_ReportingComplete" name="Reporting Complete">
+      <bpmn:documentation>Reporting phase complete, all reports published and distributed.</bpmn:documentation>
+      <bpmn:incoming>Flow_DistributeToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_DataError" attachedToRef="Task_CollectData">
+      <bpmn:errorEventDefinition errorRef="Error_DataIncomplete" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_ReviewDraft">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_ProcessAnalytics">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ApprovalError" attachedToRef="Task_ObtainApproval">
+      <bpmn:errorEventDefinition errorRef="Error_ApprovalRequired" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToCollect" sourceRef="StartEvent_ReportingPhase" targetRef="Task_CollectData" />
+    <bpmn:sequenceFlow id="Flow_CollectToProcess" sourceRef="Task_CollectData" targetRef="Task_ProcessAnalytics" />
+    <bpmn:sequenceFlow id="Flow_ProcessToMetrics" sourceRef="Task_ProcessAnalytics" targetRef="Task_GenerateMetrics" />
+    <bpmn:sequenceFlow id="Flow_MetricsToDraft" sourceRef="Task_GenerateMetrics" targetRef="Task_PrepareDraft" />
+    <bpmn:sequenceFlow id="Flow_DraftToReview" sourceRef="Task_PrepareDraft" targetRef="Task_ReviewDraft" />
+    <bpmn:sequenceFlow id="Flow_ReviewToFinalise" sourceRef="Task_ReviewDraft" targetRef="Task_FinaliseReport" />
+    <bpmn:sequenceFlow id="Flow_FinaliseToApproval" sourceRef="Task_FinaliseReport" targetRef="Task_ObtainApproval" />
+    <bpmn:sequenceFlow id="Flow_ApprovalToDistribute" sourceRef="Task_ObtainApproval" targetRef="Task_DistributeReport" />
+    <bpmn:sequenceFlow id="Flow_DistributeToEnd" sourceRef="Task_DistributeReport" targetRef="EndEvent_ReportingComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ReportingPhaseDetail">
+      <bpmndi:BPMNShape id="Shape_StartEvent_ReportingPhase" bpmnElement="StartEvent_ReportingPhase">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ReportingComplete" bpmnElement="EndEvent_ReportingComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CollectData" bpmnElement="Task_CollectData">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ProcessAnalytics" bpmnElement="Task_ProcessAnalytics">
+        <dc:Bounds x="440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_GenerateMetrics" bpmnElement="Task_GenerateMetrics">
+        <dc:Bounds x="600" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareDraft" bpmnElement="Task_PrepareDraft">
+        <dc:Bounds x="760" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ReviewDraft" bpmnElement="Task_ReviewDraft">
+        <dc:Bounds x="920" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FinaliseReport" bpmnElement="Task_FinaliseReport">
+        <dc:Bounds x="1080" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ObtainApproval" bpmnElement="Task_ObtainApproval">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_DistributeReport" bpmnElement="Task_DistributeReport">
+        <dc:Bounds x="1400" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToCollect" bpmnElement="Flow_StartToCollect">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CollectToProcess" bpmnElement="Flow_CollectToProcess">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ProcessToMetrics" bpmnElement="Flow_ProcessToMetrics">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="600" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_MetricsToDraft" bpmnElement="Flow_MetricsToDraft">
+        <di:waypoint x="700" y="120" />
+        <di:waypoint x="760" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DraftToReview" bpmnElement="Flow_DraftToReview">
+        <di:waypoint x="860" y="220" />
+        <di:waypoint x="920" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ReviewToFinalise" bpmnElement="Flow_ReviewToFinalise">
+        <di:waypoint x="1020" y="220" />
+        <di:waypoint x="1080" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FinaliseToApproval" bpmnElement="Flow_FinaliseToApproval">
+        <di:waypoint x="1180" y="220" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ApprovalToDistribute" bpmnElement="Flow_ApprovalToDistribute">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="1400" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_DistributeToEnd" bpmnElement="Flow_DistributeToEnd">
+        <di:waypoint x="1500" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_AnalyticsTeam" bpmnElement="Lane_AnalyticsTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ReportTeam" bpmnElement="Lane_ReportTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ApprovalTeam" bpmnElement="Lane_ApprovalTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

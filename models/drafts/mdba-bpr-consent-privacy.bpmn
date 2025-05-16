@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_ConsentMissing" name="Consent Not Provided" />
+  <bpmn:error id="Error_PrivacyViolation" name="Privacy Violation Detected" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_ConsentRequired" name="Consent Required" />
+  <bpmn:message id="Message_PrivacyCheck" name="Privacy Check Required" />
+  <bpmn:message id="Message_ConsentVerified" name="Consent Verified" />
+  <bpmn:process id="ConsentPrivacyCapture" name="MDBA BPR Consent and Privacy Capture" isExecutable="true">
+    <bpmn:documentation>
+      This process manages the capture and verification of consent and privacy information for Basin Plan Review submissions. It ensures compliance with ICIP protocols, privacy legislation, and MDBA requirements for data handling and publication permissions.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_SubmissionTeam" name="Submission Team">
+        <bpmn:flowNodeRef>StartEvent_SubmissionReceived</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitialReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RequestConsent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_PrivacyTeam" name="Privacy Team">
+        <bpmn:flowNodeRef>Task_PrivacyAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ICIPCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifyConsent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ComplianceTeam" name="Compliance Team">
+        <bpmn:flowNodeRef>Task_ComplianceReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordConsent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ConsentComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_SubmissionReceived" name="Submission Received">
+      <bpmn:documentation>Process commences when a new submission is received.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToReview</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_InitialReview" name="Initial Submission Review">
+      <bpmn:documentation>Review submission for initial consent and privacy information.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReviewToPrivacy</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PrivacyAssessment" name="Privacy Impact Assessment">
+      <bpmn:documentation>Assess submission for privacy implications and required protections.</bpmn:documentation>
+      <bpmn:incoming>Flow_ReviewToPrivacy</bpmn:incoming>
+      <bpmn:outgoing>Flow_PrivacyToICIP</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ICIPCheck" name="ICIP Protocol Check">
+      <bpmn:documentation>Verify compliance with Indigenous Cultural and Intellectual Property protocols.</bpmn:documentation>
+      <bpmn:incoming>Flow_PrivacyToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPToConsent</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RequestConsent" name="Request Consent if Required">
+      <bpmn:documentation>Request additional consent information if not provided or unclear.</bpmn:documentation>
+      <bpmn:incoming>Flow_ICIPToConsent</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConsentToVerify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerifyConsent" name="Verify Consent Details">
+      <bpmn:documentation>Verify all consent information is complete and valid.</bpmn:documentation>
+      <bpmn:incoming>Flow_ConsentToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToCompliance</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ComplianceReview" name="Compliance Review">
+      <bpmn:documentation>Review all privacy and consent information for compliance.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerifyToCompliance</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComplianceToRecord</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RecordConsent" name="Record Consent Details">
+      <bpmn:documentation>Record final consent and privacy decisions in system.</bpmn:documentation>
+      <bpmn:incoming>Flow_ComplianceToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_ConsentComplete" name="Consent Process Complete">
+      <bpmn:documentation>Consent and privacy capture process complete.</bpmn:documentation>
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ConsentError" attachedToRef="Task_VerifyConsent">
+      <bpmn:errorEventDefinition errorRef="Error_ConsentMissing" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_PrivacyError" attachedToRef="Task_PrivacyAssessment">
+      <bpmn:errorEventDefinition errorRef="Error_PrivacyViolation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_ComplianceReview">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordConsent">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToReview" sourceRef="StartEvent_SubmissionReceived" targetRef="Task_InitialReview" />
+    <bpmn:sequenceFlow id="Flow_ReviewToPrivacy" sourceRef="Task_InitialReview" targetRef="Task_PrivacyAssessment" />
+    <bpmn:sequenceFlow id="Flow_PrivacyToICIP" sourceRef="Task_PrivacyAssessment" targetRef="Task_ICIPCheck" />
+    <bpmn:sequenceFlow id="Flow_ICIPToConsent" sourceRef="Task_ICIPCheck" targetRef="Task_RequestConsent" />
+    <bpmn:sequenceFlow id="Flow_ConsentToVerify" sourceRef="Task_RequestConsent" targetRef="Task_VerifyConsent" />
+    <bpmn:sequenceFlow id="Flow_VerifyToCompliance" sourceRef="Task_VerifyConsent" targetRef="Task_ComplianceReview" />
+    <bpmn:sequenceFlow id="Flow_ComplianceToRecord" sourceRef="Task_ComplianceReview" targetRef="Task_RecordConsent" />
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordConsent" targetRef="EndEvent_ConsentComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ConsentPrivacyCapture">
+      <bpmndi:BPMNShape id="Shape_StartEvent_SubmissionReceived" bpmnElement="StartEvent_SubmissionReceived">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ConsentComplete" bpmnElement="EndEvent_ConsentComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialReview" bpmnElement="Task_InitialReview">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrivacyAssessment" bpmnElement="Task_PrivacyAssessment">
+        <dc:Bounds x="440" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPCheck" bpmnElement="Task_ICIPCheck">
+        <dc:Bounds x="600" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RequestConsent" bpmnElement="Task_RequestConsent">
+        <dc:Bounds x="760" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VerifyConsent" bpmnElement="Task_VerifyConsent">
+        <dc:Bounds x="920" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ComplianceReview" bpmnElement="Task_ComplianceReview">
+        <dc:Bounds x="1080" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordConsent" bpmnElement="Task_RecordConsent">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToReview" bpmnElement="Flow_StartToReview">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ReviewToPrivacy" bpmnElement="Flow_ReviewToPrivacy">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PrivacyToICIP" bpmnElement="Flow_PrivacyToICIP">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToConsent" bpmnElement="Flow_ICIPToConsent">
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="760" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsentToVerify" bpmnElement="Flow_ConsentToVerify">
+        <di:waypoint x="860" y="120" />
+        <di:waypoint x="920" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToCompliance" bpmnElement="Flow_VerifyToCompliance">
+        <di:waypoint x="1020" y="220" />
+        <di:waypoint x="1080" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ComplianceToRecord" bpmnElement="Flow_ComplianceToRecord">
+        <di:waypoint x="1180" y="320" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_SubmissionTeam" bpmnElement="Lane_SubmissionTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_PrivacyTeam" bpmnElement="Lane_PrivacyTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ComplianceTeam" bpmnElement="Lane_ComplianceTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

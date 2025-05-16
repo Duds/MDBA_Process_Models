@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_ReviewRequired" name="Additional Review Required" />
+  <bpmn:error id="Error_UrgentAttention" name="Urgent Attention Required" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_SMEReview" name="SME Review Required" />
+  <bpmn:message id="Message_LegalReview" name="Legal Review Required" />
+  <bpmn:message id="Message_ReviewComplete" name="Review Complete" />
+  <bpmn:process id="SMELegalReview" name="MDBA BPR SME and Legal Review Routing" isExecutable="true">
+    <bpmn:documentation>
+      This process manages the routing and review of submissions by Subject Matter Experts (SMEs) and Legal teams. It ensures appropriate review paths based on submission content, complexity, and legal implications, with proper tracking and quality assurance.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_CoordinatorTeam" name="Coordinator Team">
+        <bpmn:flowNodeRef>StartEvent_ReviewRequested</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitialAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ReviewType</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_CoordinateReviews</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_SMETeam" name="SME Team">
+        <bpmn:flowNodeRef>Task_SMEReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_SMEFeedback</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_LegalTeam" name="Legal Team">
+        <bpmn:flowNodeRef>Task_LegalReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_LegalFeedback</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QualityTeam" name="Quality Team">
+        <bpmn:flowNodeRef>Task_ReviewConsolidation</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FinalVerification</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordOutcomes</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ReviewComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ReviewRequested" name="Review Requested">
+      <bpmn:documentation>Process commences when a submission requires SME or legal review.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToAssessment</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_InitialAssessment" name="Initial Assessment">
+      <bpmn:documentation>Assess submission to determine required review paths.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToAssessment</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssessmentToGateway</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_ReviewType" name="Review Type Required">
+      <bpmn:documentation>Determine if submission requires SME review, legal review, or both.</bpmn:documentation>
+      <bpmn:incoming>Flow_AssessmentToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToSME</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToLegal</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToBoth</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_SMEReview" name="SME Review">
+      <bpmn:documentation>Conduct technical review by subject matter experts.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToSME</bpmn:incoming>
+      <bpmn:incoming>Flow_GatewayToBoth</bpmn:incoming>
+      <bpmn:outgoing>Flow_SMEToFeedback</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_LegalReview" name="Legal Review">
+      <bpmn:documentation>Conduct legal compliance and risk assessment review.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToLegal</bpmn:incoming>
+      <bpmn:incoming>Flow_GatewayToBoth</bpmn:incoming>
+      <bpmn:outgoing>Flow_LegalToFeedback</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_SMEFeedback" name="SME Feedback">
+      <bpmn:documentation>Provide technical feedback and recommendations.</bpmn:documentation>
+      <bpmn:incoming>Flow_SMEToFeedback</bpmn:incoming>
+      <bpmn:outgoing>Flow_SMEFeedbackToConsolidation</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_LegalFeedback" name="Legal Feedback">
+      <bpmn:documentation>Provide legal feedback and compliance recommendations.</bpmn:documentation>
+      <bpmn:incoming>Flow_LegalToFeedback</bpmn:incoming>
+      <bpmn:outgoing>Flow_LegalFeedbackToConsolidation</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_CoordinateReviews" name="Coordinate Reviews">
+      <bpmn:documentation>Coordinate parallel review processes and track progress.</bpmn:documentation>
+      <bpmn:incoming>Flow_SMEFeedbackToConsolidation</bpmn:incoming>
+      <bpmn:incoming>Flow_LegalFeedbackToConsolidation</bpmn:incoming>
+      <bpmn:outgoing>Flow_CoordinateToConsolidation</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ReviewConsolidation" name="Consolidate Reviews">
+      <bpmn:documentation>Consolidate feedback from all review paths.</bpmn:documentation>
+      <bpmn:incoming>Flow_CoordinateToConsolidation</bpmn:incoming>
+      <bpmn:outgoing>Flow_ConsolidationToVerification</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_FinalVerification" name="Final Verification">
+      <bpmn:documentation>Verify all required reviews are complete and feedback is consistent.</bpmn:documentation>
+      <bpmn:incoming>Flow_ConsolidationToVerification</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerificationToRecord</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RecordOutcomes" name="Record Review Outcomes">
+      <bpmn:documentation>Record final review outcomes and decisions in system.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerificationToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_ReviewComplete" name="Review Complete">
+      <bpmn:documentation>All required reviews are complete and outcomes recorded.</bpmn:documentation>
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ReviewError" attachedToRef="Task_SMEReview">
+      <bpmn:errorEventDefinition errorRef="Error_ReviewRequired" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_UrgentError" attachedToRef="Task_LegalReview">
+      <bpmn:errorEventDefinition errorRef="Error_UrgentAttention" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_FinalVerification">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordOutcomes">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToAssessment" sourceRef="StartEvent_ReviewRequested" targetRef="Task_InitialAssessment" />
+    <bpmn:sequenceFlow id="Flow_AssessmentToGateway" sourceRef="Task_InitialAssessment" targetRef="Gateway_ReviewType" />
+    <bpmn:sequenceFlow id="Flow_GatewayToSME" sourceRef="Gateway_ReviewType" targetRef="Task_SMEReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresSMEReview}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToLegal" sourceRef="Gateway_ReviewType" targetRef="Task_LegalReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresLegalReview}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToBoth" sourceRef="Gateway_ReviewType" targetRef="Task_SMEReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresBothReviews}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_SMEToFeedback" sourceRef="Task_SMEReview" targetRef="Task_SMEFeedback" />
+    <bpmn:sequenceFlow id="Flow_LegalToFeedback" sourceRef="Task_LegalReview" targetRef="Task_LegalFeedback" />
+    <bpmn:sequenceFlow id="Flow_SMEFeedbackToConsolidation" sourceRef="Task_SMEFeedback" targetRef="Task_CoordinateReviews" />
+    <bpmn:sequenceFlow id="Flow_LegalFeedbackToConsolidation" sourceRef="Task_LegalFeedback" targetRef="Task_CoordinateReviews" />
+    <bpmn:sequenceFlow id="Flow_CoordinateToConsolidation" sourceRef="Task_CoordinateReviews" targetRef="Task_ReviewConsolidation" />
+    <bpmn:sequenceFlow id="Flow_ConsolidationToVerification" sourceRef="Task_ReviewConsolidation" targetRef="Task_FinalVerification" />
+    <bpmn:sequenceFlow id="Flow_VerificationToRecord" sourceRef="Task_FinalVerification" targetRef="Task_RecordOutcomes" />
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordOutcomes" targetRef="EndEvent_ReviewComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SMELegalReview">
+      <bpmndi:BPMNShape id="Shape_StartEvent_ReviewRequested" bpmnElement="StartEvent_ReviewRequested">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ReviewComplete" bpmnElement="EndEvent_ReviewComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialAssessment" bpmnElement="Task_InitialAssessment">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ReviewType" bpmnElement="Gateway_ReviewType">
+        <dc:Bounds x="440" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SMEReview" bpmnElement="Task_SMEReview">
+        <dc:Bounds x="560" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_LegalReview" bpmnElement="Task_LegalReview">
+        <dc:Bounds x="560" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_SMEFeedback" bpmnElement="Task_SMEFeedback">
+        <dc:Bounds x="720" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_LegalFeedback" bpmnElement="Task_LegalFeedback">
+        <dc:Bounds x="720" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_CoordinateReviews" bpmnElement="Task_CoordinateReviews">
+        <dc:Bounds x="880" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ReviewConsolidation" bpmnElement="Task_ReviewConsolidation">
+        <dc:Bounds x="1040" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FinalVerification" bpmnElement="Task_FinalVerification">
+        <dc:Bounds x="1200" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordOutcomes" bpmnElement="Task_RecordOutcomes">
+        <dc:Bounds x="1360" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToAssessment" bpmnElement="Flow_StartToAssessment">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentToGateway" bpmnElement="Flow_AssessmentToGateway">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToSME" bpmnElement="Flow_GatewayToSME">
+        <di:waypoint x="465" y="120" />
+        <di:waypoint x="560" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToLegal" bpmnElement="Flow_GatewayToLegal">
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="560" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToBoth" bpmnElement="Flow_GatewayToBoth">
+        <di:waypoint x="490" y="95" />
+        <di:waypoint x="560" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SMEToFeedback" bpmnElement="Flow_SMEToFeedback">
+        <di:waypoint x="660" y="220" />
+        <di:waypoint x="720" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LegalToFeedback" bpmnElement="Flow_LegalToFeedback">
+        <di:waypoint x="660" y="320" />
+        <di:waypoint x="720" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_SMEFeedbackToConsolidation" bpmnElement="Flow_SMEFeedbackToConsolidation">
+        <di:waypoint x="820" y="220" />
+        <di:waypoint x="880" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LegalFeedbackToConsolidation" bpmnElement="Flow_LegalFeedbackToConsolidation">
+        <di:waypoint x="820" y="320" />
+        <di:waypoint x="880" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CoordinateToConsolidation" bpmnElement="Flow_CoordinateToConsolidation">
+        <di:waypoint x="980" y="220" />
+        <di:waypoint x="1040" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ConsolidationToVerification" bpmnElement="Flow_ConsolidationToVerification">
+        <di:waypoint x="1140" y="320" />
+        <di:waypoint x="1200" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerificationToRecord" bpmnElement="Flow_VerificationToRecord">
+        <di:waypoint x="1300" y="320" />
+        <di:waypoint x="1360" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1460" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_CoordinatorTeam" bpmnElement="Lane_CoordinatorTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_SMETeam" bpmnElement="Lane_SMETeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_LegalTeam" bpmnElement="Lane_LegalTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_QualityTeam" bpmnElement="Lane_QualityTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="420" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

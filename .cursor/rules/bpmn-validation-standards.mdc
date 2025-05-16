@@ -1,0 +1,395 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+# BPMN Validation Standards and Error Prevention
+
+@context {
+    "type": "guidelines",
+    "purpose": "bpmn_validation",
+    "format_version": "1.0.0",
+    "target_users": [
+        "process_designers",
+        "developers",
+        "business_analysts"
+    ]
+}
+
+@xml_structure_standards {
+    "root_element": {
+        "required_namespaces": {
+            "bpmn": "http://www.omg.org/spec/BPMN/20100524/MODEL",
+            "bpmndi": "http://www.omg.org/spec/BPMN/20100524/DI",
+            "dc": "http://www.omg.org/spec/DD/20100524/DC",
+            "di": "http://www.omg.org/spec/DD/20100524/DI",
+            "xsi": "http://www.w3.org/2001/XMLSchema-instance"
+        },
+        "required_attributes": {
+            "id": "Definitions_BPR_AnalysisProcess",
+            "targetNamespace": "http://bpmn.io/schema/bpmn",
+            "exporter": "BPMN Studio",
+            "exporterVersion": "1.0.0"
+        },
+        "template": |
+            <definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                        xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+                        xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+                        xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+                        xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+                        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                        id="Definitions_BPR_AnalysisProcess"
+                        targetNamespace="http://bpmn.io/schema/bpmn"
+                        exporter="BPMN Studio"
+                        exporterVersion="1.0.0">
+            <!-- Process content here -->
+            </definitions>
+    }
+}
+
+Guidelines for creating valid BPMN models that pass schema validation and avoid common errors that occur during import, validation, and execution.
+
+@validation_categories {
+    "schema_compliance": {
+        "description": "Ensuring BPMN XML complies with the BPMN 2.0 schema",
+        "key_requirements": [
+            "Valid XML structure",
+            "Proper namespaces",
+            "Required attributes"
+        ]
+    },
+    "reference_integrity": {
+        "description": "Ensuring all element references resolve to existing elements",
+        "key_requirements": [
+            "All sourceRef/targetRef attributes reference valid IDs",
+            "All flowNodeRef elements reference valid nodes",
+            "No unresolved references to non-existent elements"
+        ]
+    },
+    "namespace_declarations": {
+        "description": "Proper declaration of namespaces for BPMN extensions",
+        "key_requirements": [
+            "Standard BPMN namespaces properly declared",
+            "Extension namespaces (e.g., Camunda) properly declared when used",
+            "Consistency between namespace declarations and element usage"
+        ]
+    },
+    "execution_compatibility": {
+        "description": "Ensuring models can be executed in the target engine",
+        "key_requirements": [
+            "Valid executable process configuration",
+            "Compatible expressions",
+            "Properly configured extension elements"
+        ]
+    }
+}
+
+<rule>
+name: bpmn_validation_standards
+description: Guidelines to prevent common BPMN validation and reference errors
+filters:
+  - type: file_extension
+    pattern: "\\.bpmn$"
+
+actions:
+  - type: suggest
+    message: |
+      ## BPMN Validation Standards and Error Prevention
+
+      ### XML Schema Compliance
+      
+      - Ensure proper BPMN namespace declarations:
+        ```xml
+        <bpmn:definitions 
+            xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+            xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+            xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+            xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            targetNamespace="http://bpmn.io/schema/bpmn">
+        ```
+      
+      - For Camunda extensions, include the Camunda namespace:
+        ```xml
+        <bpmn:definitions 
+            xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+            xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+            xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+            xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+            xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+            xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+            targetNamespace="http://bpmn.io/schema/bpmn">
+        ```
+      
+      - Set the `isExecutable` attribute appropriately:
+        ```xml
+        <!-- For descriptive models -->
+        <bpmn:process id="Process_ID" name="Process Name" isExecutable="false">
+        
+        <!-- For executable models -->
+        <bpmn:process id="Process_ID" name="Process Name" isExecutable="true">
+        ```
+      
+      ### Reference Integrity
+      
+      - Ensure all referenced elements exist:
+        ```xml
+        <!-- All tasks referenced in lanes must exist -->
+        <bpmn:lane id="Lane_1" name="Lane Name">
+          <bpmn:flowNodeRef>Task_1</bpmn:flowNodeRef>
+          <bpmn:flowNodeRef>Gateway_1</bpmn:flowNodeRef>
+        </bpmn:lane>
+        
+        <!-- All sourceRef and targetRef must refer to existing elements -->
+        <bpmn:sequenceFlow id="Flow_1" sourceRef="Task_1" targetRef="Gateway_1" />
+        ```
+      
+      - Remove references to deleted elements:
+        ```xml
+        <!-- Before deleting an element, find and update/remove all references to it -->
+        <!-- Check: lanes, sequence flows, message flows, associations -->
+        ```
+      
+      - Ensure all diagram elements reference valid process elements:
+        ```xml
+        <bpmndi:BPMNShape id="Task_1_di" bpmnElement="Task_1">
+          <dc:Bounds x="100" y="100" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        ```
+      
+      ### Camunda Extension Elements
+      
+      - Only use Camunda extensions with proper namespace declaration:
+        ```xml
+        <!-- Include namespace declaration -->
+        xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+        
+        <!-- Proper use of extension attributes -->
+        <bpmn:userTask id="Task_1" name="User Task" camunda:assignee="${assignee}" />
+        
+        <!-- Proper use of extension elements -->
+        <bpmn:userTask id="Task_1" name="User Task">
+          <bpmn:extensionElements>
+            <camunda:formData>
+              <camunda:formField id="field1" label="Field 1" type="string" />
+            </camunda:formData>
+          </bpmn:extensionElements>
+        </bpmn:userTask>
+        ```
+      
+      - Don't use Camunda extensions without the namespace:
+        ```xml
+        <!-- INCORRECT - will cause validation errors: -->
+        <bpmn:userTask id="Task_1" name="User Task">
+          <camunda:formKey>embedded:app:forms/task-form.html</camunda:formKey>
+          <camunda:assignee>demo</camunda:assignee>
+        </bpmn:userTask>
+        
+        <!-- CORRECT - extension elements inside extensionElements: -->
+        <bpmn:userTask id="Task_1" name="User Task">
+          <bpmn:extensionElements>
+            <camunda:formKey>embedded:app:forms/task-form.html</camunda:formKey>
+            <camunda:assignee>demo</camunda:assignee>
+          </bpmn:extensionElements>
+        </bpmn:userTask>
+        ```
+      
+      ### Diagram Element Validation
+      
+      - Each process element should have a corresponding diagram element:
+        ```xml
+        <bpmn:task id="Task_1" name="Task Name" />
+        
+        <bpmndi:BPMNShape id="Task_1_di" bpmnElement="Task_1">
+          <dc:Bounds x="100" y="100" width="100" height="80" />
+        </bpmndi:BPMNShape>
+        ```
+      
+      - Each sequence flow should have a corresponding diagram edge:
+        ```xml
+        <bpmn:sequenceFlow id="Flow_1" sourceRef="Task_1" targetRef="Task_2" />
+        
+        <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+          <di:waypoint x="200" y="120" />
+          <di:waypoint x="300" y="120" />
+        </bpmndi:BPMNEdge>
+        ```
+      
+      ### BPMN Validation Workflow
+      
+      1. **Before saving changes**:
+         - Check for unresolved references
+         - Verify all diagram elements have corresponding process elements
+         - Ensure all extensions have proper namespace declarations
+      
+      2. **After creating new models**:
+         - Run validation before committing changes
+         - Fix any schema or reference errors
+         - Test import to Camunda Modeler if targeting Camunda
+      
+      3. **When modifying existing models**:
+         - Track reference changes when deleting or renaming elements
+         - Update all referring elements when changing IDs
+         - Validate model after significant changes
+
+examples:
+  - input: |
+      <!-- Model with common errors -->
+      <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL">
+        <bpmn:process id="Process_1">
+          <bpmn:task id="Task_1">
+            <camunda:assignee>demo</camunda:assignee>
+          </bpmn:task>
+          <bpmn:sequenceFlow id="Flow_1" sourceRef="Task_1" targetRef="Task_Nonexistent" />
+        </bpmn:process>
+      </bpmn:definitions>
+    output: |
+      <!-- Corrected model -->
+      <bpmn:definitions 
+          xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+          xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+          xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+          xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+          xmlns:camunda="http://camunda.org/schema/1.0/bpmn"
+          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+          targetNamespace="http://bpmn.io/schema/bpmn">
+        <bpmn:process id="Process_1" isExecutable="false">
+          <bpmn:task id="Task_1">
+            <bpmn:extensionElements>
+              <camunda:assignee>demo</camunda:assignee>
+            </bpmn:extensionElements>
+          </bpmn:task>
+          <bpmn:task id="Task_2" />
+          <bpmn:sequenceFlow id="Flow_1" sourceRef="Task_1" targetRef="Task_2" />
+        </bpmn:process>
+        <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+          <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_1">
+            <bpmndi:BPMNShape id="Task_1_di" bpmnElement="Task_1">
+              <dc:Bounds x="100" y="100" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNShape id="Task_2_di" bpmnElement="Task_2">
+              <dc:Bounds x="250" y="100" width="100" height="80" />
+            </bpmndi:BPMNShape>
+            <bpmndi:BPMNEdge id="Flow_1_di" bpmnElement="Flow_1">
+              <di:waypoint x="200" y="140" />
+              <di:waypoint x="250" y="140" />
+            </bpmndi:BPMNEdge>
+          </bpmndi:BPMNPlane>
+        </bpmndi:BPMNDiagram>
+      </bpmn:definitions>
+
+metadata:
+  priority: high
+  version: 1.0.0
+  ai_workflow: true
+  camunda_compatible: true
+</rule>
+
+@validation_checks [
+    {
+        "id": "xml_structure_root",
+        "description": "Check that the root element has the required structure and attributes",
+        "error_message": "Root element does not match required BPMN structure",
+        "how_to_check": "Verify that the definitions element has all required namespaces and attributes as specified in @xml_structure_standards"
+    },
+    {
+        "id": "xml_namespace_declaration",
+        "description": "Check that all required namespaces are properly declared",
+        "error_message": "Missing required namespace declaration",
+        "how_to_check": "Ensure all namespaces from @xml_structure_standards are declared in the root element"
+    },
+    {
+        "id": "xml_root_attributes",
+        "description": "Check that the root element has all required attributes",
+        "error_message": "Missing required root element attributes",
+        "how_to_check": "Verify that id, targetNamespace, exporter, and exporterVersion attributes are present with correct values"
+    },
+    {
+        "id": "namespace_declaration",
+        "description": "Check that all namespaces used are properly declared",
+        "error_message": "Element uses namespace that is not declared",
+        "how_to_check": "Ensure all namespace prefixes used in the file are declared in the root element"
+    },
+    {
+        "id": "reference_integrity",
+        "description": "Check that all referenced elements exist",
+        "error_message": "Unresolved reference to non-existent element",
+        "how_to_check": "Verify that all ID references point to existing elements"
+    },
+    {
+        "id": "camunda_extension_format",
+        "description": "Check that Camunda extensions are properly formatted",
+        "error_message": "Unparsable content <camunda:X> detected",
+        "how_to_check": "Ensure Camunda extensions are inside bpmn:extensionElements when required by schema"
+    },
+    {
+        "id": "diagram_element_mapping",
+        "description": "Check that all process elements have corresponding diagram elements",
+        "error_message": "Process element has no corresponding diagram element",
+        "how_to_check": "Ensure each process element has a matching BPMNShape or BPMNEdge element"
+    },
+    {
+        "id": "element_attributes",
+        "description": "Check that all elements have required attributes",
+        "error_message": "Missing required attribute",
+        "how_to_check": "Verify all elements have their required attributes according to the BPMN 2.0 schema"
+    }
+]
+
+@common_errors [
+    {
+        "id": "camunda_without_namespace",
+        "description": "Using Camunda extensions without declaring the namespace",
+        "resolution": "Add xmlns:camunda=\"http://camunda.org/schema/1.0/bpmn\" to the definitions element"
+    },
+    {
+        "id": "camunda_formKey_outside_extensionElements",
+        "description": "Placing camunda:formKey directly inside a task",
+        "resolution": "Place within <bpmn:extensionElements> parent element"
+    },
+    {
+        "id": "camunda_assignee_outside_extensionElements",
+        "description": "Placing camunda:assignee directly inside a task",
+        "resolution": "Place within <bpmn:extensionElements> parent element"
+    },
+    {
+        "id": "unresolved_task_reference",
+        "description": "Referencing a task that doesn't exist in sequence flows",
+        "resolution": "Update the reference or create the missing task"
+    },
+    {
+        "id": "missing_diagram_element",
+        "description": "Process element exists but has no corresponding diagram element",
+        "resolution": "Add appropriate BPMNShape or BPMNEdge element with proper coordinates"
+    }
+]
+
+@validation {
+    "required": [
+        "Root element must match @xml_structure_standards template",
+        "All required namespaces must be declared",
+        "Root element must have all required attributes",
+        "XML must be properly formatted and indented",
+        "Process ID must be meaningful and follow naming convention",
+        "Process must have a name attribute",
+        "All tasks must have appropriate type",
+        "All tasks must have name attributes",
+        "All gateways must have appropriate type",
+        "All sequence flows must connect existing elements",
+        "Organizational structure must use lanes",
+        "Tasks must have role assignments"
+    ],
+    "recommended": [
+        "Include comprehensive documentation",
+        "Use Australian date format (DD/MM/YYYY)",
+        "Follow 24-hour time format",
+        "Provide clear labels for conditional flows",
+        "Use appropriate gateway types for decision logic",
+        "Document team responsibilities",
+        "Include handoff procedures",
+        "Define escalation paths"
+    ]
+}
+
+@version "1.0.0"
+@last_updated "2024-07-28"

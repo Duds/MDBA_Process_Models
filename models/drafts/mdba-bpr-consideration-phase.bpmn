@@ -1,0 +1,721 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="Definitions_BPR_AnalysisProcess"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="BPMN Studio"
+             exporterVersion="1.0.0">
+
+  <!-- Error Definitions -->
+  <error id="Error_Consideration_Invalid" name="Invalid Consideration" errorCode="CON_001">
+    <documentation>
+      Consideration validation error indicating non-compliance with requirements.
+      Severity: Critical
+      Resolution Path:
+      1. Review consideration against requirements
+      2. Identify specific non-compliance areas
+      3. Consult with legal team
+      4. Revise consideration as needed
+      5. Document resolution and lessons learned
+      Impact: May delay consideration phase and require rework.
+      Owner: Consideration Team Lead
+      SLA: 48 hours resolution target
+    </documentation>
+  </error>
+  
+  <error id="Error_Impact_Assessment_Failed" name="Impact Assessment Failed" errorCode="IMP_001">
+    <documentation>
+      Error in impact assessment process.
+      Severity: High
+      Resolution Path:
+      1. Review assessment methodology
+      2. Verify data accuracy
+      3. Consult impact assessment guidelines
+      4. Reassess impacts
+      5. Update assessment framework if needed
+      Impact: May affect decision-making and recommendations.
+      Owner: Impact Assessment Team Lead
+      SLA: 72 hours resolution target
+    </documentation>
+  </error>
+  
+  <error id="Error_Stakeholder_Consultation_Failed" name="Stakeholder Consultation Failed" errorCode="STK_001">
+    <documentation>
+      Error in stakeholder consultation process.
+      Severity: High
+      Resolution Path:
+      1. Review consultation approach
+      2. Identify communication gaps
+      3. Consult stakeholder engagement guidelines
+      4. Implement corrective actions
+      5. Document lessons learned
+      Impact: May affect stakeholder trust and process transparency.
+      Owner: Stakeholder Engagement Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+
+  <!-- Add new Error Definitions -->
+  <error id="Error_Validation_Failed" name="Validation Failed" errorCode="VAL_001">
+    <documentation>
+      Error in validation process.
+      Severity: High
+      Resolution Path:
+      1. Review validation criteria
+      2. Identify validation gaps
+      3. Consult validation guidelines
+      4. Implement corrective actions
+      5. Document resolution
+      Impact: May delay process progression.
+      Owner: Quality Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+
+  <error id="Error_Quality_Check_Failed" name="Quality Check Failed" errorCode="QC_001">
+    <documentation>
+      Error in quality check process.
+      Severity: Critical
+      Resolution Path:
+      1. Review quality criteria
+      2. Identify quality gaps
+      3. Consult quality guidelines
+      4. Implement improvements
+      5. Verify resolution
+      Impact: May prevent progression to next phase.
+      Owner: Quality Team Lead
+      SLA: 48 hours resolution target
+    </documentation>
+  </error>
+
+  <!-- Message Definitions -->
+  <message id="Message_Consideration_Complete" name="Consideration Complete">
+    <documentation>
+      Notification of consideration phase completion.
+      Content:
+      - Consideration phase status
+      - Key decisions summary
+      - Impact assessment results
+      - Stakeholder feedback summary
+      - Next phase information
+      Recipients:
+      - Basin Plan Review Team
+      - Stakeholder Engagement Team
+      - Legal Team
+      - Process Owner
+      Trigger Conditions:
+      - All submissions considered
+      - Impact assessments completed
+      - Stakeholder consultation finished
+      - Final validation approved
+    </documentation>
+  </message>
+  
+  <message id="Message_Impact_Assessment_Ready" name="Impact Assessment Ready">
+    <documentation>
+      Notification of impact assessment completion.
+      Content:
+      - Assessment results
+      - Key findings
+      - Risk analysis
+      - Mitigation strategies
+      - Next steps
+      Recipients:
+      - Consideration Team
+      - Legal Team
+      - Stakeholder Engagement Team
+      Trigger Conditions:
+      - Assessment completed
+      - Peer review passed
+      - Quality check approved
+      - Documentation finalised
+    </documentation>
+  </message>
+
+  <message id="Message_Validation_Complete" name="Validation Complete">
+    <documentation>
+      Notification of validation completion.
+      Content:
+      - Validation results
+      - Quality check status
+      - Compliance verification
+      - Action items if any
+      - Next steps
+      Recipients:
+      - Consideration Team
+      - Quality Team
+      - Process Owner
+      Trigger Conditions:
+      - All validations passed
+      - Quality checks completed
+      - Documentation verified
+      - No outstanding issues
+    </documentation>
+  </message>
+
+  <process id="Process_BPR_ConsiderationPhase" name="2026 Basin Plan Review Consideration Phase" isExecutable="false">
+    <documentation>
+      Purpose: Manages the consideration of analyzed submissions for the 2026 Basin Plan Review
+      Owner: MDBA Basin Plan Review Team
+      Version: 1.0.0
+      Last Updated: 20/03/2024
+      Description: This process coordinates the consideration of analyzed submissions,
+      including impact assessment, stakeholder consultation, and preparation of recommendations.
+      Ensures systematic and thorough consideration of all stakeholder inputs and their implications.
+    </documentation>
+
+    <laneSet id="LaneSet_1">
+      <lane id="Lane_Consideration_Team" name="Consideration Team">
+        <flowNodeRef>StartEvent_Consideration_Phase</flowNodeRef>
+        <flowNodeRef>Task_Review_Analysis</flowNodeRef>
+        <flowNodeRef>Task_Assess_Implications</flowNodeRef>
+        <flowNodeRef>Task_Prepare_Recommendations</flowNodeRef>
+        <flowNodeRef>EndEvent_Consideration_Complete</flowNodeRef>
+      </lane>
+      <lane id="Lane_Impact_Team" name="Impact Assessment Team">
+        <flowNodeRef>Task_Conduct_Impact_Assessment</flowNodeRef>
+        <flowNodeRef>Task_Review_Impacts</flowNodeRef>
+      </lane>
+      <lane id="Lane_Stakeholder_Team" name="Stakeholder Engagement Team">
+        <flowNodeRef>Task_Consult_Stakeholders</flowNodeRef>
+        <flowNodeRef>Task_Review_Feedback</flowNodeRef>
+        <flowNodeRef>Task_Update_Consideration</flowNodeRef>
+      </lane>
+      <lane id="Lane_Legal_Team" name="Legal Team">
+        <flowNodeRef>Task_Legal_Review</flowNodeRef>
+        <flowNodeRef>Task_Verify_Compliance</flowNodeRef>
+      </lane>
+      <lane id="Lane_Quality_Team" name="Quality Team">
+        <flowNodeRef>Task_Validate_Impact_Assessment</flowNodeRef>
+        <flowNodeRef>Task_Verify_Stakeholder_Feedback</flowNodeRef>
+        <flowNodeRef>Task_Quality_Check_Recommendations</flowNodeRef>
+        <flowNodeRef>Task_Peer_Review</flowNodeRef>
+      </lane>
+    </laneSet>
+
+    <startEvent id="StartEvent_Consideration_Phase" name="Start Consideration Phase">
+      <documentation>
+        Marks the commencement of the consideration phase.
+        This event is triggered when the analysis phase is complete
+        and all submissions are ready for consideration.
+      </documentation>
+      <outgoing>Flow_Start_Review</outgoing>
+    </startEvent>
+
+    <userTask id="Task_Review_Analysis" name="Review Analysis Results">
+      <documentation>
+        Consideration team reviews analysis results to understand
+        key findings and prepare for impact assessment.
+      </documentation>
+      <incoming>Flow_Start_Review</incoming>
+      <outgoing>Flow_Review_Impact</outgoing>
+    </userTask>
+
+    <userTask id="Task_Conduct_Impact_Assessment" name="Conduct Impact Assessment">
+      <documentation>
+        Impact team assesses potential implications of
+        analyzed submissions on Basin Plan objectives.
+      </documentation>
+      <incoming>Flow_Review_Impact</incoming>
+      <outgoing>Flow_Impact_Review</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Impact_Error" attachedToRef="Task_Conduct_Impact_Assessment">
+      <errorEventDefinition errorRef="Error_Impact_Assessment_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Review_Impacts" name="Review Impact Assessment">
+      <documentation>
+        Impact team reviews assessment results for accuracy
+        and completeness.
+      </documentation>
+      <incoming>Flow_Impact_Review</incoming>
+      <outgoing>Flow_Impact_Consult</outgoing>
+    </userTask>
+
+    <userTask id="Task_Consult_Stakeholders" name="Consult with Stakeholders">
+      <documentation>
+        Stakeholder team consults with relevant parties
+        regarding impact assessment findings.
+      </documentation>
+      <incoming>Flow_Impact_Consult</incoming>
+      <outgoing>Flow_Consult_Review</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Consultation_Error" attachedToRef="Task_Consult_Stakeholders">
+      <errorEventDefinition errorRef="Error_Stakeholder_Consultation_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Review_Feedback" name="Review Stakeholder Feedback">
+      <documentation>
+        Stakeholder team reviews and analyzes feedback
+        from consultation process.
+      </documentation>
+      <incoming>Flow_Consult_Review</incoming>
+      <outgoing>Flow_Feedback_Update</outgoing>
+    </userTask>
+
+    <userTask id="Task_Update_Consideration" name="Update Consideration">
+      <documentation>
+        Stakeholder team updates consideration based on
+        feedback and consultation results.
+      </documentation>
+      <incoming>Flow_Feedback_Update</incoming>
+      <outgoing>Flow_Update_Legal</outgoing>
+    </userTask>
+
+    <userTask id="Task_Legal_Review" name="Legal Review">
+      <documentation>
+        Legal team reviews consideration for compliance
+        with relevant legislation and regulations.
+      </documentation>
+      <incoming>Flow_Update_Legal</incoming>
+      <outgoing>Flow_Legal_Verify</outgoing>
+    </userTask>
+
+    <userTask id="Task_Verify_Compliance" name="Verify Compliance">
+      <documentation>
+        Legal team verifies compliance with all
+        applicable requirements and standards.
+      </documentation>
+      <incoming>Flow_Legal_Verify</incoming>
+      <outgoing>Flow_Compliance_Assess</outgoing>
+    </userTask>
+
+    <userTask id="Task_Assess_Implications" name="Assess Implications">
+      <documentation>
+        Consideration team assesses implications of
+        legal review and compliance verification.
+      </documentation>
+      <incoming>Flow_Compliance_Assess</incoming>
+      <outgoing>Flow_Assess_Prepare</outgoing>
+    </userTask>
+
+    <userTask id="Task_Prepare_Recommendations" name="Prepare Recommendations">
+      <documentation>
+        Consideration team prepares final recommendations
+        based on all assessments and reviews.
+      </documentation>
+      <incoming>Flow_Assess_Prepare</incoming>
+      <outgoing>Flow_Prepare_End</outgoing>
+    </userTask>
+
+    <endEvent id="EndEvent_Consideration_Complete" name="Consideration Phase Complete">
+      <documentation>
+        Marks the completion of the consideration phase.
+        All submissions have been considered, assessed,
+        and recommendations prepared for next phase.
+      </documentation>
+      <incoming>Flow_Prepare_End</incoming>
+    </endEvent>
+
+    <!-- Add Validation Tasks -->
+    <userTask id="Task_Validate_Impact_Assessment" name="Validate Impact Assessment">
+      <documentation>
+        Quality team validates impact assessment for:
+        - Methodology compliance
+        - Data accuracy
+        - Analysis completeness
+        - Documentation standards
+        - Risk assessment adequacy
+      </documentation>
+      <incoming>Flow_Impact_Validate</incoming>
+      <outgoing>Flow_Validate_Consult</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Validation_Error" attachedToRef="Task_Validate_Impact_Assessment">
+      <errorEventDefinition errorRef="Error_Validation_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Verify_Stakeholder_Feedback" name="Verify Stakeholder Feedback">
+      <documentation>
+        Quality team verifies stakeholder feedback for:
+        - Feedback completeness
+        - Response adequacy
+        - Documentation standards
+        - Action item tracking
+        - Resolution verification
+      </documentation>
+      <incoming>Flow_Feedback_Verify</incoming>
+      <outgoing>Flow_Verify_Update</outgoing>
+    </userTask>
+
+    <userTask id="Task_Quality_Check_Recommendations" name="Quality Check Recommendations">
+      <documentation>
+        Quality team performs final check of recommendations for:
+        - Alignment with objectives
+        - Evidence support
+        - Impact consideration
+        - Stakeholder input integration
+        - Documentation standards
+      </documentation>
+      <incoming>Flow_Prepare_Quality</incoming>
+      <outgoing>Flow_Quality_Peer</outgoing>
+    </userTask>
+
+    <boundaryEvent id="BoundaryEvent_Quality_Error" attachedToRef="Task_Quality_Check_Recommendations">
+      <errorEventDefinition errorRef="Error_Quality_Check_Failed" />
+    </boundaryEvent>
+
+    <userTask id="Task_Peer_Review" name="Peer Review">
+      <documentation>
+        Independent peer review of entire consideration process:
+        - Process compliance
+        - Documentation standards
+        - Decision rationale
+        - Impact assessment
+        - Stakeholder engagement
+      </documentation>
+      <incoming>Flow_Quality_Peer</incoming>
+      <outgoing>Flow_Peer_End</outgoing>
+    </userTask>
+
+    <!-- Sequence Flows -->
+    <sequenceFlow id="Flow_Start_Review" sourceRef="StartEvent_Consideration_Phase" targetRef="Task_Review_Analysis" />
+    <sequenceFlow id="Flow_Review_Impact" sourceRef="Task_Review_Analysis" targetRef="Task_Conduct_Impact_Assessment" />
+    <sequenceFlow id="Flow_Impact_Review" sourceRef="Task_Conduct_Impact_Assessment" targetRef="Task_Review_Impacts" />
+    <sequenceFlow id="Flow_Impact_Consult" sourceRef="Task_Review_Impacts" targetRef="Task_Consult_Stakeholders" />
+    <sequenceFlow id="Flow_Consult_Review" sourceRef="Task_Consult_Stakeholders" targetRef="Task_Review_Feedback" />
+    <sequenceFlow id="Flow_Feedback_Update" sourceRef="Task_Review_Feedback" targetRef="Task_Update_Consideration" />
+    <sequenceFlow id="Flow_Update_Legal" sourceRef="Task_Update_Consideration" targetRef="Task_Legal_Review" />
+    <sequenceFlow id="Flow_Legal_Verify" sourceRef="Task_Legal_Review" targetRef="Task_Verify_Compliance" />
+    <sequenceFlow id="Flow_Compliance_Assess" sourceRef="Task_Verify_Compliance" targetRef="Task_Assess_Implications" />
+    <sequenceFlow id="Flow_Assess_Prepare" sourceRef="Task_Assess_Implications" targetRef="Task_Prepare_Recommendations" />
+    <sequenceFlow id="Flow_Prepare_End" sourceRef="Task_Prepare_Recommendations" targetRef="EndEvent_Consideration_Complete" />
+
+    <!-- Modify existing sequence flows and add new ones -->
+    <sequenceFlow id="Flow_Impact_Validate" sourceRef="Task_Review_Impacts" targetRef="Task_Validate_Impact_Assessment">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${impactAssessmentComplete == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Validate_Consult" sourceRef="Task_Validate_Impact_Assessment" targetRef="Task_Consult_Stakeholders">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${validationPassed == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Feedback_Verify" sourceRef="Task_Review_Feedback" targetRef="Task_Verify_Stakeholder_Feedback">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${feedbackReviewComplete == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Verify_Update" sourceRef="Task_Verify_Stakeholder_Feedback" targetRef="Task_Update_Consideration">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${verificationPassed == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Prepare_Quality" sourceRef="Task_Prepare_Recommendations" targetRef="Task_Quality_Check_Recommendations">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${recommendationsComplete == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Quality_Peer" sourceRef="Task_Quality_Check_Recommendations" targetRef="Task_Peer_Review">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${qualityCheckPassed == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Peer_End" sourceRef="Task_Peer_Review" targetRef="EndEvent_Consideration_Complete">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">
+        ${peerReviewApproved == true}
+      </conditionExpression>
+    </sequenceFlow>
+
+    <!-- Text Annotations -->
+    <textAnnotation id="TextAnnotation_Impact_Assessment">
+      <text>Impact assessment ensures thorough consideration of all implications</text>
+    </textAnnotation>
+    <association id="Association_Impact_Assessment" sourceRef="Task_Conduct_Impact_Assessment" targetRef="TextAnnotation_Impact_Assessment" />
+
+    <textAnnotation id="TextAnnotation_Stakeholder_Engagement">
+      <text>Stakeholder consultation ensures inclusive and transparent consideration</text>
+    </textAnnotation>
+    <association id="Association_Stakeholder_Engagement" sourceRef="Task_Consult_Stakeholders" targetRef="TextAnnotation_Stakeholder_Engagement" />
+
+    <textAnnotation id="TextAnnotation_Legal_Compliance">
+      <text>Legal review ensures compliance with all applicable requirements</text>
+    </textAnnotation>
+    <association id="Association_Legal_Compliance" sourceRef="Task_Legal_Review" targetRef="TextAnnotation_Legal_Compliance" />
+
+    <textAnnotation id="TextAnnotation_Validation_Process">
+      <text>Validation process ensures quality and compliance throughout consideration phase</text>
+    </textAnnotation>
+    <association id="Association_Validation_Process" sourceRef="Task_Validate_Impact_Assessment" targetRef="TextAnnotation_Validation_Process" />
+
+    <textAnnotation id="TextAnnotation_Quality_Standards">
+      <text>Quality standards ensure consistent and reliable consideration outcomes</text>
+    </textAnnotation>
+    <association id="Association_Quality_Standards" sourceRef="Task_Quality_Check_Recommendations" targetRef="TextAnnotation_Quality_Standards" />
+
+  </process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_BPR_ConsiderationPhase">
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Consideration_Team_di" bpmnElement="Lane_Consideration_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="120" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="140" width="150" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Impact_Team_di" bpmnElement="Lane_Impact_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="340" width="150" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Stakeholder_Team_di" bpmnElement="Lane_Stakeholder_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="520" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="540" width="200" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Legal_Team_di" bpmnElement="Lane_Legal_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="720" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="740" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Lane_Quality_Team_di" bpmnElement="Lane_Quality_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="920" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="940" width="100" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Events -->
+      <bpmndi:BPMNShape id="StartEvent_Consideration_Phase_di" bpmnElement="StartEvent_Consideration_Phase">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="EndEvent_Consideration_Complete_di" bpmnElement="EndEvent_Consideration_Complete">
+        <dc:Bounds x="1518" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1496" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_Review_Analysis_di" bpmnElement="Task_Review_Analysis">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Conduct_Impact_Assessment_di" bpmnElement="Task_Conduct_Impact_Assessment">
+        <dc:Bounds x="392" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Review_Impacts_di" bpmnElement="Task_Review_Impacts">
+        <dc:Bounds x="544" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Consult_Stakeholders_di" bpmnElement="Task_Consult_Stakeholders">
+        <dc:Bounds x="696" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Review_Feedback_di" bpmnElement="Task_Review_Feedback">
+        <dc:Bounds x="848" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Update_Consideration_di" bpmnElement="Task_Update_Consideration">
+        <dc:Bounds x="1000" y="620" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Legal_Review_di" bpmnElement="Task_Legal_Review">
+        <dc:Bounds x="1152" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Compliance_di" bpmnElement="Task_Verify_Compliance">
+        <dc:Bounds x="1304" y="820" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Assess_Implications_di" bpmnElement="Task_Assess_Implications">
+        <dc:Bounds x="1152" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Prepare_Recommendations_di" bpmnElement="Task_Prepare_Recommendations">
+        <dc:Bounds x="1304" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add Validation Task Shapes -->
+      <bpmndi:BPMNShape id="Task_Validate_Impact_Assessment_di" bpmnElement="Task_Validate_Impact_Assessment">
+        <dc:Bounds x="544" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Stakeholder_Feedback_di" bpmnElement="Task_Verify_Stakeholder_Feedback">
+        <dc:Bounds x="848" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Quality_Check_Recommendations_di" bpmnElement="Task_Quality_Check_Recommendations">
+        <dc:Bounds x="1152" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Peer_Review_di" bpmnElement="Task_Peer_Review">
+        <dc:Bounds x="1304" y="1020" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="Flow_Start_Review_di" bpmnElement="Flow_Start_Review">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="240" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Review_Impact_di" bpmnElement="Flow_Review_Impact">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="442" y="260" />
+        <di:waypoint x="442" y="420" />
+        <di:waypoint x="392" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Impact_Review_di" bpmnElement="Flow_Impact_Review">
+        <di:waypoint x="492" y="420" />
+        <di:waypoint x="544" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Impact_Consult_di" bpmnElement="Flow_Impact_Consult">
+        <di:waypoint x="644" y="420" />
+        <di:waypoint x="746" y="420" />
+        <di:waypoint x="746" y="620" />
+        <di:waypoint x="696" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Consult_Review_di" bpmnElement="Flow_Consult_Review">
+        <di:waypoint x="796" y="620" />
+        <di:waypoint x="848" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Feedback_Update_di" bpmnElement="Flow_Feedback_Update">
+        <di:waypoint x="948" y="620" />
+        <di:waypoint x="1000" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Update_Legal_di" bpmnElement="Flow_Update_Legal">
+        <di:waypoint x="1100" y="620" />
+        <di:waypoint x="1202" y="620" />
+        <di:waypoint x="1202" y="820" />
+        <di:waypoint x="1152" y="820" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Legal_Verify_di" bpmnElement="Flow_Legal_Verify">
+        <di:waypoint x="1252" y="820" />
+        <di:waypoint x="1304" y="820" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Compliance_Assess_di" bpmnElement="Flow_Compliance_Assess">
+        <di:waypoint x="1354" y="820" />
+        <di:waypoint x="1406" y="820" />
+        <di:waypoint x="1406" y="260" />
+        <di:waypoint x="1152" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Assess_Prepare_di" bpmnElement="Flow_Assess_Prepare">
+        <di:waypoint x="1252" y="260" />
+        <di:waypoint x="1304" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Prepare_End_di" bpmnElement="Flow_Prepare_End">
+        <di:waypoint x="1404" y="260" />
+        <di:waypoint x="1518" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add Validation Flow Edges -->
+      <bpmndi:BPMNEdge id="Flow_Impact_Validate_di" bpmnElement="Flow_Impact_Validate">
+        <di:waypoint x="594" y="420" />
+        <di:waypoint x="594" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Validate_Consult_di" bpmnElement="Flow_Validate_Consult">
+        <di:waypoint x="644" y="1020" />
+        <di:waypoint x="746" y="1020" />
+        <di:waypoint x="746" y="620" />
+        <di:waypoint x="696" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Feedback_Verify_di" bpmnElement="Flow_Feedback_Verify">
+        <di:waypoint x="898" y="620" />
+        <di:waypoint x="898" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Verify_Update_di" bpmnElement="Flow_Verify_Update">
+        <di:waypoint x="948" y="1020" />
+        <di:waypoint x="1000" y="1020" />
+        <di:waypoint x="1000" y="620" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Prepare_Quality_di" bpmnElement="Flow_Prepare_Quality">
+        <di:waypoint x="1354" y="220" />
+        <di:waypoint x="1354" y="1020" />
+        <di:waypoint x="1152" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Quality_Peer_di" bpmnElement="Flow_Quality_Peer">
+        <di:waypoint x="1252" y="1020" />
+        <di:waypoint x="1304" y="1020" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Peer_End_di" bpmnElement="Flow_Peer_End">
+        <di:waypoint x="1404" y="1020" />
+        <di:waypoint x="1456" y="1020" />
+        <di:waypoint x="1456" y="260" />
+        <di:waypoint x="1518" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Text Annotations -->
+      <bpmndi:BPMNShape id="TextAnnotation_Impact_Assessment_di" bpmnElement="TextAnnotation_Impact_Assessment">
+        <dc:Bounds x="392" y="320" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Impact_Assessment_di" bpmnElement="Association_Impact_Assessment">
+        <di:waypoint x="442" y="420" />
+        <di:waypoint x="492" y="380" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Stakeholder_Engagement_di" bpmnElement="TextAnnotation_Stakeholder_Engagement">
+        <dc:Bounds x="696" y="520" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Stakeholder_Engagement_di" bpmnElement="Association_Stakeholder_Engagement">
+        <di:waypoint x="746" y="620" />
+        <di:waypoint x="796" y="580" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Legal_Compliance_di" bpmnElement="TextAnnotation_Legal_Compliance">
+        <dc:Bounds x="1152" y="720" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Legal_Compliance_di" bpmnElement="Association_Legal_Compliance">
+        <di:waypoint x="1202" y="820" />
+        <di:waypoint x="1252" y="780" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Validation_Process_di" bpmnElement="TextAnnotation_Validation_Process">
+        <dc:Bounds x="544" y="920" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Validation_Process_di" bpmnElement="Association_Validation_Process">
+        <di:waypoint x="594" y="1020" />
+        <di:waypoint x="644" y="980" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Quality_Standards_di" bpmnElement="TextAnnotation_Quality_Standards">
+        <dc:Bounds x="1152" y="920" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Quality_Standards_di" bpmnElement="Association_Quality_Standards">
+        <di:waypoint x="1202" y="1020" />
+        <di:waypoint x="1252" y="980" />
+      </bpmndi:BPMNEdge>
+
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions> 

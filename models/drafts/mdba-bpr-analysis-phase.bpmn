@@ -1,0 +1,499 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL"
+             xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI"
+             xmlns:dc="http://www.omg.org/spec/DD/20100524/DC"
+             xmlns:di="http://www.omg.org/spec/DD/20100524/DI"
+             xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+             id="Definitions_BPR_AnalysisProcess"
+             targetNamespace="http://bpmn.io/schema/bpmn"
+             exporter="BPMN Studio"
+             exporterVersion="1.0.0">
+  <!-- Error Definitions -->
+  <error id="Error_Analysis_Invalid" name="Invalid Analysis" errorCode="ANA_001">
+    <documentation>
+      Analysis validation error indicating non-compliance with requirements.
+      Severity: High
+      Resolution Path:
+      1. Review analysis against requirements
+      2. Identify specific non-compliance areas
+      3. Consult with subject matter experts
+      4. Revise analysis as needed
+      5. Document resolution and lessons learned
+      Impact: May delay analysis phase and require rework.
+      Owner: Analysis Team Lead
+      SLA: 48 hours resolution target
+    </documentation>
+  </error>
+  
+  <error id="Error_Classification_Failed" name="Classification Failed" errorCode="CLS_001">
+    <documentation>
+      Error in submission classification process.
+      Severity: High
+      Resolution Path:
+      1. Review classification criteria
+      2. Verify submission data integrity
+      3. Consult classification guidelines
+      4. Reclassify submissions
+      5. Update classification rules if needed
+      Impact: May affect thematic analysis and reporting.
+      Owner: Analysis Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+  
+  <error id="Error_Quality_Check_Failed" name="Quality Check Failed" errorCode="QC_001">
+    <documentation>
+      Quality validation error in analysis process.
+      Severity: Critical
+      Resolution Path:
+      1. Review quality criteria
+      2. Identify quality gaps
+      3. Consult quality team
+      4. Implement corrective actions
+      5. Verify resolution
+      Impact: May prevent progression to next phase.
+      Owner: Quality Team Lead
+      SLA: 24 hours resolution target
+    </documentation>
+  </error>
+  
+  <!-- Message Definitions -->
+  <message id="Message_Analysis_Complete" name="Analysis Complete">
+    <documentation>
+      Notification of analysis phase completion.
+      Content:
+      - Analysis phase status
+      - Key findings summary
+      - Quality check results
+      - Next phase information
+      - Contact details for queries
+      Recipients:
+      - Basin Plan Review Team
+      - Quality Team
+      - Subject Matter Experts
+      Trigger Conditions:
+      - All submissions analyzed
+      - Quality checks passed
+      - Expert review completed
+      - Final validation approved
+    </documentation>
+  </message>
+  
+  <message id="Message_Quality_Approved" name="Quality Approved">
+    <documentation>
+      Quality approval notification.
+      Content:
+      - Quality check results
+      - Approval status
+      - Validation details
+      - Compliance confirmation
+      - Next steps information
+      Recipients:
+      - Analysis Team
+      - Quality Team
+      - Process Owner
+      Trigger Conditions:
+      - Quality review completed
+      - All criteria met
+      - Validation successful
+      - No outstanding issues
+    </documentation>
+  </message>
+
+  <bpmn:process id="Process_BPR_AnalysisPhase" name="2026 Basin Plan Review Analysis Phase" isExecutable="false">
+    <bpmn:documentation>
+      Purpose: Manages the analysis of submissions for the 2026 Basin Plan Review
+      Owner: MDBA Basin Plan Review Team
+      Version: 1.0.0
+      Last Updated: 20/03/2024
+      Description: This process coordinates the analysis of collected submissions,
+      including classification, thematic analysis, and preparation for consideration.
+      Ensures systematic and thorough analysis of all stakeholder inputs.
+    </bpmn:documentation>
+
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Analysis_Team" name="Analysis Team">
+        <bpmn:flowNodeRef>StartEvent_Analysis_Phase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Initial_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Classify_Submissions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Thematic_Analysis</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Prepare_Analysis_Report</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_Analysis_Complete</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Quality_Team" name="Quality Team">
+        <bpmn:flowNodeRef>Task_Quality_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Verify_Classification</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Validate_Analysis</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Subject_Matter" name="Subject Matter Experts">
+        <bpmn:flowNodeRef>Task_Expert_Review</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Technical_Validation</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+
+    <bpmn:startEvent id="StartEvent_Analysis_Phase" name="Start Analysis Phase">
+      <bpmn:documentation>
+        Marks the commencement of the analysis phase.
+        This event is triggered when the collection phase is complete
+        and all submissions are ready for analysis.
+      </bpmn:documentation>
+      <bpmn:outgoing>Flow_Start_Initial_Review</bpmn:outgoing>
+    </bpmn:startEvent>
+
+    <bpmn:userTask id="Task_Initial_Review" name="Initial Review">
+      <bpmn:documentation>
+        Analysis team performs initial review of all submissions
+        to understand scope and identify key themes.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Start_Initial_Review</bpmn:incoming>
+      <bpmn:outgoing>Flow_Review_Classify</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Classify_Submissions" name="Classify Submissions">
+      <bpmn:documentation>
+        Analysis team classifies submissions by type, theme,
+        and relevance to Basin Plan Review objectives.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Review_Classify</bpmn:incoming>
+      <bpmn:outgoing>Flow_Classify_Thematic</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:boundaryEvent id="BoundaryEvent_Classification_Error" attachedToRef="Task_Classify_Submissions">
+      <bpmn:errorEventDefinition errorRef="Error_Classification_Failed" />
+    </bpmn:boundaryEvent>
+
+    <bpmn:userTask id="Task_Verify_Classification" name="Verify Classification">
+      <bpmn:documentation>
+        Quality team verifies the accuracy and consistency
+        of submission classification.
+      </bpmn:documentation>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Thematic_Analysis" name="Conduct Thematic Analysis">
+      <bpmn:documentation>
+        Analysis team performs detailed thematic analysis
+        of classified submissions to identify patterns and insights.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Classify_Thematic</bpmn:incoming>
+      <bpmn:outgoing>Flow_Thematic_Expert</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Expert_Review" name="Expert Review">
+      <bpmn:documentation>
+        Subject matter experts review thematic analysis
+        for technical accuracy and completeness.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Thematic_Expert</bpmn:incoming>
+      <bpmn:outgoing>Flow_Expert_Technical</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Technical_Validation" name="Technical Validation">
+      <bpmn:documentation>
+        Subject matter experts validate technical aspects
+        of the analysis and provide expert input.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Expert_Technical</bpmn:incoming>
+      <bpmn:outgoing>Flow_Technical_Prepare</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Prepare_Analysis_Report" name="Prepare Analysis Report">
+      <bpmn:documentation>
+        Analysis team prepares comprehensive report
+        incorporating all findings and expert input.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Technical_Prepare</bpmn:incoming>
+      <bpmn:outgoing>Flow_Prepare_Quality</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:userTask id="Task_Quality_Review" name="Quality Review">
+      <bpmn:documentation>
+        Quality team reviews final analysis report
+        for accuracy, completeness, and compliance.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Prepare_Quality</bpmn:incoming>
+      <bpmn:outgoing>Flow_Quality_Validate</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:boundaryEvent id="BoundaryEvent_Quality_Error" attachedToRef="Task_Quality_Review">
+      <bpmn:errorEventDefinition errorRef="Error_Quality_Check_Failed" />
+    </bpmn:boundaryEvent>
+
+    <bpmn:userTask id="Task_Validate_Analysis" name="Validate Analysis">
+      <bpmn:documentation>
+        Quality team performs final validation of analysis
+        to ensure it meets all requirements and standards.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Quality_Validate</bpmn:incoming>
+      <bpmn:outgoing>Flow_Validate_End</bpmn:outgoing>
+    </bpmn:userTask>
+
+    <bpmn:endEvent id="EndEvent_Analysis_Complete" name="Analysis Phase Complete">
+      <bpmn:documentation>
+        Marks the completion of the analysis phase.
+        All submissions have been analyzed, validated,
+        and prepared for consideration phase.
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_Validate_End</bpmn:incoming>
+    </bpmn:endEvent>
+
+    <!-- Sequence Flows -->
+    <bpmn:sequenceFlow id="Flow_Start_Initial_Review" sourceRef="StartEvent_Analysis_Phase" targetRef="Task_Initial_Review" />
+    <bpmn:sequenceFlow id="Flow_Review_Classify" sourceRef="Task_Initial_Review" targetRef="Task_Classify_Submissions" />
+    <bpmn:sequenceFlow id="Flow_Classify_Thematic" sourceRef="Task_Classify_Submissions" targetRef="Task_Thematic_Analysis" />
+    <bpmn:sequenceFlow id="Flow_Thematic_Expert" sourceRef="Task_Thematic_Analysis" targetRef="Task_Expert_Review" />
+    <bpmn:sequenceFlow id="Flow_Expert_Technical" sourceRef="Task_Expert_Review" targetRef="Task_Technical_Validation" />
+    <bpmn:sequenceFlow id="Flow_Technical_Prepare" sourceRef="Task_Technical_Validation" targetRef="Task_Prepare_Analysis_Report" />
+    <bpmn:sequenceFlow id="Flow_Prepare_Quality" sourceRef="Task_Prepare_Analysis_Report" targetRef="Task_Quality_Review" />
+    <bpmn:sequenceFlow id="Flow_Quality_Validate" sourceRef="Task_Quality_Review" targetRef="Task_Validate_Analysis" />
+    <bpmn:sequenceFlow id="Flow_Validate_End" sourceRef="Task_Validate_Analysis" targetRef="EndEvent_Analysis_Complete" />
+
+    <!-- Text Annotations -->
+    <bpmn:textAnnotation id="TextAnnotation_Quality_Control">
+      <bpmn:text>Quality control ensures accuracy and consistency throughout the analysis process</bpmn:text>
+    </bpmn:textAnnotation><!--  -->
+    <bpmn:association id="Association_Quality_Control" sourceRef="Task_Quality_Review" targetRef="TextAnnotation_Quality_Control" />
+
+    <bpmn:textAnnotation id="TextAnnotation_Expert_Input">
+      <bpmn:text>Subject matter expert review ensures technical accuracy and completeness</bpmn:text>
+    </bpmn:textAnnotation>
+    <bpmn:association id="Association_Expert_Input" sourceRef="Task_Expert_Review" targetRef="TextAnnotation_Expert_Input" />
+
+    <!-- Add Validation Tasks -->
+    <userTask id="Task_Validate_Classification" name="Validate Classification">
+      <documentation>
+        Validates submission classification against established criteria.
+        Checks:
+        - Classification accuracy
+        - Consistency across submissions
+        - Compliance with guidelines
+        - Proper categorization
+        Output:
+        - Validation report
+        - Classification metrics
+        - Improvement recommendations
+      </documentation>
+    </userTask>
+
+    <userTask id="Task_Verify_Analysis_Quality" name="Verify Analysis Quality">
+      <documentation>
+        Verifies quality of analysis against standards.
+        Checks:
+        - Analysis methodology
+        - Data accuracy
+        - Conclusion validity
+        - Documentation completeness
+        Output:
+        - Quality assessment report
+        - Compliance status
+        - Action items if needed
+      </documentation>
+    </userTask>
+
+    <!-- Add Validation Sequence Flows -->
+    <sequenceFlow id="Flow_Classify_Validate" sourceRef="Task_Classify_Submissions" targetRef="Task_Validate_Classification" />
+    <sequenceFlow id="Flow_Validate_Thematic" sourceRef="Task_Validate_Classification" targetRef="Task_Thematic_Analysis" />
+    <sequenceFlow id="Flow_Thematic_Verify" sourceRef="Task_Thematic_Analysis" targetRef="Task_Verify_Analysis_Quality" />
+    <sequenceFlow id="Flow_Verify_Expert" sourceRef="Task_Verify_Analysis_Quality" targetRef="Task_Expert_Review" />
+
+    <!-- Add Validation Text Annotations -->
+    <textAnnotation id="TextAnnotation_Validation_Process">
+      <text>Validation process ensures accuracy and compliance throughout analysis phase</text>
+    </textAnnotation>
+    <association id="Association_Validation_Process" sourceRef="Task_Validate_Classification" targetRef="TextAnnotation_Validation_Process" />
+
+    <textAnnotation id="TextAnnotation_Quality_Standards">
+      <text>Quality standards ensure consistent and reliable analysis outcomes</text>
+    </textAnnotation>
+    <association id="Association_Quality_Standards" sourceRef="Task_Verify_Analysis_Quality" targetRef="TextAnnotation_Quality_Standards" />
+
+  </bpmn:process>
+
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="Process_BPR_AnalysisPhase">
+      <!-- Lanes -->
+      <bpmndi:BPMNShape id="Lane_Analysis_Team_di" bpmnElement="Lane_Analysis_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="120" width="1500" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Quality_Team_di" bpmnElement="Lane_Quality_Team" isHorizontal="true">
+        <dc:Bounds x="120" y="320" width="1500" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_Subject_Matter_di" bpmnElement="Lane_Subject_Matter" isHorizontal="true">
+        <dc:Bounds x="120" y="520" width="1500" height="200" />
+      </bpmndi:BPMNShape>
+
+      <!-- Events -->
+      <bpmndi:BPMNShape id="StartEvent_Analysis_Phase_di" bpmnElement="StartEvent_Analysis_Phase">
+        <dc:Bounds x="152" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="130" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="EndEvent_Analysis_Complete_di" bpmnElement="EndEvent_Analysis_Complete">
+        <dc:Bounds x="1518" y="242" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1496" y="285" width="80" height="27" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      
+      <!-- Tasks -->
+      <bpmndi:BPMNShape id="Task_Initial_Review_di" bpmnElement="Task_Initial_Review">
+        <dc:Bounds x="240" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Classify_Submissions_di" bpmnElement="Task_Classify_Submissions">
+        <dc:Bounds x="392" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Verify_Classification_di" bpmnElement="Task_Verify_Classification">
+        <dc:Bounds x="392" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Thematic_Analysis_di" bpmnElement="Task_Thematic_Analysis">
+        <dc:Bounds x="544" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Expert_Review_di" bpmnElement="Task_Expert_Review">
+        <dc:Bounds x="696" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Technical_Validation_di" bpmnElement="Task_Technical_Validation">
+        <dc:Bounds x="848" y="520" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Prepare_Analysis_Report_di" bpmnElement="Task_Prepare_Analysis_Report">
+        <dc:Bounds x="1000" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Quality_Review_di" bpmnElement="Task_Quality_Review">
+        <dc:Bounds x="1152" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <bpmndi:BPMNShape id="Task_Validate_Analysis_di" bpmnElement="Task_Validate_Analysis">
+        <dc:Bounds x="1304" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      
+      <!-- Sequence Flows -->
+      <bpmndi:BPMNEdge id="Flow_Start_Initial_Review_di" bpmnElement="Flow_Start_Initial_Review">
+        <di:waypoint x="188" y="260" />
+        <di:waypoint x="240" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Review_Classify_di" bpmnElement="Flow_Review_Classify">
+        <di:waypoint x="340" y="260" />
+        <di:waypoint x="392" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Classify_Thematic_di" bpmnElement="Flow_Classify_Thematic">
+        <di:waypoint x="492" y="260" />
+        <di:waypoint x="544" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Thematic_Expert_di" bpmnElement="Flow_Thematic_Expert">
+        <di:waypoint x="644" y="260" />
+        <di:waypoint x="746" y="260" />
+        <di:waypoint x="746" y="560" />
+        <di:waypoint x="696" y="560" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Expert_Technical_di" bpmnElement="Flow_Expert_Technical">
+        <di:waypoint x="796" y="560" />
+        <di:waypoint x="848" y="560" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Technical_Prepare_di" bpmnElement="Flow_Technical_Prepare">
+        <di:waypoint x="948" y="560" />
+        <di:waypoint x="1050" y="560" />
+        <di:waypoint x="1050" y="260" />
+        <di:waypoint x="1000" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Prepare_Quality_di" bpmnElement="Flow_Prepare_Quality">
+        <di:waypoint x="1100" y="260" />
+        <di:waypoint x="1202" y="260" />
+        <di:waypoint x="1202" y="460" />
+        <di:waypoint x="1152" y="460" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Quality_Validate_di" bpmnElement="Flow_Quality_Validate">
+        <di:waypoint x="1252" y="460" />
+        <di:waypoint x="1304" y="460" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNEdge id="Flow_Validate_End_di" bpmnElement="Flow_Validate_End">
+        <di:waypoint x="1404" y="460" />
+        <di:waypoint x="1456" y="460" />
+        <di:waypoint x="1456" y="260" />
+        <di:waypoint x="1518" y="260" />
+      </bpmndi:BPMNEdge>
+      
+      <!-- Text Annotations -->
+      <bpmndi:BPMNShape id="TextAnnotation_Quality_Control_di" bpmnElement="TextAnnotation_Quality_Control">
+        <dc:Bounds x="1152" y="320" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Quality_Control_di" bpmnElement="Association_Quality_Control">
+        <di:waypoint x="1202" y="420" />
+        <di:waypoint x="1252" y="380" />
+      </bpmndi:BPMNEdge>
+      
+      <bpmndi:BPMNShape id="TextAnnotation_Expert_Input_di" bpmnElement="TextAnnotation_Expert_Input">
+        <dc:Bounds x="696" y="420" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Expert_Input_di" bpmnElement="Association_Expert_Input">
+        <di:waypoint x="746" y="520" />
+        <di:waypoint x="796" y="480" />
+      </bpmndi:BPMNEdge>
+      
+      <!-- Add Validation Task Shapes -->
+      <bpmndi:BPMNShape id="Task_Validate_Classification_di" bpmnElement="Task_Validate_Classification">
+        <dc:Bounds x="392" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_Verify_Analysis_Quality_di" bpmnElement="Task_Verify_Analysis_Quality">
+        <dc:Bounds x="544" y="420" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add Validation Flow Edges -->
+      <bpmndi:BPMNEdge id="Flow_Classify_Validate_di" bpmnElement="Flow_Classify_Validate">
+        <di:waypoint x="442" y="260" />
+        <di:waypoint x="442" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Validate_Thematic_di" bpmnElement="Flow_Validate_Thematic">
+        <di:waypoint x="492" y="420" />
+        <di:waypoint x="544" y="420" />
+        <di:waypoint x="544" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Thematic_Verify_di" bpmnElement="Flow_Thematic_Verify">
+        <di:waypoint x="644" y="260" />
+        <di:waypoint x="644" y="420" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_Verify_Expert_di" bpmnElement="Flow_Verify_Expert">
+        <di:waypoint x="644" y="420" />
+        <di:waypoint x="696" y="420" />
+        <di:waypoint x="696" y="520" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add Validation Text Annotation Shapes -->
+      <bpmndi:BPMNShape id="TextAnnotation_Validation_Process_di" bpmnElement="TextAnnotation_Validation_Process">
+        <dc:Bounds x="392" y="320" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Validation_Process_di" bpmnElement="Association_Validation_Process">
+        <di:waypoint x="442" y="420" />
+        <di:waypoint x="492" y="380" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNShape id="TextAnnotation_Quality_Standards_di" bpmnElement="TextAnnotation_Quality_Standards">
+        <dc:Bounds x="544" y="320" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_Quality_Standards_di" bpmnElement="Association_Quality_Standards">
+        <di:waypoint x="594" y="420" />
+        <di:waypoint x="644" y="380" />
+      </bpmndi:BPMNEdge>
+      
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions> 

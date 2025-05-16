@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_0" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_RetentionViolation" name="Retention Policy Violation" />
+  <bpmn:error id="Error_ArchiveFailed" name="Archive Operation Failed" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_ArchiveRequest" name="Archive Request" />
+  <bpmn:message id="Message_RetentionCheck" name="Retention Check Required" />
+  <bpmn:message id="Message_ArchiveComplete" name="Archive Complete" />
+  <bpmn:process id="DataArchiving" name="MDBA BPR Data Archiving & Retention" isExecutable="true">
+    <bpmn:documentation>
+      This process manages the archiving and retention of submission data and related documents. It ensures compliance with retention policies, proper data classification, and secure long-term storage while maintaining accessibility for authorized users.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_RecordsTeam" name="Records Team">
+        <bpmn:flowNodeRef>StartEvent_ArchiveRequested</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitialAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ClassifyData</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ComplianceTeam" name="Compliance Team">
+        <bpmn:flowNodeRef>Task_RetentionCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ComplianceVerification</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ArchiveTeam" name="Archive Team">
+        <bpmn:flowNodeRef>Task_PrepareArchive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ExecuteArchive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifyArchive</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QualityTeam" name="Quality Team">
+        <bpmn:flowNodeRef>Task_QualityCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_UpdateMetadata</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordArchive</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_ArchiveComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_ArchiveRequested" name="Archive Requested">
+      <bpmn:documentation>Process commences when data requires archiving or retention period is due for review.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToAssessment</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_InitialAssessment" name="Initial Assessment">
+      <bpmn:documentation>Assess data for archiving requirements and retention needs.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToAssessment</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssessmentToClassify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ClassifyData" name="Classify Data">
+      <bpmn:documentation>Classify data according to retention policies and sensitivity levels.</bpmn:documentation>
+      <bpmn:incoming>Flow_AssessmentToClassify</bpmn:incoming>
+      <bpmn:outgoing>Flow_ClassifyToRetention</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RetentionCheck" name="Retention Check">
+      <bpmn:documentation>Verify retention requirements and compliance with policies.</bpmn:documentation>
+      <bpmn:incoming>Flow_ClassifyToRetention</bpmn:incoming>
+      <bpmn:outgoing>Flow_RetentionToCompliance</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ComplianceVerification" name="Compliance Verification">
+      <bpmn:documentation>Verify compliance with data protection and retention regulations.</bpmn:documentation>
+      <bpmn:incoming>Flow_RetentionToCompliance</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComplianceToPrepare</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PrepareArchive" name="Prepare Archive">
+      <bpmn:documentation>Prepare data for archiving according to classification and retention requirements.</bpmn:documentation>
+      <bpmn:incoming>Flow_ComplianceToPrepare</bpmn:incoming>
+      <bpmn:outgoing>Flow_PrepareToExecute</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ExecuteArchive" name="Execute Archive">
+      <bpmn:documentation>Execute archiving process and transfer data to secure storage.</bpmn:documentation>
+      <bpmn:incoming>Flow_PrepareToExecute</bpmn:incoming>
+      <bpmn:outgoing>Flow_ExecuteToVerify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerifyArchive" name="Verify Archive">
+      <bpmn:documentation>Verify successful archiving and data integrity.</bpmn:documentation>
+      <bpmn:incoming>Flow_ExecuteToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToQuality</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_QualityCheck" name="Quality Check">
+      <bpmn:documentation>Perform quality check on archived data and process.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerifyToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToMetadata</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_UpdateMetadata" name="Update Metadata">
+      <bpmn:documentation>Update metadata and indexing for archived data.</bpmn:documentation>
+      <bpmn:incoming>Flow_QualityToMetadata</bpmn:incoming>
+      <bpmn:outgoing>Flow_MetadataToRecord</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RecordArchive" name="Record Archive">
+      <bpmn:documentation>Record archive details and retention information in system.</bpmn:documentation>
+      <bpmn:incoming>Flow_MetadataToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_ArchiveComplete" name="Archive Complete">
+      <bpmn:documentation>Archiving process is complete and recorded.</bpmn:documentation>
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_RetentionError" attachedToRef="Task_RetentionCheck">
+      <bpmn:errorEventDefinition errorRef="Error_RetentionViolation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ArchiveError" attachedToRef="Task_ExecuteArchive">
+      <bpmn:errorEventDefinition errorRef="Error_ArchiveFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_VerifyArchive">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordArchive">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToAssessment" sourceRef="StartEvent_ArchiveRequested" targetRef="Task_InitialAssessment" />
+    <bpmn:sequenceFlow id="Flow_AssessmentToClassify" sourceRef="Task_InitialAssessment" targetRef="Task_ClassifyData" />
+    <bpmn:sequenceFlow id="Flow_ClassifyToRetention" sourceRef="Task_ClassifyData" targetRef="Task_RetentionCheck" />
+    <bpmn:sequenceFlow id="Flow_RetentionToCompliance" sourceRef="Task_RetentionCheck" targetRef="Task_ComplianceVerification" />
+    <bpmn:sequenceFlow id="Flow_ComplianceToPrepare" sourceRef="Task_ComplianceVerification" targetRef="Task_PrepareArchive" />
+    <bpmn:sequenceFlow id="Flow_PrepareToExecute" sourceRef="Task_PrepareArchive" targetRef="Task_ExecuteArchive" />
+    <bpmn:sequenceFlow id="Flow_ExecuteToVerify" sourceRef="Task_ExecuteArchive" targetRef="Task_VerifyArchive" />
+    <bpmn:sequenceFlow id="Flow_VerifyToQuality" sourceRef="Task_VerifyArchive" targetRef="Task_QualityCheck" />
+    <bpmn:sequenceFlow id="Flow_QualityToMetadata" sourceRef="Task_QualityCheck" targetRef="Task_UpdateMetadata" />
+    <bpmn:sequenceFlow id="Flow_MetadataToRecord" sourceRef="Task_UpdateMetadata" targetRef="Task_RecordArchive" />
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordArchive" targetRef="EndEvent_ArchiveComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DataArchiving">
+      <bpmndi:BPMNShape id="Shape_StartEvent_ArchiveRequested" bpmnElement="StartEvent_ArchiveRequested">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_ArchiveComplete" bpmnElement="EndEvent_ArchiveComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialAssessment" bpmnElement="Task_InitialAssessment">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ClassifyData" bpmnElement="Task_ClassifyData">
+        <dc:Bounds x="440" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RetentionCheck" bpmnElement="Task_RetentionCheck">
+        <dc:Bounds x="600" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ComplianceVerification" bpmnElement="Task_ComplianceVerification">
+        <dc:Bounds x="760" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareArchive" bpmnElement="Task_PrepareArchive">
+        <dc:Bounds x="920" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ExecuteArchive" bpmnElement="Task_ExecuteArchive">
+        <dc:Bounds x="1080" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VerifyArchive" bpmnElement="Task_VerifyArchive">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_QualityCheck" bpmnElement="Task_QualityCheck">
+        <dc:Bounds x="920" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_UpdateMetadata" bpmnElement="Task_UpdateMetadata">
+        <dc:Bounds x="1080" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordArchive" bpmnElement="Task_RecordArchive">
+        <dc:Bounds x="1240" y="380" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToAssessment" bpmnElement="Flow_StartToAssessment">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentToClassify" bpmnElement="Flow_AssessmentToClassify">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ClassifyToRetention" bpmnElement="Flow_ClassifyToRetention">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RetentionToCompliance" bpmnElement="Flow_RetentionToCompliance">
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="760" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ComplianceToPrepare" bpmnElement="Flow_ComplianceToPrepare">
+        <di:waypoint x="860" y="220" />
+        <di:waypoint x="920" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PrepareToExecute" bpmnElement="Flow_PrepareToExecute">
+        <di:waypoint x="1020" y="320" />
+        <di:waypoint x="1080" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ExecuteToVerify" bpmnElement="Flow_ExecuteToVerify">
+        <di:waypoint x="1180" y="320" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToQuality" bpmnElement="Flow_VerifyToQuality">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="920" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QualityToMetadata" bpmnElement="Flow_QualityToMetadata">
+        <di:waypoint x="1020" y="420" />
+        <di:waypoint x="1080" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_MetadataToRecord" bpmnElement="Flow_MetadataToRecord">
+        <di:waypoint x="1180" y="420" />
+        <di:waypoint x="1240" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1340" y="420" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_RecordsTeam" bpmnElement="Lane_RecordsTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ComplianceTeam" bpmnElement="Lane_ComplianceTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ArchiveTeam" bpmnElement="Lane_ArchiveTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_QualityTeam" bpmnElement="Lane_QualityTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="420" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

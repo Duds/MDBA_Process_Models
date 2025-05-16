@@ -1,0 +1,241 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_RedactionRequired" name="Additional Redaction Required" />
+  <bpmn:error id="Error_ICIPViolation" name="ICIP Protocol Violation" />
+  <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_RedactionRequest" name="Redaction Request" />
+  <bpmn:message id="Message_ICIPReview" name="ICIP Review Required" />
+  <bpmn:message id="Message_RedactionComplete" name="Redaction Complete" />
+  <bpmn:process id="RedactionWorkflow" name="MDBA BPR Redaction Workflow" isExecutable="true">
+    <bpmn:documentation>
+      This process manages the redaction of sensitive information from submissions and documents. It ensures proper handling of ICIP, privacy, and confidential information while maintaining document integrity and compliance with MDBA standards.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_ContentTeam" name="Content Team">
+        <bpmn:flowNodeRef>StartEvent_RedactionRequested</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_InitialReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_RedactionType</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ApplyRedactions</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ICIPTeam" name="ICIP Team">
+        <bpmn:flowNodeRef>Task_ICIPAssessment</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ICIPVerification</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_LegalTeam" name="Legal Team">
+        <bpmn:flowNodeRef>Task_LegalReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ComplianceCheck</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QualityTeam" name="Quality Team">
+        <bpmn:flowNodeRef>Task_QualityCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FinalVerification</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_RecordRedactions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_RedactionComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_RedactionRequested" name="Redaction Requested">
+      <bpmn:documentation>Process commences when a document requires redaction.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToReview</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_InitialReview" name="Initial Review">
+      <bpmn:documentation>Review document to identify content requiring redaction.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToReview</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReviewToGateway</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_RedactionType" name="Redaction Type Required">
+      <bpmn:documentation>Determine if redaction requires ICIP review, legal review, or both.</bpmn:documentation>
+      <bpmn:incoming>Flow_ReviewToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToICIP</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToLegal</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToBoth</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_ICIPAssessment" name="ICIP Assessment">
+      <bpmn:documentation>Assess content for Indigenous Cultural and Intellectual Property considerations.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToICIP</bpmn:incoming>
+      <bpmn:incoming>Flow_GatewayToBoth</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPToVerification</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_LegalReview" name="Legal Review">
+      <bpmn:documentation>Review content for legal compliance and privacy requirements.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToLegal</bpmn:incoming>
+      <bpmn:incoming>Flow_GatewayToBoth</bpmn:incoming>
+      <bpmn:outgoing>Flow_LegalToCompliance</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ICIPVerification" name="ICIP Verification">
+      <bpmn:documentation>Verify ICIP requirements and recommendations.</bpmn:documentation>
+      <bpmn:incoming>Flow_ICIPToVerification</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPVerificationToRedaction</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ComplianceCheck" name="Compliance Check">
+      <bpmn:documentation>Verify legal compliance and privacy requirements.</bpmn:documentation>
+      <bpmn:incoming>Flow_LegalToCompliance</bpmn:incoming>
+      <bpmn:outgoing>Flow_ComplianceToRedaction</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ApplyRedactions" name="Apply Redactions">
+      <bpmn:documentation>Apply required redactions to document based on ICIP and legal requirements.</bpmn:documentation>
+      <bpmn:incoming>Flow_ICIPVerificationToRedaction</bpmn:incoming>
+      <bpmn:incoming>Flow_ComplianceToRedaction</bpmn:incoming>
+      <bpmn:outgoing>Flow_RedactionToQuality</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_QualityCheck" name="Quality Check">
+      <bpmn:documentation>Verify redactions are correctly applied and document integrity maintained.</bpmn:documentation>
+      <bpmn:incoming>Flow_RedactionToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToVerification</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_FinalVerification" name="Final Verification">
+      <bpmn:documentation>Perform final verification of all redactions and document compliance.</bpmn:documentation>
+      <bpmn:incoming>Flow_QualityToVerification</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerificationToRecord</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_RecordRedactions" name="Record Redactions">
+      <bpmn:documentation>Record redaction details and decisions in system.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerificationToRecord</bpmn:incoming>
+      <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_RedactionComplete" name="Redaction Complete">
+      <bpmn:documentation>All required redactions are complete and recorded.</bpmn:documentation>
+      <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_RedactionError" attachedToRef="Task_ApplyRedactions">
+      <bpmn:errorEventDefinition errorRef="Error_RedactionRequired" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ICIPError" attachedToRef="Task_ICIPAssessment">
+      <bpmn:errorEventDefinition errorRef="Error_ICIPViolation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ValidationError" attachedToRef="Task_FinalVerification">
+      <bpmn:errorEventDefinition errorRef="Error_ValidationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordRedactions">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToReview" sourceRef="StartEvent_RedactionRequested" targetRef="Task_InitialReview" />
+    <bpmn:sequenceFlow id="Flow_ReviewToGateway" sourceRef="Task_InitialReview" targetRef="Gateway_RedactionType" />
+    <bpmn:sequenceFlow id="Flow_GatewayToICIP" sourceRef="Gateway_RedactionType" targetRef="Task_ICIPAssessment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresICIPReview}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToLegal" sourceRef="Gateway_RedactionType" targetRef="Task_LegalReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresLegalReview}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToBoth" sourceRef="Gateway_RedactionType" targetRef="Task_ICIPAssessment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${requiresBothReviews}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ICIPToVerification" sourceRef="Task_ICIPAssessment" targetRef="Task_ICIPVerification" />
+    <bpmn:sequenceFlow id="Flow_LegalToCompliance" sourceRef="Task_LegalReview" targetRef="Task_ComplianceCheck" />
+    <bpmn:sequenceFlow id="Flow_ICIPVerificationToRedaction" sourceRef="Task_ICIPVerification" targetRef="Task_ApplyRedactions" />
+    <bpmn:sequenceFlow id="Flow_ComplianceToRedaction" sourceRef="Task_ComplianceCheck" targetRef="Task_ApplyRedactions" />
+    <bpmn:sequenceFlow id="Flow_RedactionToQuality" sourceRef="Task_ApplyRedactions" targetRef="Task_QualityCheck" />
+    <bpmn:sequenceFlow id="Flow_QualityToVerification" sourceRef="Task_QualityCheck" targetRef="Task_FinalVerification" />
+    <bpmn:sequenceFlow id="Flow_VerificationToRecord" sourceRef="Task_FinalVerification" targetRef="Task_RecordRedactions" />
+    <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordRedactions" targetRef="EndEvent_RedactionComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="RedactionWorkflow">
+      <bpmndi:BPMNShape id="Shape_StartEvent_RedactionRequested" bpmnElement="StartEvent_RedactionRequested">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_RedactionComplete" bpmnElement="EndEvent_RedactionComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_InitialReview" bpmnElement="Task_InitialReview">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_RedactionType" bpmnElement="Gateway_RedactionType">
+        <dc:Bounds x="440" y="95" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPAssessment" bpmnElement="Task_ICIPAssessment">
+        <dc:Bounds x="560" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_LegalReview" bpmnElement="Task_LegalReview">
+        <dc:Bounds x="560" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPVerification" bpmnElement="Task_ICIPVerification">
+        <dc:Bounds x="720" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ComplianceCheck" bpmnElement="Task_ComplianceCheck">
+        <dc:Bounds x="720" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ApplyRedactions" bpmnElement="Task_ApplyRedactions">
+        <dc:Bounds x="880" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_QualityCheck" bpmnElement="Task_QualityCheck">
+        <dc:Bounds x="1040" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FinalVerification" bpmnElement="Task_FinalVerification">
+        <dc:Bounds x="1200" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_RecordRedactions" bpmnElement="Task_RecordRedactions">
+        <dc:Bounds x="1360" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToReview" bpmnElement="Flow_StartToReview">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ReviewToGateway" bpmnElement="Flow_ReviewToGateway">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToICIP" bpmnElement="Flow_GatewayToICIP">
+        <di:waypoint x="465" y="120" />
+        <di:waypoint x="560" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToLegal" bpmnElement="Flow_GatewayToLegal">
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="560" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToBoth" bpmnElement="Flow_GatewayToBoth">
+        <di:waypoint x="490" y="95" />
+        <di:waypoint x="560" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToVerification" bpmnElement="Flow_ICIPToVerification">
+        <di:waypoint x="660" y="220" />
+        <di:waypoint x="720" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_LegalToCompliance" bpmnElement="Flow_LegalToCompliance">
+        <di:waypoint x="660" y="320" />
+        <di:waypoint x="720" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPVerificationToRedaction" bpmnElement="Flow_ICIPVerificationToRedaction">
+        <di:waypoint x="820" y="220" />
+        <di:waypoint x="880" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ComplianceToRedaction" bpmnElement="Flow_ComplianceToRedaction">
+        <di:waypoint x="820" y="320" />
+        <di:waypoint x="880" y="280" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RedactionToQuality" bpmnElement="Flow_RedactionToQuality">
+        <di:waypoint x="980" y="220" />
+        <di:waypoint x="1040" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_QualityToVerification" bpmnElement="Flow_QualityToVerification">
+        <di:waypoint x="1140" y="320" />
+        <di:waypoint x="1200" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerificationToRecord" bpmnElement="Flow_VerificationToRecord">
+        <di:waypoint x="1300" y="320" />
+        <di:waypoint x="1360" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
+        <di:waypoint x="1460" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_ContentTeam" bpmnElement="Lane_ContentTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ICIPTeam" bpmnElement="Lane_ICIPTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_LegalTeam" bpmnElement="Lane_LegalTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_QualityTeam" bpmnElement="Lane_QualityTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="420" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

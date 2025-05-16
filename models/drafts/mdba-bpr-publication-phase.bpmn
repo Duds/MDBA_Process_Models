@@ -1,0 +1,210 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_AnalysisProcess" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
+  <bpmn:error id="Error_ICIPViolation" name="ICIP Protocol Violation" />
+  <bpmn:error id="Error_PermissionDenied" name="Publication Permission Denied" />
+  <bpmn:error id="Error_RedactionRequired" name="Redaction Required" />
+  <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:message id="Message_ContentReady" name="Content Ready for Publication" />
+  <bpmn:message id="Message_ICIPReviewComplete" name="ICIP Review Complete" />
+  <bpmn:message id="Message_PublicationApproved" name="Publication Approved" />
+  <bpmn:process id="PublicationPhaseDetail" name="MDBA BPR Publication Phase" isExecutable="true">
+    <bpmn:documentation>
+      This process details the publication phase of the Basin Plan Review, including ICIP compliance checks, redaction handling, and website publication. The process ensures all content meets MDBA publication standards and ICIP requirements before public release.
+    </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_ContentTeam" name="Content Team">
+        <bpmn:flowNodeRef>StartEvent_PublicationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PrepareContent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ApplyRedactions</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_FinaliseContent</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ICIPTeam" name="ICIP Team">
+        <bpmn:flowNodeRef>Task_ICIPReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ICIPApproval</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_WebTeam" name="Web Team">
+        <bpmn:flowNodeRef>Task_PrepareWebsite</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_PublishContent</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_VerifyPublication</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_PublicationComplete</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:startEvent id="StartEvent_PublicationPhase" name="Publication Phase Start">
+      <bpmn:documentation>Process commences when content is ready for publication review.</bpmn:documentation>
+      <bpmn:outgoing>Flow_StartToPrepare</bpmn:outgoing>
+    </bpmn:startEvent>
+    <bpmn:task id="Task_PrepareContent" name="Prepare Content for Review">
+      <bpmn:documentation>Initial preparation of content for ICIP review and publication.</bpmn:documentation>
+      <bpmn:incoming>Flow_StartToPrepare</bpmn:incoming>
+      <bpmn:outgoing>Flow_PrepareToICIP</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ICIPReview" name="Conduct ICIP Review">
+      <bpmn:documentation>Review content for ICIP compliance and identify any required redactions.</bpmn:documentation>
+      <bpmn:incoming>Flow_PrepareToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPToGateway</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:exclusiveGateway id="Gateway_RedactionCheck" name="Redaction Required?">
+      <bpmn:incoming>Flow_ICIPToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_GatewayToRedaction</bpmn:outgoing>
+      <bpmn:outgoing>Flow_GatewayToApproval</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:task id="Task_ApplyRedactions" name="Apply Required Redactions">
+      <bpmn:documentation>Apply necessary redactions to protect ICIP and sensitive information.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToRedaction</bpmn:incoming>
+      <bpmn:outgoing>Flow_RedactionToICIP</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ICIPApproval" name="Obtain ICIP Approval">
+      <bpmn:documentation>Final ICIP approval before proceeding to publication.</bpmn:documentation>
+      <bpmn:incoming>Flow_GatewayToApproval</bpmn:incoming>
+      <bpmn:incoming>Flow_RedactionToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApprovalToFinalise</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_FinaliseContent" name="Finalise Publication Content">
+      <bpmn:documentation>Final preparation of content for website publication.</bpmn:documentation>
+      <bpmn:incoming>Flow_ApprovalToFinalise</bpmn:incoming>
+      <bpmn:outgoing>Flow_FinaliseToWebsite</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PrepareWebsite" name="Prepare Website Publication">
+      <bpmn:documentation>Prepare website for content publication, including metadata and accessibility checks.</bpmn:documentation>
+      <bpmn:incoming>Flow_FinaliseToWebsite</bpmn:incoming>
+      <bpmn:outgoing>Flow_WebsiteToPublish</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_PublishContent" name="Publish Content">
+      <bpmn:documentation>Publish approved content to MDBA website.</bpmn:documentation>
+      <bpmn:incoming>Flow_WebsiteToPublish</bpmn:incoming>
+      <bpmn:outgoing>Flow_PublishToVerify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerifyPublication" name="Verify Publication">
+      <bpmn:documentation>Verify successful publication and accessibility of content.</bpmn:documentation>
+      <bpmn:incoming>Flow_PublishToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToEnd</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:endEvent id="EndEvent_PublicationComplete" name="Publication Complete">
+      <bpmn:documentation>Publication phase complete, content successfully published.</bpmn:documentation>
+      <bpmn:incoming>Flow_VerifyToEnd</bpmn:incoming>
+    </bpmn:endEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ICIPError" attachedToRef="Task_ICIPReview">
+      <bpmn:errorEventDefinition errorRef="Error_ICIPViolation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_PermissionError" attachedToRef="Task_ICIPApproval">
+      <bpmn:errorEventDefinition errorRef="Error_PermissionDenied" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_RedactionError" attachedToRef="Task_ApplyRedactions">
+      <bpmn:errorEventDefinition errorRef="Error_RedactionRequired" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_PublishContent">
+      <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
+    </bpmn:boundaryEvent>
+    <bpmn:sequenceFlow id="Flow_StartToPrepare" sourceRef="StartEvent_PublicationPhase" targetRef="Task_PrepareContent" />
+    <bpmn:sequenceFlow id="Flow_PrepareToICIP" sourceRef="Task_PrepareContent" targetRef="Task_ICIPReview" />
+    <bpmn:sequenceFlow id="Flow_ICIPToGateway" sourceRef="Task_ICIPReview" targetRef="Gateway_RedactionCheck" />
+    <bpmn:sequenceFlow id="Flow_GatewayToRedaction" sourceRef="Gateway_RedactionCheck" targetRef="Task_ApplyRedactions">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${redactionRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToApproval" sourceRef="Gateway_RedactionCheck" targetRef="Task_ICIPApproval">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!redactionRequired}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_RedactionToICIP" sourceRef="Task_ApplyRedactions" targetRef="Task_ICIPApproval" />
+    <bpmn:sequenceFlow id="Flow_ApprovalToFinalise" sourceRef="Task_ICIPApproval" targetRef="Task_FinaliseContent" />
+    <bpmn:sequenceFlow id="Flow_FinaliseToWebsite" sourceRef="Task_FinaliseContent" targetRef="Task_PrepareWebsite" />
+    <bpmn:sequenceFlow id="Flow_WebsiteToPublish" sourceRef="Task_PrepareWebsite" targetRef="Task_PublishContent" />
+    <bpmn:sequenceFlow id="Flow_PublishToVerify" sourceRef="Task_PublishContent" targetRef="Task_VerifyPublication" />
+    <bpmn:sequenceFlow id="Flow_VerifyToEnd" sourceRef="Task_VerifyPublication" targetRef="EndEvent_PublicationComplete" />
+  </bpmn:process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_1">
+    <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="PublicationPhaseDetail">
+      <bpmndi:BPMNShape id="Shape_StartEvent_PublicationPhase" bpmnElement="StartEvent_PublicationPhase">
+        <dc:Bounds x="180" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="186" y="143" width="24" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_EndEvent_PublicationComplete" bpmnElement="EndEvent_PublicationComplete">
+        <dc:Bounds x="1452" y="100" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1434" y="143" width="73" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareContent" bpmnElement="Task_PrepareContent">
+        <dc:Bounds x="280" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPReview" bpmnElement="Task_ICIPReview">
+        <dc:Bounds x="440" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_RedactionCheck" bpmnElement="Gateway_RedactionCheck" isMarkerVisible="true">
+        <dc:Bounds x="600" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ApplyRedactions" bpmnElement="Task_ApplyRedactions">
+        <dc:Bounds x="720" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPApproval" bpmnElement="Task_ICIPApproval">
+        <dc:Bounds x="880" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_FinaliseContent" bpmnElement="Task_FinaliseContent">
+        <dc:Bounds x="1040" y="80" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PrepareWebsite" bpmnElement="Task_PrepareWebsite">
+        <dc:Bounds x="1200" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_PublishContent" bpmnElement="Task_PublishContent">
+        <dc:Bounds x="1360" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VerifyPublication" bpmnElement="Task_VerifyPublication">
+        <dc:Bounds x="1520" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_Flow_StartToPrepare" bpmnElement="Flow_StartToPrepare">
+        <di:waypoint x="216" y="118" />
+        <di:waypoint x="280" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PrepareToICIP" bpmnElement="Flow_PrepareToICIP">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="440" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToGateway" bpmnElement="Flow_ICIPToGateway">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToRedaction" bpmnElement="Flow_GatewayToRedaction">
+        <di:waypoint x="625" y="195" />
+        <di:waypoint x="720" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToApproval" bpmnElement="Flow_GatewayToApproval">
+        <di:waypoint x="650" y="220" />
+        <di:waypoint x="880" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RedactionToICIP" bpmnElement="Flow_RedactionToICIP">
+        <di:waypoint x="820" y="120" />
+        <di:waypoint x="880" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ApprovalToFinalise" bpmnElement="Flow_ApprovalToFinalise">
+        <di:waypoint x="980" y="220" />
+        <di:waypoint x="1040" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FinaliseToWebsite" bpmnElement="Flow_FinaliseToWebsite">
+        <di:waypoint x="1140" y="120" />
+        <di:waypoint x="1200" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_WebsiteToPublish" bpmnElement="Flow_WebsiteToPublish">
+        <di:waypoint x="1300" y="320" />
+        <di:waypoint x="1360" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_PublishToVerify" bpmnElement="Flow_PublishToVerify">
+        <di:waypoint x="1460" y="320" />
+        <di:waypoint x="1520" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToEnd" bpmnElement="Flow_VerifyToEnd">
+        <di:waypoint x="1620" y="320" />
+        <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Lane_ContentTeam" bpmnElement="Lane_ContentTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="60" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_ICIPTeam" bpmnElement="Lane_ICIPTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="180" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Lane_WebTeam" bpmnElement="Lane_WebTeam" isHorizontal="true">
+        <dc:Bounds x="140" y="300" width="1600" height="120" />
+      </bpmndi:BPMNShape>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</bpmn:definitions> 

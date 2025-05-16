@@ -1,7 +1,7 @@
 ---
 description: 
 globs: 
-alwaysApply: false
+alwaysApply: true
 ---
 ---
 description: BPMN Logical Process Best Practices
@@ -47,7 +47,18 @@ Guidelines for creating well-structured BPMN logical processes that follow best 
     "organizational_structure": {
         "lanes": "Represent organizational units or roles",
         "assignments": "Role-based task assignments",
-        "coordination": "Cross-lane communication and handoffs"
+        "coordination": "Cross-lane communication and handoffs",
+        "validation": "Ensure all lane references are valid"
+    },
+    "namespace_management": {
+        "standard_namespaces": "Always include all required BPMN namespaces",
+        "extension_namespaces": "Only include extension namespaces that are actually used",
+        "validation": "Ensure all namespace prefixes are declared"
+    },
+    "reference_integrity": {
+        "flow_references": "Ensure all sourceRef and targetRef are valid",
+        "lane_references": "Ensure all flowNodeRef elements point to valid nodes",
+        "diagram_elements": "Ensure each process element has a corresponding diagram element"
     }
 }
 
