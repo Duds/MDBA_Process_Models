@@ -1,15 +1,27 @@
 {
-  "timestamp": "2025-05-16T01:41:13.831Z",
-  "totalFiles": 14,
-  "validFiles": 14,
-  "invalidFiles": 0,
+  "summary": {
+    "timestamp": "2025-05-16T04:23:30.020Z",
+    "totalFiles": 14,
+    "validFiles": 14,
+    "invalidFiles": 0
+  },
   "results": [
     {
-      "file": "mdba-bpr-analysis-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-analysis-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_AnalysisPhase",
+          "name": "2026 Basin Plan Review Analysis Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -34,6 +46,11 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -42,16 +59,13 @@
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
-                "No data stores defined"
+                "No data objects defined"
               ],
               "errors": []
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -61,9 +75,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -71,11 +83,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-collection-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-collection-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_CollectionPhase",
+          "name": "2026 Basin Plan Review Collection Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -100,6 +122,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -115,9 +144,7 @@
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -127,9 +154,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -137,11 +162,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-consent-privacy.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-consent-privacy.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "ConsentPrivacyCapture",
+          "name": "MDBA BPR Consent and Privacy Capture",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -166,6 +201,11 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -174,8 +214,7 @@
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
-                "No data stores defined"
+                "No data objects defined"
               ],
               "errors": []
             },
@@ -193,9 +232,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -203,11 +240,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-consideration-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-consideration-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_ConsiderationPhase",
+          "name": "2026 Basin Plan Review Consideration Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -232,6 +279,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -240,16 +294,13 @@
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
                 "No data stores defined"
               ],
               "errors": []
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -259,9 +310,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -269,11 +318,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-data-archiving.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-data-archiving.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "DataArchiving",
+          "name": "MDBA BPR Data Archiving & Retention",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -298,6 +357,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -306,8 +372,7 @@
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
-                "No data stores defined"
+                "No data objects defined"
               ],
               "errors": []
             },
@@ -325,9 +390,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -335,11 +398,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-decision-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-decision-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_DecisionPhase",
+          "name": "2026 Basin Plan Review Decision Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -364,6 +437,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -372,16 +452,13 @@
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
-                "No data stores defined"
+                "No data objects defined"
               ],
               "errors": []
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -391,9 +468,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -401,11 +476,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-end-to-end-process.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-end-to-end-process.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "MDBA_BPR_EndToEnd",
+          "name": "MDBA Basin Plan Review End-to-End Process",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -430,26 +515,26 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
-              "warnings": [
-                "No swimlanes defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
                 "No data stores defined"
               ],
               "errors": []
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -459,10 +544,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found",
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -470,11 +552,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-invitation-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-invitation-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_InvitationPhase",
+          "name": "2026 Basin Plan Review Invitation Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -499,6 +591,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -515,7 +614,7 @@
             "Gateway Logic": {
               "valid": true,
               "warnings": [
-                "No gateways defined"
+                "No conditional flows defined"
               ],
               "errors": []
             },
@@ -526,9 +625,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -536,11 +633,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-publication-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-publication-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "PublicationPhaseDetail",
+          "name": "MDBA BPR Publication Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -565,6 +672,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -580,9 +694,7 @@
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -592,9 +704,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -602,11 +712,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-redaction-workflow.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-redaction-workflow.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "RedactionWorkflow",
+          "name": "MDBA BPR Redaction Workflow",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -631,6 +751,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -646,9 +773,7 @@
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -666,11 +791,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-reporting-phase.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-reporting-phase.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "ReportingPhaseDetail",
+          "name": "MDBA BPR Reporting Phase",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -692,6 +827,13 @@
               "valid": true,
               "warnings": [
                 "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
               ],
               "errors": []
             },
@@ -722,10 +864,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found",
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -733,11 +872,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-sme-legal-review.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-sme-legal-review.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "SMELegalReview",
+          "name": "MDBA BPR SME and Legal Review Routing",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -762,6 +911,13 @@
               ],
               "errors": []
             },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
+              ],
+              "errors": []
+            },
             "Swimlane": {
               "valid": true,
               "warnings": [],
@@ -777,9 +933,7 @@
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -789,10 +943,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found",
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -800,11 +951,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-submission-tracking.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-submission-tracking.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "Process_BPR_SubmissionTracking",
+          "name": "Submission Status Tracking",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -819,9 +980,7 @@
             },
             "Error Handling": {
               "valid": true,
-              "warnings": [
-                "No error boundary events found"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Message Handling": {
@@ -831,26 +990,28 @@
               ],
               "errors": []
             },
-            "Swimlane": {
+            "Subprocess": {
               "valid": true,
               "warnings": [
-                "No swimlanes defined"
+                "No subprocesses or call activities defined"
               ],
+              "errors": []
+            },
+            "Swimlane": {
+              "valid": true,
+              "warnings": [],
               "errors": []
             },
             "Data Management": {
               "valid": true,
               "warnings": [
-                "No data objects defined",
                 "No data stores defined"
               ],
               "errors": []
             },
             "Gateway Logic": {
               "valid": true,
-              "warnings": [
-                "No gateways defined"
-              ],
+              "warnings": [],
               "errors": []
             },
             "Documentation": {
@@ -860,10 +1021,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found",
-                "No quality assurance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }
@@ -871,11 +1029,21 @@
       ]
     },
     {
-      "file": "mdba-bpr-triage-categorisation.bpmn",
+      "filePath": "/home/dale-rogers/dev/scratch/MDBA_Process_Models/models/drafts/mdba-bpr-triage-categorisation.bpmn",
       "valid": true,
+      "warnings": [],
+      "errors": [],
+      "categories": {
+        "XML_STRUCTURE": {
+          "valid": true,
+          "warnings": [],
+          "errors": []
+        }
+      },
       "processes": [
         {
           "id": "TriageCategorisation",
+          "name": "MDBA BPR Triage and Categorisation",
           "valid": true,
           "categories": {
             "XML Structure": {
@@ -897,6 +1065,13 @@
               "valid": true,
               "warnings": [
                 "No message flows defined"
+              ],
+              "errors": []
+            },
+            "Subprocess": {
+              "valid": true,
+              "warnings": [
+                "No subprocesses or call activities defined"
               ],
               "errors": []
             },
@@ -927,9 +1102,7 @@
             },
             "MDBA Requirements": {
               "valid": true,
-              "warnings": [
-                "No ICIP compliance checks found"
-              ],
+              "warnings": [],
               "errors": []
             }
           }

@@ -9,7 +9,34 @@
   <bpmn:message id="Message_ReviewComplete" name="Review Complete" />
   <bpmn:process id="SMELegalReview" name="MDBA BPR SME and Legal Review Routing" isExecutable="true">
     <bpmn:documentation>
-      This process manages the routing and review of submissions by Subject Matter Experts (SMEs) and Legal teams. It ensures appropriate review paths based on submission content, complexity, and legal implications, with proper tracking and quality assurance.
+      This process details the SME and legal review routing for the Basin Plan Review, ensuring all content and decisions are reviewed for subject matter expertise, legal compliance, and ICIP requirements.
+      
+      ICIP Compliance Requirements:
+      - All reviews must include an ICIP compliance check
+      - Cultural consultation must be documented
+      - Indigenous stakeholder engagement must be tracked
+      - Cultural protocols must be followed
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+      - ICIP compliance and cultural consultation records must be maintained:
+        * Consultation dates, participants, and outcomes
+        * Protocols followed and feedback received
+      - Stakeholder engagement must be documented:
+        * Engagement activities, participants, and feedback
+      - Review and approval outcomes must be recorded:
+        * Findings, required changes, approval status, and sign-off
+      - Process variations must be tracked:
+        * Details, impact assessment, resolution actions, and lessons learned
+      
+      Quality Assurance:
+      - All documentation must be reviewed for completeness, accuracy, compliance, and accessibility
+      - Documentation must be version controlled, accessible to stakeholders, maintained in approved systems, and archived according to retention policies
     </bpmn:documentation>
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_CoordinatorTeam" name="Coordinator Team">
@@ -127,6 +154,26 @@
     <bpmn:sequenceFlow id="Flow_ConsolidationToVerification" sourceRef="Task_ReviewConsolidation" targetRef="Task_FinalVerification" />
     <bpmn:sequenceFlow id="Flow_VerificationToRecord" sourceRef="Task_FinalVerification" targetRef="Task_RecordOutcomes" />
     <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordOutcomes" targetRef="EndEvent_ReviewComplete" />
+    <bpmn:task id="Task_ICIP_Review" name="ICIP Compliance Review">
+      <bpmn:documentation>
+        Conduct ICIP compliance review to ensure:
+        - Cultural sensitivity and appropriateness
+        - Proper acknowledgment of Indigenous knowledge
+        - Compliance with cultural protocols
+        - Appropriate stakeholder engagement
+        - Documentation of cultural consultation
+        
+        Documentation Requirements:
+        - Purpose: Ensure ICIP compliance
+        - Inputs: Review findings, ICIP guidelines
+        - Outputs: ICIP compliance report, recommendations
+        - Quality Criteria: Cultural appropriateness, protocol compliance
+        - Stakeholder: ICIP specialist, Review Team
+        - Review: Document findings, maintain consultation records
+      </bpmn:documentation>
+    </bpmn:task>
+    <bpmn:sequenceFlow id="Flow_LegalToICIP" sourceRef="Task_LegalReview" targetRef="Task_ICIP_Review" />
+    <bpmn:sequenceFlow id="Flow_ICIPToNext" sourceRef="Task_ICIP_Review" targetRef="Task_Final_Approval" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="SMELegalReview">

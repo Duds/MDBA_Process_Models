@@ -9,7 +9,34 @@
   <bpmn:message id="Message_ReadyForAnalysis" name="Ready for Analysis" />
   <bpmn:process id="TriageCategorisation" name="MDBA BPR Triage and Categorisation" isExecutable="true">
     <bpmn:documentation>
-      This process manages the initial assessment, triage, and categorisation of Basin Plan Review submissions. It ensures submissions are properly evaluated, categorized, and routed for appropriate handling based on their content, urgency, and requirements.
+      This process details the triage and categorisation of submissions for the Basin Plan Review, ensuring all submissions are assessed for completeness, categorised appropriately, and checked for ICIP compliance.
+      
+      ICIP Compliance Requirements:
+      - All triage and categorisation must include an ICIP compliance check
+      - Cultural consultation must be documented
+      - Indigenous stakeholder engagement must be tracked
+      - Cultural protocols must be followed
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+      - ICIP compliance and cultural consultation records must be maintained:
+        * Consultation dates, participants, and outcomes
+        * Protocols followed and feedback received
+      - Stakeholder engagement must be documented:
+        * Engagement activities, participants, and feedback
+      - Review and approval outcomes must be recorded:
+        * Findings, required changes, approval status, and sign-off
+      - Process variations must be tracked:
+        * Details, impact assessment, resolution actions, and lessons learned
+      
+      Quality Assurance:
+      - All documentation must be reviewed for completeness, accuracy, compliance, and accessibility
+      - Documentation must be version controlled, accessible to stakeholders, maintained in approved systems, and archived according to retention policies
     </bpmn:documentation>
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_IntakeTeam" name="Intake Team">
@@ -73,6 +100,24 @@
       <bpmn:incoming>Flow_VerifyToRecord</bpmn:incoming>
       <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
     </bpmn:task>
+    <bpmn:task id="Task_ICIP_Review" name="ICIP Compliance Review">
+      <bpmn:documentation>
+        Conduct ICIP compliance review to ensure:
+        - Cultural sensitivity and appropriateness
+        - Proper acknowledgment of Indigenous knowledge
+        - Compliance with cultural protocols
+        - Appropriate stakeholder engagement
+        - Documentation of cultural consultation
+        
+        Documentation Requirements:
+        - Purpose: Ensure ICIP compliance
+        - Inputs: Submission details, ICIP guidelines
+        - Outputs: ICIP compliance report, recommendations
+        - Quality Criteria: Cultural appropriateness, protocol compliance
+        - Stakeholder: ICIP specialist, Triage Team
+        - Review: Document findings, maintain consultation records
+      </bpmn:documentation>
+    </bpmn:task>
     <bpmn:endEvent id="EndEvent_TriageComplete" name="Triage Complete">
       <bpmn:documentation>Triage and categorisation process complete.</bpmn:documentation>
       <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
@@ -98,6 +143,8 @@
     <bpmn:sequenceFlow id="Flow_QualityToVerify" sourceRef="Task_QualityCheck" targetRef="Task_VerifyCategorisation" />
     <bpmn:sequenceFlow id="Flow_VerifyToRecord" sourceRef="Task_VerifyCategorisation" targetRef="Task_RecordDecisions" />
     <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordDecisions" targetRef="EndEvent_TriageComplete" />
+    <bpmn:sequenceFlow id="Flow_CategorisationToICIP" sourceRef="Task_VerifyCategorisation" targetRef="Task_ICIP_Review" />
+    <bpmn:sequenceFlow id="Flow_ICIPToNext" sourceRef="Task_ICIP_Review" targetRef="Task_FinaliseTriage" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="TriageCategorisation">
@@ -137,6 +184,9 @@
       <bpmndi:BPMNShape id="Shape_Task_RecordDecisions" bpmnElement="Task_RecordDecisions">
         <dc:Bounds x="1400" y="280" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIP_Review" bpmnElement="Task_ICIP_Review">
+        <dc:Bounds x="1240" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Edge_Flow_StartToAssessment" bpmnElement="Flow_StartToAssessment">
         <di:waypoint x="216" y="118" />
         <di:waypoint x="280" y="120" />
@@ -172,6 +222,14 @@
       <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
         <di:waypoint x="1500" y="320" />
         <di:waypoint x="1470" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_CategorisationToICIP" bpmnElement="Flow_CategorisationToICIP">
+        <di:waypoint x="1240" y="280" />
+        <di:waypoint x="1240" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToNext" bpmnElement="Flow_ICIPToNext">
+        <di:waypoint x="1240" y="320" />
+        <di:waypoint x="1240" y="320" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Shape_Lane_IntakeTeam" bpmnElement="Lane_IntakeTeam" isHorizontal="true">
         <dc:Bounds x="140" y="60" width="1600" height="120" />

@@ -7,6 +7,39 @@
   <bpmn:message id="Message_ConsentRequired" name="Consent Required" />
   <bpmn:message id="Message_PrivacyCheck" name="Privacy Check Required" />
   <bpmn:message id="Message_ConsentVerified" name="Consent Verified" />
+  <bpmn:dataObject id="DataObject_ConsentDetails" name="Consent Details">
+    <bpmn:documentation>
+      Stores consent and privacy information for submissions.
+      Contains:
+      - Consent status
+      - Privacy assessment
+      - ICIP requirements
+      - Publication permissions
+      - Contact preferences
+    </bpmn:documentation>
+  </bpmn:dataObject>
+
+  <bpmn:dataObject id="DataObject_PrivacyAssessment" name="Privacy Assessment">
+    <bpmn:documentation>
+      Records privacy impact assessment results.
+      Contains:
+      - Privacy risk level
+      - Required protections
+      - Data handling requirements
+      - Access restrictions
+      - Retention period
+    </bpmn:documentation>
+  </bpmn:dataObject>
+
+  <bpmn:dataStore id="DataStore_ConsentRegistry" name="Consent Registry">
+    <bpmn:documentation>
+      Central registry for all consent and privacy decisions.
+      Purpose: Maintain record of consent and privacy decisions
+      Retention: 7 years
+      Access: Restricted to Privacy and Compliance teams
+    </bpmn:documentation>
+  </bpmn:dataStore>
+
   <bpmn:process id="ConsentPrivacyCapture" name="MDBA BPR Consent and Privacy Capture" isExecutable="true">
     <bpmn:documentation>
       This process manages the capture and verification of consent and privacy information for Basin Plan Review submissions. It ensures compliance with ICIP protocols, privacy legislation, and MDBA requirements for data handling and publication permissions.
@@ -91,6 +124,90 @@
     <bpmn:sequenceFlow id="Flow_VerifyToCompliance" sourceRef="Task_VerifyConsent" targetRef="Task_ComplianceReview" />
     <bpmn:sequenceFlow id="Flow_ComplianceToRecord" sourceRef="Task_ComplianceReview" targetRef="Task_RecordConsent" />
     <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordConsent" targetRef="EndEvent_ConsentComplete" />
+    <bpmn:subProcess id="SubProcess_ConsentVerification" name="Consent Verification Workflow">
+      <bpmn:documentation>
+        Manages the verification of consent and privacy requirements.
+        Includes:
+        - Consent validation
+        - Privacy assessment
+        - ICIP compliance
+        - Documentation verification
+      </bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_Verification" name="Start Verification">
+        <bpmn:outgoing>Flow_Verification_Start</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="EndEvent_Verification" name="Verification Complete">
+        <bpmn:incoming>Flow_Verification_End</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:exclusiveGateway id="Gateway_ConsentComplete" name="Is consent complete?">
+        <bpmn:documentation>
+          Decision point: Are all required consent elements complete?
+          Criteria:
+          - Consent provided
+          - Privacy acknowledged
+          - ICIP requirements met
+          - Publication permissions clear
+        </bpmn:documentation>
+        <bpmn:incoming>Flow_VerifyToGateway</bpmn:incoming>
+        <bpmn:outgoing>Flow_Consent_Yes</bpmn:outgoing>
+        <bpmn:outgoing>Flow_Consent_No</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:exclusiveGateway id="Gateway_PrivacyRisk" name="Privacy risk level?">
+        <bpmn:documentation>
+          Decision point: What is the privacy risk level?
+          Levels:
+          - Low: Standard handling
+          - Medium: Additional review
+          - High: Senior review required
+        </bpmn:documentation>
+        <bpmn:incoming>Flow_PrivacyToGateway</bpmn:incoming>
+        <bpmn:outgoing>Flow_Risk_Low</bpmn:outgoing>
+        <bpmn:outgoing>Flow_Risk_Medium</bpmn:outgoing>
+        <bpmn:outgoing>Flow_Risk_High</bpmn:outgoing>
+      </bpmn:exclusiveGateway>
+      <bpmn:task id="Task_VerifyConsentDetails" name="Verify Consent Details">
+        <bpmn:documentation>
+          Detailed verification of consent information.
+          Checks:
+          - Consent completeness
+          - Privacy acknowledgments
+          - ICIP requirements
+          - Publication permissions
+        </bpmn:documentation>
+        <bpmn:incoming>Flow_Verification_Start</bpmn:incoming>
+        <bpmn:outgoing>Flow_VerifyToGateway</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:task id="Task_RequestAdditionalConsent" name="Request Additional Consent">
+        <bpmn:documentation>
+          Request missing or unclear consent information.
+          Actions:
+          - Identify gaps
+          - Prepare request
+          - Send to stakeholder
+          - Track response
+        </bpmn:documentation>
+        <bpmn:incoming>Flow_Consent_No</bpmn:incoming>
+        <bpmn:outgoing>Flow_RequestToVerify</bpmn:outgoing>
+      </bpmn:task>
+      <bpmn:sequenceFlow id="Flow_Verification_Start" sourceRef="StartEvent_Verification" targetRef="Task_VerifyConsentDetails" />
+      <bpmn:sequenceFlow id="Flow_VerifyToGateway" sourceRef="Task_VerifyConsentDetails" targetRef="Gateway_ConsentComplete" />
+      <bpmn:sequenceFlow id="Flow_Consent_Yes" sourceRef="Gateway_ConsentComplete" targetRef="EndEvent_Verification">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${consentComplete == true}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_Consent_No" sourceRef="Gateway_ConsentComplete" targetRef="Task_RequestAdditionalConsent">
+        <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${consentComplete == false}</bpmn:conditionExpression>
+      </bpmn:sequenceFlow>
+      <bpmn:sequenceFlow id="Flow_RequestToVerify" sourceRef="Task_RequestAdditionalConsent" targetRef="Task_VerifyConsentDetails" />
+      <bpmn:sequenceFlow id="Flow_Verification_End" sourceRef="Gateway_ConsentComplete" targetRef="EndEvent_Verification" />
+    </bpmn:subProcess>
+    <bpmn:messageFlow id="MessageFlow_ConsentRequest" sourceRef="Task_RequestConsent" targetRef="Task_VerifyConsent" messageRef="Message_ConsentRequired" />
+    <bpmn:messageFlow id="MessageFlow_PrivacyCheck" sourceRef="Task_PrivacyAssessment" targetRef="Task_ICIPCheck" messageRef="Message_PrivacyCheck" />
+    <bpmn:messageFlow id="MessageFlow_ConsentVerified" sourceRef="Task_VerifyConsent" targetRef="Task_ComplianceReview" messageRef="Message_ConsentVerified" />
+    <bpmn:dataInputAssociation id="DataAssociation_ConsentToTask" sourceRef="DataObject_ConsentDetails" targetRef="Task_VerifyConsent" />
+    <bpmn:dataOutputAssociation id="DataAssociation_TaskToPrivacy" sourceRef="Task_PrivacyAssessment" targetRef="DataObject_PrivacyAssessment" />
+    <bpmn:dataStoreReference id="DataStoreRef_Registry" dataStoreRef="DataStore_ConsentRegistry" />
+    <bpmn:sequenceFlow id="Flow_ToVerification" sourceRef="Task_InitialReview" targetRef="SubProcess_ConsentVerification" />
+    <bpmn:sequenceFlow id="Flow_FromVerification" sourceRef="SubProcess_ConsentVerification" targetRef="Task_PrivacyAssessment" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="ConsentPrivacyCapture">
@@ -168,6 +285,53 @@
       <bpmndi:BPMNShape id="Shape_Lane_ComplianceTeam" bpmnElement="Lane_ComplianceTeam" isHorizontal="true">
         <dc:Bounds x="140" y="300" width="1600" height="120" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_SubProcess_ConsentVerification" bpmnElement="SubProcess_ConsentVerification">
+        <dc:Bounds x="280" y="80" width="400" height="200" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ConsentComplete" bpmnElement="Gateway_ConsentComplete">
+        <dc:Bounds x="440" y="140" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_PrivacyRisk" bpmnElement="Gateway_PrivacyRisk">
+        <dc:Bounds x="600" y="140" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_ConsentDetails" bpmnElement="DataObject_ConsentDetails">
+        <dc:Bounds x="280" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_PrivacyAssessment" bpmnElement="DataObject_PrivacyAssessment">
+        <dc:Bounds x="440" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataStoreRef_Registry" bpmnElement="DataStoreRef_Registry">
+        <dc:Bounds x="1240" y="40" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_ConsentRequest" bpmnElement="MessageFlow_ConsentRequest">
+        <di:waypoint x="860" y="120" />
+        <di:waypoint x="920" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_PrivacyCheck" bpmnElement="MessageFlow_PrivacyCheck">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_ConsentVerified" bpmnElement="MessageFlow_ConsentVerified">
+        <di:waypoint x="1020" y="220" />
+        <di:waypoint x="1080" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_ConsentToTask" bpmnElement="DataAssociation_ConsentToTask">
+        <di:waypoint x="298" y="90" />
+        <di:waypoint x="970" y="90" />
+        <di:waypoint x="970" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToPrivacy" bpmnElement="DataAssociation_TaskToPrivacy">
+        <di:waypoint x="490" y="220" />
+        <di:waypoint x="458" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ToVerification" bpmnElement="Flow_ToVerification">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="280" y="180" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_FromVerification" bpmnElement="Flow_FromVerification">
+        <di:waypoint x="680" y="180" />
+        <di:waypoint x="440" y="220" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
 </bpmn:definitions> 

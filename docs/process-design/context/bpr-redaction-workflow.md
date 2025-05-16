@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_RedactionWorkflow
+process_name: 2026 Basin Plan Review Redaction Workflow Process
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Redaction Workflow Process"
+description: "Context and detailed information about the Redaction Workflow process for the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-redaction-workflow.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR Redaction Workflow Process
 
 ## Overview

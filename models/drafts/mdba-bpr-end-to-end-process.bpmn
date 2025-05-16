@@ -14,98 +14,241 @@
     <bpmn:documentation>
       This parent process provides a high-level overview of the complete Basin Plan Review lifecycle, showing the sequence and relationship of all major phases. Each phase is detailed in a separate BPMN diagram as referenced in the process detail annotation.
     </bpmn:documentation>
+    <bpmn:laneSet id="LaneSet_1">
+      <bpmn:lane id="Lane_Executive" name="Executive">
+        <bpmn:flowNodeRef>StartEvent_BPRInitiated</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>EndEvent_BPRComplete</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_DecisionPhase</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ProcessTeam" name="Process Team">
+        <bpmn:flowNodeRef>SubProcess_InvitationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_CollectionPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_AnalysisPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_QAReview</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_ConsiderationPhase</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ContentTeam" name="Content Team">
+        <bpmn:flowNodeRef>SubProcess_PublicationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ICIPComplianceCheck</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>SubProcess_ReportingPhase</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_ExternalStakeholders" name="External Stakeholders">
+        <bpmn:flowNodeRef>CallActivity_InvitationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_CollectionPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_AnalysisPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_ConsiderationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_DecisionPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_PublicationPhase</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>CallActivity_ReportingPhase</bpmn:flowNodeRef>
+      </bpmn:lane>
+    </bpmn:laneSet>
+    <bpmn:dataObject id="DataObject_BPRPlan" name="BPR Plan">
+      <bpmn:documentation>Strategic plan for the Basin Plan Review process</bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataObject id="DataObject_Submissions" name="Submissions">
+      <bpmn:documentation>Collection of stakeholder submissions</bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataObject id="DataObject_AnalysisReport" name="Analysis Report">
+      <bpmn:documentation>Analysis findings and recommendations</bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataObject id="DataObject_DecisionPackage" name="Decision Package">
+      <bpmn:documentation>Package of materials for executive decision</bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataObject id="DataObject_FinalReport" name="Final Report">
+      <bpmn:documentation>Published Basin Plan Review report</bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataStore id="DataStore_SubmissionRepository" name="Submission Repository">
+      <bpmn:documentation>Central repository for all submissions and related documents</bpmn:documentation>
+    </bpmn:dataStore>
+    <bpmn:dataStore id="DataStore_KnowledgeBase" name="Knowledge Base">
+      <bpmn:documentation>Repository of analysis findings and supporting evidence</bpmn:documentation>
+    </bpmn:dataStore>
     <bpmn:startEvent id="StartEvent_BPRInitiated" name="BPR Initiated">
       <bpmn:documentation>Process commences with the formal initiation of the Basin Plan Review.</bpmn:documentation>
       <bpmn:outgoing>Flow_StartToInvitation</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:subProcess id="SubProcess_InvitationPhase" name="Invitation Phase">
       <bpmn:documentation>Preparation and distribution of invitations to participate in the review.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_InvitationPhase" name="Start Invitation Phase" />
+      <bpmn:endEvent id="EndEvent_InvitationPhase" name="End Invitation Phase" />
       <bpmn:incoming>Flow_StartToInvitation</bpmn:incoming>
       <bpmn:outgoing>Flow_InvitationToCollection</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_InvitationPhase" name="Invitation Process" calledElement="InvitationPhaseDetail">
         <bpmn:incoming>Flow_InvitationStart</bpmn:incoming>
         <bpmn:outgoing>Flow_InvitationEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_InvitationStart" sourceRef="SubProcess_InvitationPhase" targetRef="CallActivity_InvitationPhase" />
-      <bpmn:sequenceFlow id="Flow_InvitationEnd" sourceRef="CallActivity_InvitationPhase" targetRef="SubProcess_InvitationPhase" />
+      <bpmn:sequenceFlow id="Flow_InvitationStartToCall" sourceRef="StartEvent_InvitationPhase" targetRef="CallActivity_InvitationPhase" />
+      <bpmn:sequenceFlow id="Flow_InvitationCallToEnd" sourceRef="CallActivity_InvitationPhase" targetRef="EndEvent_InvitationPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_StakeholderInvited" name="Are all required stakeholders invited?">
+      <bpmn:documentation>Decision point: Confirm all required stakeholders have been invited before proceeding to collection phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_InvitationToCollection</bpmn:incoming>
+      <bpmn:outgoing>Flow_StakeholderInvited_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_StakeholderInvited_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_InvitationToCollection" sourceRef="SubProcess_InvitationPhase" targetRef="Gateway_StakeholderInvited" />
+    <bpmn:sequenceFlow id="Flow_StakeholderInvited_Yes" sourceRef="Gateway_StakeholderInvited" targetRef="SubProcess_CollectionPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allInvited == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_StakeholderInvited_No" sourceRef="Gateway_StakeholderInvited" targetRef="SubProcess_InvitationPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allInvited == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_CollectionPhase" name="Collection Phase">
       <bpmn:documentation>Intake and registration of submissions via all channels.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_CollectionPhase" name="Start Collection Phase" />
+      <bpmn:endEvent id="EndEvent_CollectionPhase" name="End Collection Phase" />
       <bpmn:incoming>Flow_InvitationToCollection</bpmn:incoming>
       <bpmn:outgoing>Flow_CollectionToAnalysis</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_CollectionPhase" name="Submission Intake" calledElement="CollectionPhaseDetail">
         <bpmn:incoming>Flow_CollectionStart</bpmn:incoming>
         <bpmn:outgoing>Flow_CollectionEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_CollectionStart" sourceRef="SubProcess_CollectionPhase" targetRef="CallActivity_CollectionPhase" />
-      <bpmn:sequenceFlow id="Flow_CollectionEnd" sourceRef="CallActivity_CollectionPhase" targetRef="SubProcess_CollectionPhase" />
+      <bpmn:sequenceFlow id="Flow_CollectionStartToCall" sourceRef="StartEvent_CollectionPhase" targetRef="CallActivity_CollectionPhase" />
+      <bpmn:sequenceFlow id="Flow_CollectionCallToEnd" sourceRef="CallActivity_CollectionPhase" targetRef="EndEvent_CollectionPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_SubmissionsValid" name="Are all submissions valid?">
+      <bpmn:documentation>Decision point: Confirm all submissions are valid before proceeding to analysis phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_CollectionToAnalysis</bpmn:incoming>
+      <bpmn:outgoing>Flow_SubmissionsValid_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_SubmissionsValid_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_CollectionToAnalysis" sourceRef="SubProcess_CollectionPhase" targetRef="Gateway_SubmissionsValid" />
+    <bpmn:sequenceFlow id="Flow_SubmissionsValid_Yes" sourceRef="Gateway_SubmissionsValid" targetRef="SubProcess_AnalysisPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allValid == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_SubmissionsValid_No" sourceRef="Gateway_SubmissionsValid" targetRef="SubProcess_CollectionPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${allValid == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_AnalysisPhase" name="Analysis Phase">
       <bpmn:documentation>Validation, triage, and categorisation of submissions.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_AnalysisPhase" name="Start Analysis Phase" />
+      <bpmn:endEvent id="EndEvent_AnalysisPhase" name="End Analysis Phase" />
       <bpmn:incoming>Flow_CollectionToAnalysis</bpmn:incoming>
       <bpmn:outgoing>Flow_AnalysisToConsideration</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_AnalysisPhase" name="Analysis Process" calledElement="AnalysisPhaseDetail">
         <bpmn:incoming>Flow_AnalysisStart</bpmn:incoming>
         <bpmn:outgoing>Flow_AnalysisEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_AnalysisStart" sourceRef="SubProcess_AnalysisPhase" targetRef="CallActivity_AnalysisPhase" />
-      <bpmn:sequenceFlow id="Flow_AnalysisEnd" sourceRef="CallActivity_AnalysisPhase" targetRef="SubProcess_AnalysisPhase" />
+      <bpmn:sequenceFlow id="Flow_AnalysisStartToCall" sourceRef="StartEvent_AnalysisPhase" targetRef="CallActivity_AnalysisPhase" />
+      <bpmn:sequenceFlow id="Flow_AnalysisCallToEnd" sourceRef="CallActivity_AnalysisPhase" targetRef="EndEvent_AnalysisPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_FurtherReview" name="Is further review required?">
+      <bpmn:documentation>Decision point: Determine if further review is required before proceeding to consideration phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_AnalysisToConsideration</bpmn:incoming>
+      <bpmn:outgoing>Flow_FurtherReview_No</bpmn:outgoing>
+      <bpmn:outgoing>Flow_FurtherReview_Yes</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_AnalysisToConsideration" sourceRef="SubProcess_AnalysisPhase" targetRef="Gateway_FurtherReview" />
+    <bpmn:sequenceFlow id="Flow_FurtherReview_No" sourceRef="Gateway_FurtherReview" targetRef="Task_QAReview">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${furtherReview == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_FurtherReview_Yes" sourceRef="Gateway_FurtherReview" targetRef="SubProcess_AnalysisPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${furtherReview == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Task_QAReview" name="Quality Assurance Review">
+      <bpmn:documentation>Checkpoint: Review analysis outputs to ensure they meet MDBA quality standards before progressing to consideration phase.</bpmn:documentation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_QAReviewToConsideration" sourceRef="Task_QAReview" targetRef="SubProcess_ConsiderationPhase" />
     <bpmn:subProcess id="SubProcess_ConsiderationPhase" name="Consideration Phase">
       <bpmn:documentation>Detailed review and assessment of submissions.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_ConsiderationPhase" name="Start Consideration Phase" />
+      <bpmn:endEvent id="EndEvent_ConsiderationPhase" name="End Consideration Phase" />
       <bpmn:incoming>Flow_AnalysisToConsideration</bpmn:incoming>
       <bpmn:outgoing>Flow_ConsiderationToDecision</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_ConsiderationPhase" name="Consideration Process" calledElement="ConsiderationPhaseDetail">
         <bpmn:incoming>Flow_ConsiderationStart</bpmn:incoming>
         <bpmn:outgoing>Flow_ConsiderationEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_ConsiderationStart" sourceRef="SubProcess_ConsiderationPhase" targetRef="CallActivity_ConsiderationPhase" />
-      <bpmn:sequenceFlow id="Flow_ConsiderationEnd" sourceRef="CallActivity_ConsiderationPhase" targetRef="SubProcess_ConsiderationPhase" />
+      <bpmn:sequenceFlow id="Flow_ConsiderationStartToCall" sourceRef="StartEvent_ConsiderationPhase" targetRef="CallActivity_ConsiderationPhase" />
+      <bpmn:sequenceFlow id="Flow_ConsiderationCallToEnd" sourceRef="CallActivity_ConsiderationPhase" targetRef="EndEvent_ConsiderationPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_ReadyForDecision" name="Is the submission ready for decision?">
+      <bpmn:documentation>Decision point: Confirm readiness for decision phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_ConsiderationToDecision</bpmn:incoming>
+      <bpmn:outgoing>Flow_ReadyForDecision_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ReadyForDecision_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_ConsiderationToDecision" sourceRef="SubProcess_ConsiderationPhase" targetRef="Gateway_ReadyForDecision" />
+    <bpmn:sequenceFlow id="Flow_ReadyForDecision_Yes" sourceRef="Gateway_ReadyForDecision" targetRef="SubProcess_DecisionPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${readyForDecision == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ReadyForDecision_No" sourceRef="Gateway_ReadyForDecision" targetRef="SubProcess_ConsiderationPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${readyForDecision == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_DecisionPhase" name="Decision Phase">
       <bpmn:documentation>Final decision-making and approval of review outcomes.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_DecisionPhase" name="Start Decision Phase" />
+      <bpmn:endEvent id="EndEvent_DecisionPhase" name="End Decision Phase" />
       <bpmn:incoming>Flow_ConsiderationToDecision</bpmn:incoming>
       <bpmn:outgoing>Flow_DecisionToPublication</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_DecisionPhase" name="Decision Process" calledElement="DecisionPhaseDetail">
         <bpmn:incoming>Flow_DecisionStart</bpmn:incoming>
         <bpmn:outgoing>Flow_DecisionEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_DecisionStart" sourceRef="SubProcess_DecisionPhase" targetRef="CallActivity_DecisionPhase" />
-      <bpmn:sequenceFlow id="Flow_DecisionEnd" sourceRef="CallActivity_DecisionPhase" targetRef="SubProcess_DecisionPhase" />
+      <bpmn:sequenceFlow id="Flow_DecisionStartToCall" sourceRef="StartEvent_DecisionPhase" targetRef="CallActivity_DecisionPhase" />
+      <bpmn:sequenceFlow id="Flow_DecisionCallToEnd" sourceRef="CallActivity_DecisionPhase" targetRef="EndEvent_DecisionPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_ApprovalGranted" name="Is approval granted?">
+      <bpmn:documentation>Decision point: Confirm if approval is granted before proceeding to publication phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_DecisionToPublication</bpmn:incoming>
+      <bpmn:outgoing>Flow_ApprovalGranted_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ApprovalGranted_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_DecisionToPublication" sourceRef="SubProcess_DecisionPhase" targetRef="Gateway_ApprovalGranted" />
+    <bpmn:sequenceFlow id="Flow_ApprovalGranted_Yes" sourceRef="Gateway_ApprovalGranted" targetRef="SubProcess_PublicationPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalGranted == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ApprovalGranted_No" sourceRef="Gateway_ApprovalGranted" targetRef="SubProcess_DecisionPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${approvalGranted == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
     <bpmn:subProcess id="SubProcess_PublicationPhase" name="Publication Phase">
       <bpmn:documentation>Preparation and publication of review outcomes, including ICIP and redaction handling.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_PublicationPhase" name="Start Publication Phase" />
+      <bpmn:endEvent id="EndEvent_PublicationPhase" name="End Publication Phase" />
       <bpmn:incoming>Flow_DecisionToPublication</bpmn:incoming>
       <bpmn:outgoing>Flow_PublicationToReporting</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_PublicationPhase" name="Publication Process" calledElement="PublicationPhaseDetail">
         <bpmn:incoming>Flow_PublicationStart</bpmn:incoming>
         <bpmn:outgoing>Flow_PublicationEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_PublicationStart" sourceRef="SubProcess_PublicationPhase" targetRef="CallActivity_PublicationPhase" />
-      <bpmn:sequenceFlow id="Flow_PublicationEnd" sourceRef="CallActivity_PublicationPhase" targetRef="SubProcess_PublicationPhase" />
+      <bpmn:sequenceFlow id="Flow_PublicationStartToCall" sourceRef="StartEvent_PublicationPhase" targetRef="CallActivity_PublicationPhase" />
+      <bpmn:sequenceFlow id="Flow_PublicationCallToEnd" sourceRef="CallActivity_PublicationPhase" targetRef="EndEvent_PublicationPhase" />
     </bpmn:subProcess>
+    <bpmn:exclusiveGateway id="Gateway_PublicationComplete" name="Is publication complete?">
+      <bpmn:documentation>Decision point: Confirm if publication is complete before proceeding to reporting phase.</bpmn:documentation>
+      <bpmn:incoming>Flow_PublicationToReporting</bpmn:incoming>
+      <bpmn:outgoing>Flow_PublicationComplete_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_PublicationComplete_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:sequenceFlow id="Flow_PublicationToReporting" sourceRef="SubProcess_PublicationPhase" targetRef="Gateway_PublicationComplete" />
+    <bpmn:sequenceFlow id="Flow_PublicationComplete_Yes" sourceRef="Gateway_PublicationComplete" targetRef="Task_ICIPComplianceCheck">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${publicationComplete == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_PublicationComplete_No" sourceRef="Gateway_PublicationComplete" targetRef="SubProcess_PublicationPhase">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${publicationComplete == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:userTask id="Task_ICIPComplianceCheck" name="ICIP Compliance Check">
+      <bpmn:documentation>Checkpoint: Ensure all publication materials comply with Indigenous Cultural and Intellectual Property (ICIP) protocols before reporting phase.</bpmn:documentation>
+    </bpmn:userTask>
+    <bpmn:sequenceFlow id="Flow_ICIPCheckToReporting" sourceRef="Task_ICIPComplianceCheck" targetRef="SubProcess_ReportingPhase" />
     <bpmn:subProcess id="SubProcess_ReportingPhase" name="Reporting Phase">
       <bpmn:documentation>Preparation and dissemination of reports and analytics.</bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_ReportingPhase" name="Start Reporting Phase" />
+      <bpmn:endEvent id="EndEvent_ReportingPhase" name="End Reporting Phase" />
       <bpmn:incoming>Flow_PublicationToReporting</bpmn:incoming>
       <bpmn:outgoing>Flow_ReportingToEnd</bpmn:outgoing>
       <bpmn:callActivity id="CallActivity_ReportingPhase" name="Reporting Process" calledElement="ReportingPhaseDetail">
         <bpmn:incoming>Flow_ReportingStart</bpmn:incoming>
         <bpmn:outgoing>Flow_ReportingEnd</bpmn:outgoing>
       </bpmn:callActivity>
-      <bpmn:sequenceFlow id="Flow_ReportingStart" sourceRef="SubProcess_ReportingPhase" targetRef="CallActivity_ReportingPhase" />
-      <bpmn:sequenceFlow id="Flow_ReportingEnd" sourceRef="CallActivity_ReportingPhase" targetRef="SubProcess_ReportingPhase" />
+      <bpmn:sequenceFlow id="Flow_ReportingStartToCall" sourceRef="StartEvent_ReportingPhase" targetRef="CallActivity_ReportingPhase" />
+      <bpmn:sequenceFlow id="Flow_ReportingCallToEnd" sourceRef="CallActivity_ReportingPhase" targetRef="EndEvent_ReportingPhase" />
     </bpmn:subProcess>
     <bpmn:endEvent id="EndEvent_BPRComplete" name="BPR Complete">
       <bpmn:documentation>Formal completion of the Basin Plan Review process.</bpmn:documentation>
       <bpmn:incoming>Flow_ReportingToEnd</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:sequenceFlow id="Flow_StartToInvitation" sourceRef="StartEvent_BPRInitiated" targetRef="SubProcess_InvitationPhase" />
-    <bpmn:sequenceFlow id="Flow_InvitationToCollection" sourceRef="SubProcess_InvitationPhase" targetRef="SubProcess_CollectionPhase" />
-    <bpmn:sequenceFlow id="Flow_CollectionToAnalysis" sourceRef="SubProcess_CollectionPhase" targetRef="SubProcess_AnalysisPhase" />
-    <bpmn:sequenceFlow id="Flow_AnalysisToConsideration" sourceRef="SubProcess_AnalysisPhase" targetRef="SubProcess_ConsiderationPhase" />
-    <bpmn:sequenceFlow id="Flow_ConsiderationToDecision" sourceRef="SubProcess_ConsiderationPhase" targetRef="SubProcess_DecisionPhase" />
-    <bpmn:sequenceFlow id="Flow_DecisionToPublication" sourceRef="SubProcess_DecisionPhase" targetRef="SubProcess_PublicationPhase" />
-    <bpmn:sequenceFlow id="Flow_PublicationToReporting" sourceRef="SubProcess_PublicationPhase" targetRef="SubProcess_ReportingPhase" />
     <bpmn:sequenceFlow id="Flow_ReportingToEnd" sourceRef="SubProcess_ReportingPhase" targetRef="EndEvent_BPRComplete" />
     <bpmn:boundaryEvent id="BoundaryEvent_InvitationError" attachedToRef="SubProcess_InvitationPhase">
       <bpmn:errorEventDefinition errorRef="Error_ProcessViolation" />
@@ -152,9 +295,51 @@ Each phase has its own detailed BPMN process diagram.</bpmn:text>
     <bpmn:association id="Association_DecisionDetail" sourceRef="CallActivity_DecisionPhase" targetRef="TextAnnotation_ProcessDetail" />
     <bpmn:association id="Association_PublicationDetail" sourceRef="CallActivity_PublicationPhase" targetRef="TextAnnotation_ProcessDetail" />
     <bpmn:association id="Association_ReportingDetail" sourceRef="CallActivity_ReportingPhase" targetRef="TextAnnotation_ProcessDetail" />
+    <bpmn:association id="Association_PlanToStart" sourceRef="DataObject_BPRPlan" targetRef="StartEvent_BPRInitiated" />
+    <bpmn:association id="Association_SubmissionsToCollection" sourceRef="DataObject_Submissions" targetRef="SubProcess_CollectionPhase" />
+    <bpmn:association id="Association_ReportToAnalysis" sourceRef="DataObject_AnalysisReport" targetRef="SubProcess_AnalysisPhase" />
+    <bpmn:association id="Association_PackageToDecision" sourceRef="DataObject_DecisionPackage" targetRef="SubProcess_DecisionPhase" />
+    <bpmn:association id="Association_ReportToPublication" sourceRef="DataObject_FinalReport" targetRef="SubProcess_PublicationPhase" />
+    <bpmn:association id="Association_RepositoryToCollection" sourceRef="DataStore_SubmissionRepository" targetRef="SubProcess_CollectionPhase" />
+    <bpmn:association id="Association_KnowledgeToAnalysis" sourceRef="DataStore_KnowledgeBase" targetRef="SubProcess_AnalysisPhase" />
+    <bpmn:messageFlow id="Flow_InitiateBPR" sourceRef="StartEvent_BPRInitiated" targetRef="SubProcess_InvitationPhase" />
+    <bpmn:messageFlow id="Flow_InviteStakeholders" sourceRef="SubProcess_InvitationPhase" targetRef="CallActivity_InvitationPhase" />
+    <bpmn:messageFlow id="Flow_ReceiveSubmissions" sourceRef="CallActivity_CollectionPhase" targetRef="SubProcess_CollectionPhase" />
+    <bpmn:messageFlow id="Flow_SubmitForAnalysis" sourceRef="SubProcess_CollectionPhase" targetRef="SubProcess_AnalysisPhase" />
+    <bpmn:messageFlow id="Flow_ReviewAnalysis" sourceRef="SubProcess_AnalysisPhase" targetRef="SubProcess_ConsiderationPhase" />
+    <bpmn:messageFlow id="Flow_SubmitForDecision" sourceRef="SubProcess_ConsiderationPhase" targetRef="SubProcess_DecisionPhase" />
+    <bpmn:messageFlow id="Flow_ApprovePublication" sourceRef="SubProcess_DecisionPhase" targetRef="SubProcess_PublicationPhase" />
+    <bpmn:messageFlow id="Flow_InitiateReporting" sourceRef="SubProcess_PublicationPhase" targetRef="SubProcess_ReportingPhase" />
+    <bpmn:messageFlow id="Flow_CompleteBPR" sourceRef="SubProcess_ReportingPhase" targetRef="EndEvent_BPRComplete" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="MDBA_BPR_EndToEnd">
+      <bpmndi:BPMNLaneSet id="LaneSet_1_di" bpmnElement="LaneSet_1">
+        <bpmndi:BPMNLane id="Lane_Executive_di" bpmnElement="Lane_Executive">
+          <dc:Bounds x="150" y="0" width="1400" height="100" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="20" y="40" width="100" height="20" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNLane>
+        <bpmndi:BPMNLane id="Lane_ProcessTeam_di" bpmnElement="Lane_ProcessTeam">
+          <dc:Bounds x="150" y="100" width="1400" height="100" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="20" y="140" width="100" height="20" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNLane>
+        <bpmndi:BPMNLane id="Lane_ContentTeam_di" bpmnElement="Lane_ContentTeam">
+          <dc:Bounds x="150" y="200" width="1400" height="100" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="20" y="240" width="100" height="20" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNLane>
+        <bpmndi:BPMNLane id="Lane_ExternalStakeholders_di" bpmnElement="Lane_ExternalStakeholders">
+          <dc:Bounds x="150" y="300" width="1400" height="100" />
+          <bpmndi:BPMNLabel>
+            <dc:Bounds x="20" y="340" width="100" height="20" />
+          </bpmndi:BPMNLabel>
+        </bpmndi:BPMNLane>
+      </bpmndi:BPMNLaneSet>
       <bpmndi:BPMNShape id="Shape_StartEvent_BPRInitiated" bpmnElement="StartEvent_BPRInitiated">
         <dc:Bounds x="170" y="100" width="36" height="36" />
         <bpmndi:BPMNLabel>
@@ -190,6 +375,48 @@ Each phase has its own detailed BPMN process diagram.</bpmn:text>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="Shape_SubProcess_ReportingPhase" bpmnElement="SubProcess_ReportingPhase">
         <dc:Bounds x="1170" y="90" width="140" height="100" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_BPRPlan" bpmnElement="DataObject_BPRPlan">
+        <dc:Bounds x="200" y="50" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="190" y="100" width="60" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_Submissions" bpmnElement="DataObject_Submissions">
+        <dc:Bounds x="400" y="150" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="390" y="200" width="60" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_AnalysisReport" bpmnElement="DataObject_AnalysisReport">
+        <dc:Bounds x="600" y="250" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="590" y="300" width="60" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_DecisionPackage" bpmnElement="DataObject_DecisionPackage">
+        <dc:Bounds x="800" y="350" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="790" y="400" width="60" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_FinalReport" bpmnElement="DataObject_FinalReport">
+        <dc:Bounds x="1000" y="450" width="36" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="990" y="500" width="60" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataStore_SubmissionRepository" bpmnElement="DataStore_SubmissionRepository">
+        <dc:Bounds x="1200" y="150" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="200" width="70" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataStore_KnowledgeBase" bpmnElement="DataStore_KnowledgeBase">
+        <dc:Bounds x="1200" y="250" width="50" height="50" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1190" y="300" width="70" height="20" />
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Edge_Association_ProcessOverview" bpmnElement="Association_ProcessOverview">
         <di:waypoint x="188" y="136" />
@@ -227,12 +454,70 @@ Each phase has its own detailed BPMN process diagram.</bpmn:text>
         <di:waypoint x="1310" y="133" />
         <di:waypoint x="1454" y="133" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNShape id="Shape_TextAnnotation_ProcessDetail" bpmnElement="TextAnnotation_ProcessDetail">
-        <dc:Bounds x="580" y="350" width="400" height="200" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape id="Shape_TextAnnotation_ProcessOverview" bpmnElement="TextAnnotation_ProcessOverview">
-        <dc:Bounds x="210" y="380" width="250" height="80" />
-      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Edge_InitiateBPR" bpmnElement="Flow_InitiateBPR">
+        <di:waypoint x="206" y="118" />
+        <di:waypoint x="206" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_InviteStakeholders" bpmnElement="Flow_InviteStakeholders">
+        <di:waypoint x="306" y="150" />
+        <di:waypoint x="306" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ReceiveSubmissions" bpmnElement="Flow_ReceiveSubmissions">
+        <di:waypoint x="406" y="350" />
+        <di:waypoint x="406" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SubmitForAnalysis" bpmnElement="Flow_SubmitForAnalysis">
+        <di:waypoint x="506" y="150" />
+        <di:waypoint x="506" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ReviewAnalysis" bpmnElement="Flow_ReviewAnalysis">
+        <di:waypoint x="606" y="250" />
+        <di:waypoint x="606" y="350" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SubmitForDecision" bpmnElement="Flow_SubmitForDecision">
+        <di:waypoint x="706" y="350" />
+        <di:waypoint x="706" y="50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ApprovePublication" bpmnElement="Flow_ApprovePublication">
+        <di:waypoint x="806" y="50" />
+        <di:waypoint x="806" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_InitiateReporting" bpmnElement="Flow_InitiateReporting">
+        <di:waypoint x="906" y="450" />
+        <di:waypoint x="906" y="550" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_CompleteBPR" bpmnElement="Flow_CompleteBPR">
+        <di:waypoint x="1006" y="550" />
+        <di:waypoint x="1006" y="618" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_PlanToStart" bpmnElement="Association_PlanToStart">
+        <di:waypoint x="218" y="75" />
+        <di:waypoint x="188" y="118" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_SubmissionsToCollection" bpmnElement="Association_SubmissionsToCollection">
+        <di:waypoint x="418" y="175" />
+        <di:waypoint x="418" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ReportToAnalysis" bpmnElement="Association_ReportToAnalysis">
+        <di:waypoint x="618" y="275" />
+        <di:waypoint x="618" y="250" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_PackageToDecision" bpmnElement="Association_PackageToDecision">
+        <di:waypoint x="818" y="375" />
+        <di:waypoint x="818" y="50" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_ReportToPublication" bpmnElement="Association_ReportToPublication">
+        <di:waypoint x="1018" y="475" />
+        <di:waypoint x="1018" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_RepositoryToCollection" bpmnElement="Association_RepositoryToCollection">
+        <di:waypoint x="1225" y="175" />
+        <di:waypoint x="1225" y="150" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_KnowledgeToAnalysis" bpmnElement="Association_KnowledgeToAnalysis">
+        <di:waypoint x="1225" y="275" />
+        <di:waypoint x="1225" y="250" />
+      </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>
   <bpmndi:BPMNDiagram>

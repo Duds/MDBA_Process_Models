@@ -156,16 +156,117 @@
     </documentation>
   </message>
 
+  <message id="Message_Decision_Ready" name="Decision Ready for Review">
+    <documentation>
+      Notification that a decision is ready for review.
+      Content:
+      - Decision details
+      - Supporting documentation
+      - Review requirements
+      - Timeline
+    </documentation>
+  </message>
+
+  <message id="Message_ICIP_Check_Required" name="ICIP Check Required">
+    <documentation>
+      Notification that ICIP assessment is required.
+      Content:
+      - Decision context
+      - Cultural considerations
+      - Required checks
+      - Timeline
+    </documentation>
+  </message>
+
+  <message id="Message_Approval_Request" name="Approval Request">
+    <documentation>
+      Request for decision approval.
+      Content:
+      - Decision package
+      - Approval requirements
+      - Timeline
+      - Contact details
+    </documentation>
+  </message>
+
+  <message id="Message_Stakeholder_Update" name="Stakeholder Update">
+    <documentation>
+      Update to stakeholders about decision status.
+      Content:
+      - Decision status
+      - Impact assessment
+      - Next steps
+      - Contact information
+    </documentation>
+  </message>
+
+  <!-- Data Objects -->
+  <dataObject id="DataObject_DecisionPackage" name="Decision Package">
+    <documentation>
+      Comprehensive decision documentation.
+      Contains:
+      - Decision details
+      - Supporting evidence
+      - Impact assessment
+      - Stakeholder input
+      - Legal considerations
+    </documentation>
+  </dataObject>
+
+  <dataObject id="DataObject_ICIPAssessment" name="ICIP Assessment">
+    <documentation>
+      ICIP compliance assessment.
+      Contains:
+      - Cultural impact
+      - Traditional knowledge
+      - Cultural protocols
+      - Access restrictions
+      - Usage permissions
+    </documentation>
+  </dataObject>
+
+  <dataObject id="DataObject_ApprovalStatus" name="Approval Status">
+    <documentation>
+      Decision approval tracking.
+      Contains:
+      - Approval status
+      - Approver details
+      - Approval conditions
+      - Timeline
+      - Documentation
+    </documentation>
+  </dataObject>
+
+  <dataStore id="DataStore_DecisionRegistry" name="Decision Registry">
+    <documentation>
+      Central registry for all decisions.
+      Purpose: Maintain record of decisions
+      Retention: Permanent
+      Access: Restricted to Decision and Legal teams
+    </documentation>
+  </dataStore>
+
   <process id="Process_BPR_DecisionPhase" name="2026 Basin Plan Review Decision Phase" isExecutable="false">
     <documentation>
-      Purpose: Manages the decision-making process for the 2026 Basin Plan Review
+      Purpose: Manages the decision-making process for the 2026 Basin Plan Review, including approval management, stakeholder notification, and preparation for implementation. Ensures systematic and transparent decision-making with proper stakeholder engagement, legal compliance, and ICIP requirements.
+      
+      Documentation Standards:
+      1. All tasks must have clear, concise documentation
+      2. All gateways must include decision criteria
+      3. All error events must include resolution paths
+      4. All data objects must specify retention requirements
+      5. All message flows must document content and recipients
+      6. All sequence flows must document conditions where applicable
+      7. All swimlanes must specify role responsibilities
+      8. All process elements must include version control
+      9. All ICIP-related elements must document cultural protocols
+      10. All quality gates must specify acceptance criteria
+      
       Owner: MDBA Basin Plan Review Team
-      Version: 1.0.0
+      Version: 1.0.1
       Last Updated: 20/03/2024
-      Description: This process coordinates the decision-making process,
-      including approval management, stakeholder notification, and preparation
-      for implementation. Ensures systematic and transparent decision-making
-      with proper stakeholder engagement and legal compliance.
+      Stakeholders: Decision Team, Approval Team, Communication Team, Legal Team, Quality Team, Indigenous Representatives
+      Dependencies: Consideration Phase completion, legal and ICIP guidelines, stakeholder input
     </documentation>
 
     <laneSet id="LaneSet_1">
@@ -327,10 +428,25 @@
         - Documentation standards
         - Stakeholder consideration
         - Legal compliance
+        - ICIP compliance
         - Implementation readiness
+        
+        Validation Criteria:
+        1. All required documentation present
+        2. All stakeholder inputs considered
+        3. All legal requirements met
+        4. All ICIP protocols followed
+        5. All quality standards satisfied
+        6. All implementation prerequisites met
+        
+        Outputs:
+        - Validation report
+        - Compliance checklist
+        - Quality assessment
+        - Implementation readiness assessment
       </documentation>
       <incoming>Flow_Prepare_Validate</incoming>
-      <outgoing>Flow_Validate_Seek</outgoing>
+      <outgoing>Flow_Validate_Decision</outgoing>
     </userTask>
 
     <boundaryEvent id="BoundaryEvent_Validation_Error" attachedToRef="Task_Validate_Decisions">
@@ -357,6 +473,7 @@
         - Evidence support
         - Stakeholder input
         - Legal compliance
+        - ICIP compliance
         - Implementation readiness
       </documentation>
       <incoming>Flow_Verify_Quality</incoming>
@@ -380,17 +497,71 @@
       <outgoing>Flow_Peer_End</outgoing>
     </userTask>
 
-    <!-- End Event -->
-    <endEvent id="EndEvent_Decision_Complete" name="Decision Phase Complete">
+    <!-- Add ICIP Assessment Task -->
+    <userTask id="Task_ICIP_Assessment" name="ICIP Assessment">
       <documentation>
-        Marks the completion of the decision phase.
-        All decisions have been made, approved, and stakeholders
-        notified for implementation phase.
+        Assess decision for Indigenous Cultural and Intellectual Property (ICIP) requirements.
+        
+        Assessment Criteria:
+        - Cultural sensitivity
+        - Traditional knowledge
+        - Cultural protocols
+        - Access restrictions
+        - Usage permissions
+        - Consultation with Indigenous representatives
+        - Documentation of ICIP compliance
+        
+        Required Actions:
+        1. Review decision content for cultural significance
+        2. Consult with Indigenous representatives
+        3. Document cultural protocols applied
+        4. Record access and usage restrictions
+        5. Verify compliance with ICIP guidelines
+        6. Update decision package with ICIP assessment
+        
+        Outputs:
+        - ICIP assessment report
+        - Cultural protocol documentation
+        - Consultation records
+        - Access restriction specifications
+        - Usage permission documentation
       </documentation>
-      <incoming>Flow_Peer_End</incoming>
-    </endEvent>
+      <incoming>Flow_Prepare_ICIP</incoming>
+      <outgoing>Flow_ICIP_Validate</outgoing>
+    </userTask>
 
-    <!-- Sequence Flows -->
+    <!-- Add Gateways -->
+    <exclusiveGateway id="Gateway_ICIP_Required" name="ICIP Check Required?">
+      <documentation>
+        Gateway to determine if an ICIP assessment is required for the decision. Ensures cultural protocols and Indigenous rights are considered.
+      </documentation>
+      <incoming>Flow_Prepare_Decision</incoming>
+      <outgoing>Flow_ICIP_Yes</outgoing>
+      <outgoing>Flow_ICIP_No</outgoing>
+    </exclusiveGateway>
+
+    <exclusiveGateway id="Gateway_Decision_Valid" name="Decision Valid?">
+      <documentation>
+        Gateway to confirm if the decision meets all requirements, including quality, legal, and ICIP compliance.
+      </documentation>
+      <incoming>Flow_Validate_Decision</incoming>
+      <outgoing>Flow_Valid_Yes</outgoing>
+      <outgoing>Flow_Valid_No</outgoing>
+    </exclusiveGateway>
+
+    <!-- Add Message Flows -->
+    <messageFlow id="Flow_Message_Decision_Ready" sourceRef="Task_Prepare_Decision_Package" targetRef="Task_Validate_Decisions" messageRef="Message_Decision_Ready" />
+    <messageFlow id="Flow_Message_ICIP_Check" sourceRef="Task_ICIP_Assessment" targetRef="Task_Validate_Decisions" messageRef="Message_ICIP_Check_Required" />
+    <messageFlow id="Flow_Message_Approval_Request" sourceRef="Task_Seek_Approvals" targetRef="Task_Verify_Approvals" messageRef="Message_Approval_Request" />
+    <messageFlow id="Flow_Message_Stakeholder_Update" sourceRef="Task_Notify_Stakeholders" targetRef="Task_Track_Responses" messageRef="Message_Stakeholder_Update" />
+
+    <!-- Add Data Associations -->
+    <dataAssociation id="Flow_Data_Decision_Package" sourceRef="Task_Prepare_Decision_Package" targetRef="DataObject_DecisionPackage" />
+    <dataAssociation id="Flow_Data_ICIP_Assessment" sourceRef="Task_ICIP_Assessment" targetRef="DataObject_ICIPAssessment" />
+    <dataAssociation id="Flow_Data_Approval_Status" sourceRef="Task_Verify_Approvals" targetRef="DataObject_ApprovalStatus" />
+    <dataAssociation id="Flow_Data_Registry_Update" sourceRef="Task_RecordArchive" targetRef="DataStore_DecisionRegistry" />
+
+    <!-- Add Sequence Flows -->
     <sequenceFlow id="Flow_Start_Review_Decision" sourceRef="StartEvent_Decision_Phase" targetRef="Task_Review_Recommendations" />
     <sequenceFlow id="Flow_Review_Requirements" sourceRef="Task_Review_Recommendations" targetRef="Task_Review_Approval_Requirements" />
     <sequenceFlow id="Flow_Requirements_Decide" sourceRef="Task_Review_Approval_Requirements" targetRef="Task_Make_Decisions" />
@@ -409,6 +580,21 @@
     <sequenceFlow id="Flow_Verify_Quality" sourceRef="Task_Verify_Approval_Process" targetRef="Task_Quality_Check_Decisions" />
     <sequenceFlow id="Flow_Quality_Peer" sourceRef="Task_Quality_Check_Decisions" targetRef="Task_Peer_Review_Decisions" />
     <sequenceFlow id="Flow_Peer_End" sourceRef="Task_Peer_Review_Decisions" targetRef="EndEvent_Decision_Complete" />
+    <sequenceFlow id="Flow_Prepare_Decision" sourceRef="Task_Make_Decisions" targetRef="Gateway_ICIP_Required" />
+    <sequenceFlow id="Flow_ICIP_Yes" sourceRef="Gateway_ICIP_Required" targetRef="Task_ICIP_Assessment">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_ICIP_No" sourceRef="Gateway_ICIP_Required" targetRef="Task_Prepare_Decision_Package">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == false}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_ICIP_Validate" sourceRef="Task_ICIP_Assessment" targetRef="Task_Prepare_Decision_Package" />
+    <sequenceFlow id="Flow_Validate_Decision" sourceRef="Task_Validate_Decisions" targetRef="Gateway_Decision_Valid" />
+    <sequenceFlow id="Flow_Valid_Yes" sourceRef="Gateway_Decision_Valid" targetRef="Task_Seek_Approvals">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${decisionValid == true}</conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_Valid_No" sourceRef="Gateway_Decision_Valid" targetRef="Task_Make_Decisions">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${decisionValid == false}</conditionExpression>
+    </sequenceFlow>
 
     <!-- Text Annotations -->
     <textAnnotation id="TextAnnotation_Decision_Process">
@@ -435,6 +621,30 @@
       <text>Quality process ensures reliable and well-supported decisions</text>
     </textAnnotation>
     <association id="Association_Quality_Process" sourceRef="Task_Quality_Check_Decisions" targetRef="TextAnnotation_Quality_Process" />
+
+    <endEvent id="EndEvent_Decision_Complete" name="Decision Phase Complete">
+      <documentation>
+        Marks the completion of the decision phase. All decisions are approved, stakeholders notified, and compliance (including ICIP) is verified.
+        
+        Completion Criteria:
+        1. All decisions documented and approved
+        2. All stakeholder notifications sent and tracked
+        3. All legal and ICIP compliance verified
+        4. All quality checks passed
+        5. All documentation standards met
+        6. All approvals obtained and recorded
+        7. All stakeholder responses processed
+        8. All decision packages archived
+      </documentation>
+      <incoming>Flow_Track_End</incoming>
+      <incoming>Flow_Peer_End</incoming>
+      <incoming>Flow_Valid_End</incoming>
+    </endEvent>
+
+    <!-- Add new sequence flow for valid end path -->
+    <sequenceFlow id="Flow_Valid_End" sourceRef="Gateway_Decision_Valid" targetRef="EndEvent_Decision_Complete">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${decisionValid == true &amp;&amp; allApprovalsObtained == true}</conditionExpression>
+    </sequenceFlow>
 
   </process>
 
@@ -552,156 +762,113 @@
         <dc:Bounds x="1304" y="1020" width="100" height="80" />
       </bpmndi:BPMNShape>
 
-      <!-- Sequence Flows -->
-      <bpmndi:BPMNEdge id="Flow_Start_Review_Decision_di" bpmnElement="Flow_Start_Review_Decision">
-        <di:waypoint x="188" y="260" />
-        <di:waypoint x="240" y="260" />
-      </bpmndi:BPMNEdge>
+      <!-- Add shapes for new elements -->
+      <bpmndi:BPMNShape id="Shape_Task_ICIP_Assessment" bpmnElement="Task_ICIP_Assessment">
+        <dc:Bounds x="600" y="220" width="100" height="80" />
+      </bpmndi:BPMNShape>
 
-      <bpmndi:BPMNEdge id="Flow_Review_Requirements_di" bpmnElement="Flow_Review_Requirements">
-        <di:waypoint x="340" y="260" />
-        <di:waypoint x="442" y="260" />
-        <di:waypoint x="442" y="420" />
-        <di:waypoint x="392" y="420" />
-      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNShape id="Shape_Gateway_ICIP_Required" bpmnElement="Gateway_ICIP_Required">
+        <dc:Bounds x="520" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
 
-      <bpmndi:BPMNEdge id="Flow_Requirements_Decide_di" bpmnElement="Flow_Requirements_Decide">
-        <di:waypoint x="492" y="420" />
-        <di:waypoint x="594" y="420" />
-        <di:waypoint x="594" y="260" />
+      <bpmndi:BPMNShape id="Shape_Gateway_Decision_Valid" bpmnElement="Gateway_Decision_Valid">
+        <dc:Bounds x="800" y="235" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_DataObject_DecisionPackage" bpmnElement="DataObject_DecisionPackage">
+        <dc:Bounds x="400" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_DataObject_ICIPAssessment" bpmnElement="DataObject_ICIPAssessment">
+        <dc:Bounds x="600" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_DataObject_ApprovalStatus" bpmnElement="DataObject_ApprovalStatus">
+        <dc:Bounds x="800" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Shape_DataStore_DecisionRegistry" bpmnElement="DataStore_DecisionRegistry">
+        <dc:Bounds x="1000" y="40" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add edges for new flows -->
+      <bpmndi:BPMNEdge id="Edge_Flow_Prepare_Decision" bpmnElement="Flow_Prepare_Decision">
         <di:waypoint x="544" y="260" />
+        <di:waypoint x="545" y="260" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Decide_Prepare_di" bpmnElement="Flow_Decide_Prepare">
-        <di:waypoint x="644" y="260" />
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIP_Yes" bpmnElement="Flow_ICIP_Yes">
+        <di:waypoint x="570" y="235" />
+        <di:waypoint x="600" y="235" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIP_No" bpmnElement="Flow_ICIP_No">
+        <di:waypoint x="520" y="235" />
+        <di:waypoint x="400" y="235" />
+        <di:waypoint x="400" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIP_Validate" bpmnElement="Flow_ICIP_Validate">
+        <di:waypoint x="700" y="260" />
         <di:waypoint x="696" y="260" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Prepare_Validate_di" bpmnElement="Flow_Prepare_Validate">
+      <bpmndi:BPMNEdge id="Edge_Flow_Validate_Decision" bpmnElement="Flow_Validate_Decision">
         <di:waypoint x="796" y="260" />
-        <di:waypoint x="898" y="260" />
-        <di:waypoint x="898" y="1020" />
-        <di:waypoint x="848" y="1020" />
+        <di:waypoint x="825" y="260" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Validate_Seek_di" bpmnElement="Flow_Validate_Seek">
-        <di:waypoint x="948" y="1020" />
-        <di:waypoint x="1000" y="1020" />
-        <di:waypoint x="1000" y="420" />
-        <di:waypoint x="848" y="420" />
+      <bpmndi:BPMNEdge id="Edge_Flow_Valid_Yes" bpmnElement="Flow_Valid_Yes">
+        <di:waypoint x="850" y="235" />
+        <di:waypoint x="848" y="235" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Seek_Verify_di" bpmnElement="Flow_Seek_Verify">
+      <bpmndi:BPMNEdge id="Edge_Flow_Valid_No" bpmnElement="Flow_Valid_No">
+        <di:waypoint x="800" y="235" />
+        <di:waypoint x="544" y="235" />
+        <di:waypoint x="544" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add message flow edges -->
+      <bpmndi:BPMNEdge id="Edge_Message_Decision_Ready" bpmnElement="Flow_Message_Decision_Ready">
+        <di:waypoint x="796" y="260" />
+        <di:waypoint x="848" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Message_ICIP_Check" bpmnElement="Flow_Message_ICIP_Check">
+        <di:waypoint x="700" y="260" />
+        <di:waypoint x="848" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_Message_Approval_Request" bpmnElement="Flow_Message_Approval_Request">
         <di:waypoint x="948" y="420" />
         <di:waypoint x="1000" y="420" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Verify_Notify_di" bpmnElement="Flow_Verify_Notify">
-        <di:waypoint x="1100" y="420" />
-        <di:waypoint x="1202" y="420" />
-        <di:waypoint x="1202" y="620" />
-        <di:waypoint x="1152" y="620" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Notify_Stakeholders_di" bpmnElement="Flow_Notify_Stakeholders">
-        <di:waypoint x="1252" y="620" />
-        <di:waypoint x="1304" y="620" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Notify_Track_di" bpmnElement="Flow_Notify_Track">
+      <bpmndi:BPMNEdge id="Edge_Message_Stakeholder_Update" bpmnElement="Flow_Message_Stakeholder_Update">
         <di:waypoint x="1404" y="620" />
         <di:waypoint x="1456" y="620" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Track_End_di" bpmnElement="Flow_Track_End">
-        <di:waypoint x="1556" y="620" />
-        <di:waypoint x="1608" y="620" />
-        <di:waypoint x="1608" y="260" />
-        <di:waypoint x="1518" y="260" />
+      <!-- Add data association edges -->
+      <bpmndi:BPMNEdge id="Edge_Data_Decision_Package" bpmnElement="Flow_Data_Decision_Package">
+        <di:waypoint x="696" y="260" />
+        <di:waypoint x="418" y="90" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Prepare_Legal_di" bpmnElement="Flow_Prepare_Legal">
-        <di:waypoint x="796" y="260" />
-        <di:waypoint x="898" y="260" />
-        <di:waypoint x="898" y="820" />
-        <di:waypoint x="848" y="820" />
+      <bpmndi:BPMNEdge id="Edge_Data_ICIP_Assessment" bpmnElement="Flow_Data_ICIP_Assessment">
+        <di:waypoint x="700" y="260" />
+        <di:waypoint x="618" y="90" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Legal_Verify_Decisions_di" bpmnElement="Flow_Legal_Verify_Decisions">
-        <di:waypoint x="948" y="820" />
-        <di:waypoint x="1000" y="820" />
+      <bpmndi:BPMNEdge id="Edge_Data_Approval_Status" bpmnElement="Flow_Data_Approval_Status">
+        <di:waypoint x="1100" y="420" />
+        <di:waypoint x="818" y="90" />
       </bpmndi:BPMNEdge>
 
-      <bpmndi:BPMNEdge id="Flow_Compliance_Validate_di" bpmnElement="Flow_Compliance_Validate">
-        <di:waypoint x="1100" y="820" />
-        <di:waypoint x="1202" y="820" />
-        <di:waypoint x="1202" y="1020" />
-        <di:waypoint x="848" y="1020" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Seek_Verify_Process_di" bpmnElement="Flow_Seek_Verify_Process">
-        <di:waypoint x="948" y="420" />
-        <di:waypoint x="1000" y="420" />
-        <di:waypoint x="1000" y="1020" />
-        <di:waypoint x="1000" y="1020" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Verify_Quality_di" bpmnElement="Flow_Verify_Quality">
-        <di:waypoint x="1100" y="1020" />
-        <di:waypoint x="1152" y="1020" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Quality_Peer_di" bpmnElement="Flow_Quality_Peer">
-        <di:waypoint x="1252" y="1020" />
-        <di:waypoint x="1304" y="1020" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNEdge id="Flow_Peer_End_di" bpmnElement="Flow_Peer_End">
-        <di:waypoint x="1404" y="1020" />
-        <di:waypoint x="1456" y="1020" />
-        <di:waypoint x="1456" y="260" />
-        <di:waypoint x="1518" y="260" />
-      </bpmndi:BPMNEdge>
-
-      <!-- Text Annotations -->
-      <bpmndi:BPMNShape id="TextAnnotation_Decision_Process_di" bpmnElement="TextAnnotation_Decision_Process">
-        <dc:Bounds x="544" y="120" width="200" height="60" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_Decision_Process_di" bpmnElement="Association_Decision_Process">
-        <di:waypoint x="594" y="220" />
-        <di:waypoint x="644" y="180" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNShape id="TextAnnotation_Approval_Process_di" bpmnElement="TextAnnotation_Approval_Process">
-        <dc:Bounds x="848" y="320" width="200" height="60" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_Approval_Process_di" bpmnElement="Association_Approval_Process">
-        <di:waypoint x="898" y="420" />
-        <di:waypoint x="948" y="380" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNShape id="TextAnnotation_Stakeholder_Communication_di" bpmnElement="TextAnnotation_Stakeholder_Communication">
-        <dc:Bounds x="1304" y="520" width="200" height="60" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_Stakeholder_Communication_di" bpmnElement="Association_Stakeholder_Communication">
-        <di:waypoint x="1354" y="620" />
-        <di:waypoint x="1404" y="580" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNShape id="TextAnnotation_Legal_Compliance_di" bpmnElement="TextAnnotation_Legal_Compliance">
-        <dc:Bounds x="848" y="720" width="200" height="60" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_Legal_Compliance_di" bpmnElement="Association_Legal_Compliance">
-        <di:waypoint x="898" y="820" />
-        <di:waypoint x="948" y="780" />
-      </bpmndi:BPMNEdge>
-
-      <bpmndi:BPMNShape id="TextAnnotation_Quality_Process_di" bpmnElement="TextAnnotation_Quality_Process">
-        <dc:Bounds x="1152" y="920" width="200" height="60" />
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge id="Association_Quality_Process_di" bpmnElement="Association_Quality_Process">
-        <di:waypoint x="1202" y="1020" />
-        <di:waypoint x="1252" y="980" />
+      <bpmndi:BPMNEdge id="Edge_Data_Registry_Update" bpmnElement="Flow_Data_Registry_Update">
+        <di:waypoint x="1340" y="420" />
+        <di:waypoint x="1025" y="90" />
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>

@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_TriageCategorisation
+process_name: 2026 Basin Plan Review Triage and Categorisation Process
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Triage and Categorisation Process"
+description: "Context and detailed information about the Triage and Categorisation process for the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-triage-categorisation.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR Triage and Categorisation Process
 
 ## Overview

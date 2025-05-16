@@ -1,6 +1,10 @@
 ---
 version: "1.0.0"
 last_updated: "16/05/2024"
+status: "in-progress"
+author: "MDBA Process Design Team"
+title: "BPMN Diagram Requirements"
+description: "Standards and requirements for BPMN process diagrams in the Basin Plan Review 2026 project"
 ---
 # BPMN Diagram Requirements for MDBA Basin Plan Review 2026
 
@@ -9,109 +13,95 @@ This document tracks the required BPMN process diagrams for the MDBA Basin Plan 
 
 ## Required Diagrams
 
-### Parent Process
-- [x] End-to-End Basin Plan Review Process (`mdba-bpr-end-to-end-process.bpmn`)
-  - Status: Complete
-  - Priority: Highest
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-end-to-end-process.md](docs/process-design/context/bpr-end-to-end-process.md)
-  - Covers: 
-    - Complete lifecycle of the BPR process
-    - Major phase transitions and dependencies
-    - Key decision points and gateways
-    - High-level swimlanes for major stakeholder groups
-    - Critical success factors and KPIs
-    - Integration points with external systems
-  - Notes: This is the master diagram that shows how all other processes connect and interact
+### End-to-End Process
+- BPMN File: `models/approved/mdba-bpr-end-to-end-process.bpmn`
+- Context: [`../context/bpr-end-to-end-process.md`](../context/bpr-end-to-end-process.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-### Core Process Phases
-- [x] Invitation Process (`mdba-bpr-invitation-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-invitation-phase.md](docs/process-design/context/bpr-invitation-phase.md)
-  - Covers: Discussion Paper preparation, official invitation, state distribution, and submission guidelines
+### Invitation Phase
+- BPMN File: `models/approved/mdba-bpr-invitation-phase.bpmn`
+- Context: [`../context/bpr-invitation-phase.md`](../context/bpr-invitation-phase.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Submission Intake (`mdba-bpr-collection-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-collection-phase.md](docs/process-design/context/bpr-collection-phase.md)
-  - Covers: Online portal, email, and hard copy submission processes
+### Collection Phase
+- BPMN File: `models/approved/mdba-bpr-collection-phase.bpmn`
+- Context: [`../context/bpr-collection-phase.md`](../context/bpr-collection-phase.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Analysis Phase (`mdba-bpr-analysis-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-analysis-phase.md](docs/process-design/context/bpr-analysis-phase.md)
-  - Covers: Validation, categorization, and initial triage of submissions
+### Analysis Phase
+- BPMN File: `models/approved/mdba-bpr-analysis-phase.bpmn`
+- Context: [`../context/bpr-analysis-phase.md`](../context/bpr-analysis-phase.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Consideration Phase (`mdba-bpr-consideration-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-consideration-phase.md](docs/process-design/context/bpr-consideration-phase.md)
-  - Covers: Detailed review and assessment of submissions
+### Consideration Phase
+- BPMN File: `models/approved/mdba-bpr-consideration-phase.bpmn`
+- Context: [`../context/bpr-consideration-phase.md`](../context/bpr-consideration-phase.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Decision Phase (`mdba-bpr-decision-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Context: [docs/process-design/context/bpr-decision-phase.md](docs/process-design/context/bpr-decision-phase.md)
-  - Covers: Final decision-making and approval processes
+### Decision Phase
+- BPMN File: `models/approved/mdba-bpr-decision-phase.bpmn`
+- Context: [`../context/bpr-decision-phase.md`](../context/bpr-decision-phase.md)
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Publication Management (`mdba-bpr-publication-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Last Updated: 16/05/2024
-  - Covers: Publishing permissions, redactions, ICIP handling, and website publication
-  - Priority: High
-  - Notes: Includes swimlanes for Content Team, ICIP Team, and Web Team with comprehensive error handling
+### Publication Management
+- BPMN File: `models/approved/mdba-bpr-publication-phase.bpmn`
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Reporting and Analytics (`mdba-bpr-reporting-phase.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Covers: What We've Heard Report and Final Report preparation, analytics and metrics generation
-  - Priority: Medium
-  - Notes: Includes swimlanes for Analytics Team, Report Team, and Approval Team with comprehensive error handling
+### Reporting and Analytics
+- BPMN File: `models/approved/mdba-bpr-reporting-phase.bpmn`
+- Status: Complete
+- Priority: Medium
+- Completion Date: 16/05/2024
 
-### Supporting Processes
-- [x] Consent and Privacy Capture (`mdba-bpr-consent-privacy.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: High
-  - Notes: Includes swimlanes for Submission Team, Privacy Team, and Compliance Team with comprehensive error handling for consent and privacy compliance
+### Consent and Privacy Capture
+- BPMN File: `models/approved/mdba-bpr-consent-privacy.bpmn`
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Triage and Categorisation (`mdba-bpr-triage-categorisation.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: Medium
-  - Notes: Includes swimlanes for Intake Team, Triage Team, and Quality Team with comprehensive error handling and categorisation workflow
+### Triage and Categorisation
+- BPMN File: `models/approved/mdba-bpr-triage-categorisation.bpmn`
+- Status: Complete
+- Priority: Medium
+- Completion Date: 16/05/2024
 
-- [x] SME and Legal Review Routing (`mdba-bpr-sme-legal-review.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: High
-  - Notes: Includes swimlanes for Coordinator Team, SME Team, Legal Team, and Quality Team with comprehensive error handling and parallel review paths
+### SME and Legal Review Routing
+- BPMN File: `models/approved/mdba-bpr-sme-legal-review.bpmn`
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Redaction Workflow (`mdba-bpr-redaction-workflow.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: High
-  - Notes: Includes swimlanes for Content Team, ICIP Team, Legal Team, and Quality Team with comprehensive error handling and parallel review paths for ICIP and legal compliance
+### Redaction Workflow
+- BPMN File: `models/approved/mdba-bpr-redaction-workflow.bpmn`
+- Status: Complete
+- Priority: High
+- Completion Date: 16/05/2024
 
-- [x] Submission Status Tracking (`mdba-bpr-submission-tracking.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: Medium
-  - Notes: Includes swimlanes for Intake Team, Processing Team, Notification Team, and Reporting Team with comprehensive status tracking, notifications, and metrics generation
+### Submission Status Tracking
+- BPMN File: `models/approved/mdba-bpr-submission-tracking.bpmn`
+- Status: Complete
+- Priority: Medium
+- Completion Date: 16/05/2024
 
-- [x] Data Archiving & Retention (`mdba-bpr-data-archiving.bpmn`)
-  - Status: Complete
-  - Completed: 16/05/2024
-  - Priority: Low
-  - Notes: Includes swimlanes for Records Team, Compliance Team, Archive Team, and Quality Team with comprehensive error handling and retention policy compliance checks
+### Data Archiving & Retention
+- BPMN File: `models/approved/mdba-bpr-data-archiving.bpmn`
+- Status: Complete
+- Priority: Low
+- Completion Date: 16/05/2024
 
 ## Diagram Standards
 Each diagram must:
@@ -138,10 +128,26 @@ Each diagram must:
    - [x] Update process descriptions and metadata for all requirements files
 
 2. Quality Assurance
-   - [ ] Validate all BPMN XML files for compliance
-   - [ ] Review swimlane assignments and role clarity
-   - [ ] Verify error handling and boundary events
-   - [ ] Check process documentation completeness
+   - [x] Validate all BPMN XML files for compliance
+     - All 14 BPMN files validated successfully
+     - No critical errors found
+     - Action items for warnings:
+       - Add message flows to all processes
+       - Add data objects and stores to all processes
+       - Add gateways where appropriate
+       - Add ICIP compliance checks to relevant processes
+       - Add quality assurance checks to relevant processes
+       - Add swimlanes to end-to-end process
+       - Add error boundary events to submission tracking
+   - [x] Review swimlane assignments and role clarity
+     - All processes except end-to-end have swimlanes defined
+     - Action item: Add swimlanes to end-to-end process
+   - [x] Verify error handling and boundary events
+     - All processes have basic error handling
+     - Action item: Add error boundary events to submission tracking
+   - [x] Check process documentation completeness
+     - All processes have documentation
+     - No documentation warnings found
 
 3. Integration and Review
    - [ ] Map process interactions and dependencies

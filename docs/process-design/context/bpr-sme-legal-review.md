@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_SMELegalReview
+process_name: 2026 Basin Plan Review SME and Legal Review Routing Process
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review SME and Legal Review Routing Process"
+description: "Context and detailed information about the SME and Legal Review Routing process for the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-sme-legal-review.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR SME and Legal Review Routing Process
 
 ## Overview

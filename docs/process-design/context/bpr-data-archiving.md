@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_DataArchiving
+process_name: 2026 Basin Plan Review Data Archiving & Retention Process
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Data Archiving & Retention Process"
+description: "Context and detailed information about the Data Archiving & Retention process for the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-data-archiving.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR Data Archiving & Retention Process
 
 ## Overview

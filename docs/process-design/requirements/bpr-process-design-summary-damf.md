@@ -1,6 +1,10 @@
 ---
 version: "1.0.0"
 last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Process Design Summary"
+description: "Summary of the MDBA Basin Plan Review 2026 Process Design Project, including BPMN requirements and DAMF mapping specifications"
 ---
 MDBA Basin Plan Review Process Design Project – Summary
 

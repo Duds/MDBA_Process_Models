@@ -2,48 +2,47 @@
 version: "1.0.0"
 last_updated: "16/05/2024"
 ---
-# MDBA Basin Plan Review Process Mapping
+# Basin Plan Review Process Mapping
 
 This document maps the relationships between BPMN process diagrams and their corresponding documentation, ensuring traceability and completeness across the Basin Plan Review 2026 project.
 
-## Process Mapping
+## Core Process Models
 
-### Parent Process
-| BPMN File | Context Doc | Status | Last Updated | Notes |
-|-----------|-------------|---------|--------------|-------|
-| `models/drafts/mdba-bpr-end-to-end-process.bpmn` | `docs/process-design/context/bpr-end-to-end-process.md` | Complete | 16/05/2024 | Master diagram showing all process connections |
+| BPMN Model | Context Document | Status |
+|------------|-----------------|---------|
+| [`models/approved/mdba-bpr-end-to-end-process.bpmn`](../../models/approved/mdba-bpr-end-to-end-process.bpmn) | [`docs/process-design/context/bpr-end-to-end-process.md`](../context/bpr-end-to-end-process.md) | Complete |
+| [`models/approved/mdba-bpr-invitation-phase.bpmn`](../../models/approved/mdba-bpr-invitation-phase.bpmn) | [`docs/process-design/context/bpr-invitation-phase.md`](../context/bpr-invitation-phase.md) | Complete |
+| [`models/approved/mdba-bpr-collection-phase.bpmn`](../../models/approved/mdba-bpr-collection-phase.bpmn) | [`docs/process-design/context/bpr-collection-phase.md`](../context/bpr-collection-phase.md) | Complete |
+| [`models/approved/mdba-bpr-analysis-phase.bpmn`](../../models/approved/mdba-bpr-analysis-phase.bpmn) | [`docs/process-design/context/bpr-analysis-phase.md`](../context/bpr-analysis-phase.md) | Complete |
+| [`models/approved/mdba-bpr-consideration-phase.bpmn`](../../models/approved/mdba-bpr-consideration-phase.bpmn) | [`docs/process-design/context/bpr-consideration-phase.md`](../context/bpr-consideration-phase.md) | Complete |
+| [`models/approved/mdba-bpr-decision-phase.bpmn`](../../models/approved/mdba-bpr-decision-phase.bpmn) | [`docs/process-design/context/bpr-decision-phase.md`](../context/bpr-decision-phase.md) | Complete |
+| [`models/approved/mdba-bpr-publication-phase.bpmn`](../../models/approved/mdba-bpr-publication-phase.bpmn) | [`docs/process-design/context/bpr-publication-phase.md`](../context/bpr-publication-phase.md) | Complete |
+| [`models/approved/mdba-bpr-reporting-phase.bpmn`](../../models/approved/mdba-bpr-reporting-phase.bpmn) | [`docs/process-design/context/bpr-reporting-phase.md`](../context/bpr-reporting-phase.md) | Complete |
 
-### Core Process Phases
-| BPMN File | Context Doc | Status | Last Updated | Notes |
-|-----------|-------------|---------|--------------|-------|
-| `models/drafts/mdba-bpr-invitation-phase.bpmn` | `docs/process-design/context/bpr-invitation-phase.md` | Complete | 16/05/2024 | Discussion Paper and invitation process |
-| `models/drafts/mdba-bpr-collection-phase.bpmn` | `docs/process-design/context/bpr-collection-phase.md` | Complete | 16/05/2024 | Submission intake process |
-| `models/drafts/mdba-bpr-analysis-phase.bpmn` | `docs/process-design/context/bpr-analysis-phase.md` | Complete | 16/05/2024 | Validation and initial triage |
-| `models/drafts/mdba-bpr-consideration-phase.bpmn` | `docs/process-design/context/bpr-consideration-phase.md` | Complete | 16/05/2024 | Detailed review process |
-| `models/drafts/mdba-bpr-decision-phase.bpmn` | `docs/process-design/context/bpr-decision-phase.md` | Complete | 16/05/2024 | Final decision-making process |
-| `models/drafts/mdba-bpr-publication-phase.bpmn` | `docs/process-design/context/bpr-publication-phase.md` | Complete | 16/05/2024 | Publication management process |
-| `models/drafts/mdba-bpr-reporting-phase.bpmn` | `docs/process-design/context/bpr-reporting-phase.md` | Complete | 16/05/2024 | Reporting and analytics process |
+## Supporting Process Models
 
-### Supporting Processes
-| BPMN File | Context Doc | Status | Last Updated | Notes |
-|-----------|-------------|---------|--------------|-------|
-| `models/drafts/mdba-bpr-consent-privacy.bpmn` | `docs/process-design/context/bpr-consent-privacy.md` | Complete | 16/05/2024 | Consent and privacy compliance |
-| `models/drafts/mdba-bpr-triage-categorisation.bpmn` | `docs/process-design/context/bpr-triage-categorisation.md` | Complete | 16/05/2024 | Triage and categorisation workflow |
-| `models/drafts/mdba-bpr-sme-legal-review.bpmn` | `docs/process-design/context/bpr-sme-legal-review.md` | Complete | 16/05/2024 | SME and legal review routing |
-| `models/drafts/mdba-bpr-redaction-workflow.bpmn` | `docs/process-design/context/bpr-redaction-workflow.md` | Complete | 16/05/2024 | Redaction and ICIP handling |
-| `models/drafts/mdba-bpr-submission-tracking.bpmn` | `docs/process-design/context/bpr-submission-tracking.md` | Complete | 16/05/2024 | Submission status tracking |
-| `models/drafts/mdba-bpr-data-archiving.bpmn` | `docs/process-design/context/bpr-data-archiving.md` | Complete | 16/05/2024 | Data archiving and retention |
+| BPMN Model | Context Document | Status |
+|------------|-----------------|---------|
+| [`models/approved/mdba-bpr-consent-privacy.bpmn`](../../models/approved/mdba-bpr-consent-privacy.bpmn) | [`docs/process-design/context/bpr-consent-privacy.md`](../context/bpr-consent-privacy.md) | Complete |
+| [`models/approved/mdba-bpr-triage-categorisation.bpmn`](../../models/approved/mdba-bpr-triage-categorisation.bpmn) | [`docs/process-design/context/bpr-triage-categorisation.md`](../context/bpr-triage-categorisation.md) | Complete |
+| [`models/approved/mdba-bpr-sme-legal-review.bpmn`](../../models/approved/mdba-bpr-sme-legal-review.bpmn) | [`docs/process-design/context/bpr-sme-legal-review.md`](../context/bpr-sme-legal-review.md) | Complete |
+| [`models/approved/mdba-bpr-redaction-workflow.bpmn`](../../models/approved/mdba-bpr-redaction-workflow.bpmn) | [`docs/process-design/context/bpr-redaction-workflow.md`](../context/bpr-redaction-workflow.md) | Complete |
+| [`models/approved/mdba-bpr-submission-tracking.bpmn`](../../models/approved/mdba-bpr-submission-tracking.bpmn) | [`docs/process-design/context/bpr-submission-tracking.md`](../context/bpr-submission-tracking.md) | Complete |
+| [`models/approved/mdba-bpr-data-archiving.bpmn`](../../models/approved/mdba-bpr-data-archiving.bpmn) | [`docs/process-design/context/bpr-data-archiving.md`](../context/bpr-data-archiving.md) | Complete |
+
+## Related Documentation
+- [Process Design Documentation](../README.md)
+- [BPMN Diagram Requirements](bpr-bpmn-diagram-requirements.md)
+- [Service Concept](bpr-service-concept.md)
+- [Naming Convention Migration](../decisions/naming-convention-migration.md)
 
 ## Status Legend
-- Complete: Both BPMN and context documentation exist and are up to date
-- In Progress: Documentation or BPMN file is being worked on
-- Pending: Documentation or BPMN file is planned but not started
-- Review: Documentation or BPMN file needs review
+- Complete: Process model and context document are finalised and approved
+- Draft: Process model or context document is under review
+- Pending: Process model or context document is planned but not yet started
 
 ## Notes
-- All BPMN files are currently in the `drafts` directory
-- All context documentation is in the `docs/process-design/context` directory
-- File naming follows the convention:
-  - BPMN: `mdba-bpr-{process-name}.bpmn`
-  - Context: `bpr-{process-name}.md`
-- Last updated dates reflect the most recent change to either the BPMN or context documentation 
+- All process models follow the BPMN 2.0 standard
+- Context documents provide detailed information about each process
+- For more information on naming conventions, see [BPMN Diagram Requirements](bpr-bpmn-diagram-requirements.md#file-naming-conventions)
+- Last updated: 16/05/2024 

@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_ConsiderationPhase
+process_name: 2026 Basin Plan Review Consideration Phase
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Consideration Phase"
+description: "Context and detailed information about the Consideration Phase of the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-consideration-phase.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR Consideration Phase Process
 
 ## Overview

@@ -10,6 +10,27 @@
   <bpmn:process id="PublicationPhaseDetail" name="MDBA BPR Publication Phase" isExecutable="true">
     <bpmn:documentation>
       This process details the publication phase of the Basin Plan Review, including ICIP compliance checks, redaction handling, and website publication. The process ensures all content meets MDBA publication standards and ICIP requirements before public release.
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+      - ICIP compliance and cultural consultation records must be maintained:
+        * Consultation dates, participants, and outcomes
+        * Protocols followed and feedback received
+      - Stakeholder engagement must be documented:
+        * Engagement activities, participants, and feedback
+      - Review and approval outcomes must be recorded:
+        * Findings, required changes, approval status, and sign-off
+      - Process variations must be tracked:
+        * Details, impact assessment, resolution actions, and lessons learned
+      
+      Quality Assurance:
+      - All documentation must be reviewed for completeness, accuracy, compliance, and accessibility
+      - Documentation must be version controlled, accessible to stakeholders, maintained in approved systems, and archived according to retention policies
     </bpmn:documentation>
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_ContentTeam" name="Content Team">
@@ -30,78 +51,255 @@
       </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_PublicationPhase" name="Publication Phase Start">
-      <bpmn:documentation>Process commences when content is ready for publication review.</bpmn:documentation>
+      <bpmn:documentation>
+        Process commences when content is ready for publication review.
+        
+        Documentation Requirements:
+        - Purpose: Initiate the publication phase
+        - Input: Content ready for review
+        - Output: Publication process started
+        - Quality Criteria: All prerequisites for publication are met
+        - Stakeholder: Content Team
+        - Review: Confirm readiness and document initiation
+      </bpmn:documentation>
       <bpmn:outgoing>Flow_StartToPrepare</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:task id="Task_PrepareContent" name="Prepare Content for Review">
-      <bpmn:documentation>Initial preparation of content for ICIP review and publication.</bpmn:documentation>
+      <bpmn:documentation>
+        Initial preparation of content for ICIP review and publication.
+        
+        Documentation Requirements:
+        - Purpose: Prepare content for compliance and publication
+        - Inputs: Draft content, review guidelines
+        - Outputs: Content package for ICIP review
+        - Quality Criteria: Completeness, accuracy, compliance with standards
+        - Stakeholder: Content Team
+        - Review: Internal check, version control, documentation of changes
+      </bpmn:documentation>
       <bpmn:incoming>Flow_StartToPrepare</bpmn:incoming>
       <bpmn:outgoing>Flow_PrepareToICIP</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_ICIPReview" name="Conduct ICIP Review">
-      <bpmn:documentation>Review content for ICIP compliance and identify any required redactions.</bpmn:documentation>
+      <bpmn:documentation>
+        Review content for ICIP compliance and identify any required redactions.
+        
+        Documentation Requirements:
+        - Purpose: Ensure ICIP compliance
+        - Inputs: Prepared content, ICIP guidelines
+        - Outputs: ICIP review report, redaction recommendations
+        - Quality Criteria: Cultural appropriateness, protocol compliance
+        - Stakeholder: ICIP Team
+        - Review: Document findings, maintain consultation records
+      </bpmn:documentation>
       <bpmn:incoming>Flow_PrepareToICIP</bpmn:incoming>
       <bpmn:outgoing>Flow_ICIPToGateway</bpmn:outgoing>
     </bpmn:task>
     <bpmn:exclusiveGateway id="Gateway_RedactionCheck" name="Redaction Required?">
+      <bpmn:documentation>
+        Decision point to determine if redactions are required for ICIP or sensitive information.
+        
+        Documentation Requirements:
+        - Purpose: Assess need for redaction
+        - Inputs: ICIP review report
+        - Outputs: Redaction decision
+        - Quality Criteria: Accurate assessment, compliance with protocols
+        - Stakeholder: ICIP Team
+        - Review: Document decision and rationale
+      </bpmn:documentation>
       <bpmn:incoming>Flow_ICIPToGateway</bpmn:incoming>
       <bpmn:outgoing>Flow_GatewayToRedaction</bpmn:outgoing>
       <bpmn:outgoing>Flow_GatewayToApproval</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:task id="Task_ApplyRedactions" name="Apply Required Redactions">
-      <bpmn:documentation>Apply necessary redactions to protect ICIP and sensitive information.</bpmn:documentation>
+      <bpmn:documentation>
+        Apply necessary redactions to protect ICIP and sensitive information.
+        
+        Documentation Requirements:
+        - Purpose: Protect ICIP and sensitive information
+        - Inputs: Redaction recommendations
+        - Outputs: Redacted content
+        - Quality Criteria: All sensitive content redacted, compliance with ICIP protocols
+        - Stakeholder: Content Team, ICIP Team
+        - Review: Document redactions, maintain redaction log
+      </bpmn:documentation>
       <bpmn:incoming>Flow_GatewayToRedaction</bpmn:incoming>
       <bpmn:outgoing>Flow_RedactionToICIP</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_ICIPApproval" name="Obtain ICIP Approval">
-      <bpmn:documentation>Final ICIP approval before proceeding to publication.</bpmn:documentation>
+      <bpmn:documentation>
+        Final ICIP approval before proceeding to publication.
+        
+        Documentation Requirements:
+        - Purpose: Certify ICIP compliance
+        - Inputs: Redacted content, ICIP review report
+        - Outputs: ICIP approval certificate
+        - Quality Criteria: All ICIP requirements met
+        - Stakeholder: ICIP Team
+        - Review: Document approval, maintain approval records
+      </bpmn:documentation>
       <bpmn:incoming>Flow_GatewayToApproval</bpmn:incoming>
       <bpmn:incoming>Flow_RedactionToICIP</bpmn:incoming>
       <bpmn:outgoing>Flow_ApprovalToFinalise</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_FinaliseContent" name="Finalise Publication Content">
-      <bpmn:documentation>Final preparation of content for website publication.</bpmn:documentation>
+      <bpmn:documentation>
+        Final preparation of content for website publication.
+        
+        Documentation Requirements:
+        - Purpose: Prepare content for public release
+        - Inputs: ICIP approval, final content
+        - Outputs: Publication-ready content
+        - Quality Criteria: Compliance, accuracy, accessibility
+        - Stakeholder: Content Team
+        - Review: Document finalisation, update version history
+      </bpmn:documentation>
       <bpmn:incoming>Flow_ApprovalToFinalise</bpmn:incoming>
       <bpmn:outgoing>Flow_FinaliseToWebsite</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_PrepareWebsite" name="Prepare Website Publication">
-      <bpmn:documentation>Prepare website for content publication, including metadata and accessibility checks.</bpmn:documentation>
+      <bpmn:documentation>
+        Prepare website for content publication, including metadata and accessibility checks.
+        
+        Documentation Requirements:
+        - Purpose: Ready website for new content
+        - Inputs: Publication-ready content, metadata
+        - Outputs: Website prepared for publication
+        - Quality Criteria: Accessibility, metadata accuracy
+        - Stakeholder: Web Team
+        - Review: Document preparation steps, maintain checklist
+      </bpmn:documentation>
       <bpmn:incoming>Flow_FinaliseToWebsite</bpmn:incoming>
       <bpmn:outgoing>Flow_WebsiteToPublish</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_PublishContent" name="Publish Content">
-      <bpmn:documentation>Publish approved content to MDBA website.</bpmn:documentation>
+      <bpmn:documentation>
+        Publish approved content to MDBA website.
+        
+        Documentation Requirements:
+        - Purpose: Publicly release content
+        - Inputs: Website-ready content
+        - Outputs: Published content
+        - Quality Criteria: Successful publication, accessibility
+        - Stakeholder: Web Team
+        - Review: Document publication, maintain publication log
+      </bpmn:documentation>
       <bpmn:incoming>Flow_WebsiteToPublish</bpmn:incoming>
       <bpmn:outgoing>Flow_PublishToVerify</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_VerifyPublication" name="Verify Publication">
-      <bpmn:documentation>Verify successful publication and accessibility of content.</bpmn:documentation>
+      <bpmn:documentation>
+        Verify successful publication and accessibility of content.
+        
+        Documentation Requirements:
+        - Purpose: Confirm publication success
+        - Inputs: Published content, accessibility tools
+        - Outputs: Verification report
+        - Quality Criteria: Accessibility, accuracy, stakeholder confirmation
+        - Stakeholder: Web Team
+        - Review: Document verification, maintain verification records
+      </bpmn:documentation>
       <bpmn:incoming>Flow_PublishToVerify</bpmn:incoming>
       <bpmn:outgoing>Flow_VerifyToEnd</bpmn:outgoing>
     </bpmn:task>
     <bpmn:endEvent id="EndEvent_PublicationComplete" name="Publication Complete">
-      <bpmn:documentation>Publication phase complete, content successfully published.</bpmn:documentation>
+      <bpmn:documentation>
+        Publication phase complete, content successfully published.
+        
+        Documentation Requirements:
+        - Purpose: Mark completion of publication phase
+        - Inputs: Verification report
+        - Outputs: Publication completion record
+        - Quality Criteria: All documentation complete, approvals recorded
+        - Stakeholder: All teams
+        - Review: Document completion, archive records
+      </bpmn:documentation>
       <bpmn:incoming>Flow_VerifyToEnd</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_ICIPError" attachedToRef="Task_ICIPReview">
+      <bpmn:documentation>
+        Triggered if ICIP protocol is violated during review.
+        
+        Documentation Requirements:
+        - Purpose: Capture ICIP protocol violations
+        - Inputs: ICIP review findings
+        - Outputs: Error log, escalation record
+        - Quality Criteria: Accurate error capture, timely escalation
+        - Stakeholder: ICIP Team
+        - Review: Document error, initiate corrective action
+      </bpmn:documentation>
       <bpmn:errorEventDefinition errorRef="Error_ICIPViolation" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_PermissionError" attachedToRef="Task_ICIPApproval">
+      <bpmn:documentation>
+        Triggered if publication permission is denied at approval stage.
+        
+        Documentation Requirements:
+        - Purpose: Capture permission denial
+        - Inputs: Approval attempt
+        - Outputs: Error log, escalation record
+        - Quality Criteria: Accurate error capture, timely escalation
+        - Stakeholder: ICIP Team
+        - Review: Document error, initiate corrective action
+      </bpmn:documentation>
       <bpmn:errorEventDefinition errorRef="Error_PermissionDenied" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_RedactionError" attachedToRef="Task_ApplyRedactions">
+      <bpmn:documentation>
+        Triggered if additional redactions are required after initial application.
+        
+        Documentation Requirements:
+        - Purpose: Capture redaction errors
+        - Inputs: Redaction process
+        - Outputs: Error log, escalation record
+        - Quality Criteria: Accurate error capture, timely escalation
+        - Stakeholder: Content Team, ICIP Team
+        - Review: Document error, initiate corrective action
+      </bpmn:documentation>
       <bpmn:errorEventDefinition errorRef="Error_RedactionRequired" />
     </bpmn:boundaryEvent>
     <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_PublishContent">
+      <bpmn:documentation>
+        Triggered if a system failure occurs during publication.
+        
+        Documentation Requirements:
+        - Purpose: Capture system failures
+        - Inputs: Publication process
+        - Outputs: Error log, escalation record
+        - Quality Criteria: Accurate error capture, timely escalation
+        - Stakeholder: Web Team
+        - Review: Document error, initiate corrective action
+      </bpmn:documentation>
       <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
     </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_StartToPrepare" sourceRef="StartEvent_PublicationPhase" targetRef="Task_PrepareContent" />
     <bpmn:sequenceFlow id="Flow_PrepareToICIP" sourceRef="Task_PrepareContent" targetRef="Task_ICIPReview" />
     <bpmn:sequenceFlow id="Flow_ICIPToGateway" sourceRef="Task_ICIPReview" targetRef="Gateway_RedactionCheck" />
     <bpmn:sequenceFlow id="Flow_GatewayToRedaction" sourceRef="Gateway_RedactionCheck" targetRef="Task_ApplyRedactions">
+      <bpmn:documentation>
+        Conditional flow: Redactions are required based on ICIP review findings.
+        
+        Documentation Requirements:
+        - Purpose: Route to redaction if required
+        - Inputs: ICIP review report
+        - Outputs: Redacted content
+        - Quality Criteria: Accurate routing, compliance
+        - Stakeholder: ICIP Team
+        - Review: Document condition and outcome
+      </bpmn:documentation>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${redactionRequired}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_GatewayToApproval" sourceRef="Gateway_RedactionCheck" targetRef="Task_ICIPApproval">
+      <bpmn:documentation>
+        Conditional flow: No redactions required, proceed to ICIP approval.
+        
+        Documentation Requirements:
+        - Purpose: Route to approval if no redactions needed
+        - Inputs: ICIP review report
+        - Outputs: Approval process initiated
+        - Quality Criteria: Accurate routing, compliance
+        - Stakeholder: ICIP Team
+        - Review: Document condition and outcome
+      </bpmn:documentation>
       <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${!redactionRequired}</bpmn:conditionExpression>
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_RedactionToICIP" sourceRef="Task_ApplyRedactions" targetRef="Task_ICIPApproval" />

@@ -73,6 +73,45 @@
     </documentation>
   </message>
 
+  <!-- Add ICIP Message Definition -->
+  <message id="Message_ICIP_Review_Required" name="ICIP Review Required">
+    <documentation>
+      Notification that submission requires ICIP review.
+      Contains:
+      - Submission reference
+      - ICIP indicators identified
+      - Review priority
+      - Cultural sensitivity level
+      - Required expertise
+    </documentation>
+  </message>
+
+  <message id="Message_ICIP_Review_Complete" name="ICIP Review Complete">
+    <documentation>
+      Notification of ICIP review completion.
+      Contains:
+      - Review outcome
+      - Cultural protocols applied
+      - Required actions
+      - Consultation recommendations
+      - Next steps
+    </documentation>
+  </message>
+
+  <!-- Add ICIP Data Object -->
+  <dataObject id="DataObject_ICIP_Assessment" name="ICIP Assessment">
+    <documentation>
+      Records ICIP compliance assessment and actions.
+      Contains:
+      - Cultural content identification
+      - Sensitivity assessment
+      - Consultation requirements
+      - Cultural protocols applied
+      - Review outcomes
+      - Required actions
+    </documentation>
+  </dataObject>
+
   <process id="Process_BPR_CollectionPhase" name="2026 Basin Plan Review Collection Phase" isExecutable="false">
     <documentation>
       Purpose: Manages the collection and initial processing of submissions for the 2026 Basin Plan Review
@@ -102,6 +141,11 @@
       <lane id="Lane_Support" name="Support Team">
         <flowNodeRef>Task_Assist_Submission</flowNodeRef>
         <flowNodeRef>Task_Handle_Queries</flowNodeRef>
+      </lane>
+      <lane id="Lane_ICIP_Review" name="ICIP Review Team">
+        <flowNodeRef>Task_ICIP_Assessment</flowNodeRef>
+        <flowNodeRef>Task_ICIP_Consultation</flowNodeRef>
+        <flowNodeRef>Task_ICIP_Protocol_Application</flowNodeRef>
       </lane>
     </laneSet>
 
@@ -252,6 +296,89 @@
       <incoming>Flow_Quality_End</incoming>
     </endEvent>
 
+    <!-- Add ICIP Tasks -->
+    <userTask id="Task_ICIP_Assessment" name="Assess ICIP Requirements">
+      <documentation>
+        Reviews submission for Indigenous cultural content and determines
+        required ICIP protocols and consultation needs.
+        
+        Assessment Criteria:
+        - Indigenous cultural content identification
+        - Cultural sensitivity level
+        - Required consultation scope
+        - Cultural protocol requirements
+        - Risk assessment
+        
+        Outputs:
+        - ICIP assessment report
+        - Consultation requirements
+        - Protocol recommendations
+        - Risk mitigation plan
+      </documentation>
+      <incoming>Flow_Validate_ICIP</incoming>
+      <outgoing>Flow_ICIP_Consultation</outgoing>
+    </userTask>
+
+    <userTask id="Task_ICIP_Consultation" name="Conduct ICIP Consultation">
+      <documentation>
+        Engages with relevant Indigenous stakeholders and cultural
+        advisors to ensure proper handling of cultural content.
+        
+        Activities:
+        - Identify relevant stakeholders
+        - Schedule consultations
+        - Document cultural protocols
+        - Record consultation outcomes
+        - Update submission handling
+        
+        Requirements:
+        - Cultural sensitivity
+        - Proper protocols
+        - Documentation
+        - Stakeholder engagement
+      </documentation>
+      <incoming>Flow_ICIP_Consultation</incoming>
+      <outgoing>Flow_ICIP_Protocol</outgoing>
+    </userTask>
+
+    <userTask id="Task_ICIP_Protocol_Application" name="Apply ICIP Protocols">
+      <documentation>
+        Implements required cultural protocols and safeguards
+        for handling Indigenous content.
+        
+        Protocols Include:
+        - Cultural content protection
+        - Access restrictions
+        - Usage limitations
+        - Cultural attribution
+        - Storage requirements
+        
+        Ensures:
+        - Cultural sensitivity
+        - Protocol compliance
+        - Proper documentation
+        - Access control
+      </documentation>
+      <incoming>Flow_ICIP_Protocol</incoming>
+      <outgoing>Flow_ICIP_Complete</outgoing>
+    </userTask>
+
+    <!-- Add ICIP Message Events -->
+    <intermediateThrowEvent id="Event_Throw_ICIP_Review" name="Request ICIP Review">
+      <documentation>
+        Triggers ICIP review process when Indigenous cultural
+        content is identified in submission.
+      </documentation>
+      <messageEventDefinition messageRef="Message_ICIP_Review_Required" />
+    </intermediateThrowEvent>
+
+    <intermediateThrowEvent id="Event_Throw_ICIP_Complete" name="ICIP Review Complete">
+      <documentation>
+        Signals completion of ICIP review and protocol application.
+      </documentation>
+      <messageEventDefinition messageRef="Message_ICIP_Review_Complete" />
+    </intermediateThrowEvent>
+
     <!-- Sequence Flows -->
     <sequenceFlow id="Flow_Start_Review" sourceRef="StartEvent_Collection_Phase" targetRef="Task_Review_Invitation" />
     <sequenceFlow id="Flow_Review_Submit" sourceRef="Task_Review_Invitation" targetRef="Gateway_Submission_Channel" />
@@ -262,7 +389,7 @@
     </sequenceFlow>
     <sequenceFlow id="Flow_Channel_Email" sourceRef="Gateway_Submission_Channel" targetRef="Task_Submit_Email">
       <conditionExpression xsi:type="bpmn:tFormalExpression">
-        ${submissionPreference == 'email' && hasEmailAccess == true}
+        ${submissionPreference == 'email' &amp;&amp; hasEmailAccess == true}
       </conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="Flow_Channel_HardCopy" sourceRef="Gateway_Submission_Channel" targetRef="Task_Submit_HardCopy">
@@ -285,6 +412,14 @@
     <sequenceFlow id="Flow_Ingest_Quality" sourceRef="Task_Ingest_Submission" targetRef="Task_Quality_Check" />
     <sequenceFlow id="Flow_Quality_End" sourceRef="Task_Quality_Check" targetRef="EndEvent_Collection_Complete" />
 
+    <!-- Add ICIP Sequence Flows -->
+    <sequenceFlow id="Flow_Validate_ICIP" sourceRef="Task_Validate_Submission" targetRef="Event_Throw_ICIP_Review" />
+    <sequenceFlow id="Flow_ICIP_Start" sourceRef="Event_Throw_ICIP_Review" targetRef="Task_ICIP_Assessment" />
+    <sequenceFlow id="Flow_ICIP_Consultation" sourceRef="Task_ICIP_Assessment" targetRef="Task_ICIP_Consultation" />
+    <sequenceFlow id="Flow_ICIP_Protocol" sourceRef="Task_ICIP_Consultation" targetRef="Task_ICIP_Protocol_Application" />
+    <sequenceFlow id="Flow_ICIP_Complete" sourceRef="Task_ICIP_Protocol_Application" targetRef="Event_Throw_ICIP_Complete" />
+    <sequenceFlow id="Flow_ICIP_Ingest" sourceRef="Event_Throw_ICIP_Complete" targetRef="Task_Ingest_Submission" />
+
     <!-- Text Annotations -->
     <textAnnotation id="TextAnnotation_MultiChannel">
       <text>Multiple submission channels ensure accessibility and inclusivity for all stakeholders</text>
@@ -295,6 +430,12 @@
       <text>Validation ensures submissions meet requirements and are ready for analysis</text>
     </textAnnotation>
     <association id="Association_Validation" sourceRef="Task_Validate_Submission" targetRef="TextAnnotation_Validation" />
+
+    <!-- Add ICIP Text Annotation -->
+    <textAnnotation id="TextAnnotation_ICIP_Compliance">
+      <text>ICIP compliance ensures proper handling and protection of Indigenous cultural content</text>
+    </textAnnotation>
+    <association id="Association_ICIP_Compliance" sourceRef="Task_ICIP_Assessment" targetRef="TextAnnotation_ICIP_Compliance" />
 
     <!-- Message Events -->
     <intermediateThrowEvent id="Event_Throw_Submission_Received" name="Send Submission Received">
@@ -534,6 +675,89 @@
       <bpmndi:BPMNLabel id="Flow_Channel_Assisted_Label_di" bpmnElement="Flow_Channel_Assisted">
         <dc:Bounds x="417" y="290" width="100" height="20" />
       </bpmndi:BPMNLabel>
+
+      <!-- Add ICIP Lane -->
+      <bpmndi:BPMNShape id="Lane_ICIP_Review_di" bpmnElement="Lane_ICIP_Review" isHorizontal="true">
+        <dc:Bounds x="120" y="720" width="1500" height="200" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="170" y="740" width="120" height="30" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Add ICIP Task Shapes -->
+      <bpmndi:BPMNShape id="Task_ICIP_Assessment_di" bpmnElement="Task_ICIP_Assessment">
+        <dc:Bounds x="848" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ICIP_Consultation_di" bpmnElement="Task_ICIP_Consultation">
+        <dc:Bounds x="1000" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ICIP_Protocol_Application_di" bpmnElement="Task_ICIP_Protocol_Application">
+        <dc:Bounds x="1152" y="720" width="100" height="80" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add ICIP Event Shapes -->
+      <bpmndi:BPMNShape id="Event_Throw_ICIP_Review_di" bpmnElement="Event_Throw_ICIP_Review">
+        <dc:Bounds x="800" y="740" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="796" y="783" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Event_Throw_ICIP_Complete_di" bpmnElement="Event_Throw_ICIP_Complete">
+        <dc:Bounds x="1252" y="740" width="36" height="36" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="1248" y="783" width="44" height="14" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <!-- Add ICIP Flow Edges -->
+      <bpmndi:BPMNEdge id="Flow_Validate_ICIP_di" bpmnElement="Flow_Validate_ICIP">
+        <di:waypoint x="948" y="360" />
+        <di:waypoint x="818" y="360" />
+        <di:waypoint x="818" y="758" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_ICIP_Start_di" bpmnElement="Flow_ICIP_Start">
+        <di:waypoint x="836" y="758" />
+        <di:waypoint x="848" y="758" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_ICIP_Consultation_di" bpmnElement="Flow_ICIP_Consultation">
+        <di:waypoint x="948" y="758" />
+        <di:waypoint x="1000" y="758" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_ICIP_Protocol_di" bpmnElement="Flow_ICIP_Protocol">
+        <di:waypoint x="1100" y="758" />
+        <di:waypoint x="1152" y="758" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_ICIP_Complete_di" bpmnElement="Flow_ICIP_Complete">
+        <di:waypoint x="1252" y="758" />
+        <di:waypoint x="1252" y="758" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Flow_ICIP_Ingest_di" bpmnElement="Flow_ICIP_Ingest">
+        <di:waypoint x="1288" y="758" />
+        <di:waypoint x="1000" y="758" />
+        <di:waypoint x="1000" y="400" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add ICIP Text Annotation Shape -->
+      <bpmndi:BPMNShape id="TextAnnotation_ICIP_Compliance_di" bpmnElement="TextAnnotation_ICIP_Compliance">
+        <dc:Bounds x="848" y="620" width="200" height="60" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge id="Association_ICIP_Compliance_di" bpmnElement="Association_ICIP_Compliance">
+        <di:waypoint x="898" y="720" />
+        <di:waypoint x="948" y="680" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add ICIP Data Object Shape -->
+      <bpmndi:BPMNShape id="DataObject_ICIP_Assessment_di" bpmnElement="DataObject_ICIP_Assessment">
+        <dc:Bounds x="848" y="620" width="36" height="50" />
+      </bpmndi:BPMNShape>
 
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

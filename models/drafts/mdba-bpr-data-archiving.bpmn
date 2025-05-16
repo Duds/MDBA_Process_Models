@@ -4,10 +4,58 @@
   <bpmn:error id="Error_ArchiveFailed" name="Archive Operation Failed" />
   <bpmn:error id="Error_ValidationFailed" name="Validation Failed" />
   <bpmn:error id="Error_SystemFailure" name="System Failure" />
+  <bpmn:error id="Error_ICIPViolation" name="ICIP Protocol Violation" />
+  <bpmn:error id="Error_DataClassificationFailed" name="Data Classification Failed" />
+  <bpmn:error id="Error_MetadataValidationFailed" name="Metadata Validation Failed" />
   <bpmn:message id="Message_ArchiveRequest" name="Archive Request" />
   <bpmn:message id="Message_RetentionCheck" name="Retention Check Required" />
   <bpmn:message id="Message_ArchiveComplete" name="Archive Complete" />
-  <bpmn:process id="DataArchiving" name="MDBA BPR Data Archiving & Retention" isExecutable="true">
+  <bpmn:message id="Message_ICIPCheckRequired" name="ICIP Check Required" />
+  <bpmn:message id="Message_ClassificationComplete" name="Classification Complete" />
+  <bpmn:message id="Message_ArchiveReady" name="Archive Ready" />
+  <bpmn:message id="Message_QualityCheckRequired" name="Quality Check Required" />
+  <bpmn:dataObject id="DataObject_ArchiveRequest" name="Archive Request">
+    <bpmn:documentation>
+      Initial archive request details.
+      Contains:
+      - Request ID
+      - Submission details
+      - Retention requirements
+      - Classification level
+      - ICIP status
+    </bpmn:documentation>
+  </bpmn:dataObject>
+  <bpmn:dataObject id="DataObject_ClassificationResult" name="Classification Result">
+    <bpmn:documentation>
+      Data classification outcomes.
+      Contains:
+      - Classification level
+      - Retention period
+      - Access restrictions
+      - ICIP requirements
+      - Privacy considerations
+    </bpmn:documentation>
+  </bpmn:dataObject>
+  <bpmn:dataObject id="DataObject_ArchiveMetadata" name="Archive Metadata">
+    <bpmn:documentation>
+      Archive metadata and indexing.
+      Contains:
+      - Archive location
+      - Access controls
+      - Retention details
+      - ICIP compliance
+      - Quality metrics
+    </bpmn:documentation>
+  </bpmn:dataObject>
+  <bpmn:dataStore id="DataStore_ArchiveRegistry" name="Archive Registry">
+    <bpmn:documentation>
+      Central registry for all archived data.
+      Purpose: Maintain record of archived data
+      Retention: Permanent
+      Access: Restricted to Archive and Compliance teams
+    </bpmn:documentation>
+  </bpmn:dataStore>
+  <bpmn:process id="DataArchiving" name="MDBA BPR Data Archiving &amp; Retention" isExecutable="true">
     <bpmn:documentation>
       This process manages the archiving and retention of submission data and related documents. It ensures compliance with retention policies, proper data classification, and secure long-term storage while maintaining accessibility for authorized users.
     </bpmn:documentation>
@@ -87,6 +135,32 @@
       <bpmn:incoming>Flow_MetadataToRecord</bpmn:incoming>
       <bpmn:outgoing>Flow_RecordToEnd</bpmn:outgoing>
     </bpmn:task>
+    <bpmn:task id="Task_ICIPAssessment" name="ICIP Assessment">
+      <bpmn:documentation>
+        Assess data for Indigenous Cultural and Intellectual Property requirements.
+        Checks:
+        - Cultural sensitivity
+        - Traditional knowledge
+        - Cultural protocols
+        - Access restrictions
+        - Usage permissions
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_AssessmentToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPToClassify</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_VerifyClassification" name="Verify Classification">
+      <bpmn:documentation>
+        Verify data classification and retention requirements.
+        Checks:
+        - Classification accuracy
+        - Retention compliance
+        - Access controls
+        - ICIP requirements
+        - Privacy considerations
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ClassifyToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToRetention</bpmn:outgoing>
+    </bpmn:task>
     <bpmn:endEvent id="EndEvent_ArchiveComplete" name="Archive Complete">
       <bpmn:documentation>Archiving process is complete and recorded.</bpmn:documentation>
       <bpmn:incoming>Flow_RecordToEnd</bpmn:incoming>
@@ -103,6 +177,15 @@
     <bpmn:boundaryEvent id="BoundaryEvent_SystemError" attachedToRef="Task_RecordArchive">
       <bpmn:errorEventDefinition errorRef="Error_SystemFailure" />
     </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ICIPError" attachedToRef="Task_ICIPAssessment">
+      <bpmn:errorEventDefinition errorRef="Error_ICIPViolation" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_ClassificationError" attachedToRef="Task_ClassifyData">
+      <bpmn:errorEventDefinition errorRef="Error_DataClassificationFailed" />
+    </bpmn:boundaryEvent>
+    <bpmn:boundaryEvent id="BoundaryEvent_MetadataError" attachedToRef="Task_UpdateMetadata">
+      <bpmn:errorEventDefinition errorRef="Error_MetadataValidationFailed" />
+    </bpmn:boundaryEvent>
     <bpmn:sequenceFlow id="Flow_StartToAssessment" sourceRef="StartEvent_ArchiveRequested" targetRef="Task_InitialAssessment" />
     <bpmn:sequenceFlow id="Flow_AssessmentToClassify" sourceRef="Task_InitialAssessment" targetRef="Task_ClassifyData" />
     <bpmn:sequenceFlow id="Flow_ClassifyToRetention" sourceRef="Task_ClassifyData" targetRef="Task_RetentionCheck" />
@@ -114,6 +197,31 @@
     <bpmn:sequenceFlow id="Flow_QualityToMetadata" sourceRef="Task_QualityCheck" targetRef="Task_UpdateMetadata" />
     <bpmn:sequenceFlow id="Flow_MetadataToRecord" sourceRef="Task_UpdateMetadata" targetRef="Task_RecordArchive" />
     <bpmn:sequenceFlow id="Flow_RecordToEnd" sourceRef="Task_RecordArchive" targetRef="EndEvent_ArchiveComplete" />
+    <bpmn:sequenceFlow id="Flow_AssessmentToICIP" sourceRef="Task_InitialAssessment" targetRef="Gateway_ICIPRequired" />
+    <bpmn:sequenceFlow id="Flow_ICIPToClassify" sourceRef="Task_ICIPAssessment" targetRef="Task_ClassifyData" />
+    <bpmn:sequenceFlow id="Flow_ClassifyToVerify" sourceRef="Task_ClassifyData" targetRef="Gateway_ClassificationValid" />
+    <bpmn:sequenceFlow id="Flow_VerifyToRetention" sourceRef="Task_VerifyClassification" targetRef="Task_RetentionCheck" />
+    <bpmn:sequenceFlow id="Flow_AssessmentToGateway" sourceRef="Task_InitialAssessment" targetRef="Gateway_ICIPRequired" />
+    <bpmn:sequenceFlow id="Flow_GatewayToICIP" sourceRef="Gateway_ICIPRequired" targetRef="Task_ICIPAssessment">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToClassify" sourceRef="Gateway_ICIPRequired" targetRef="Task_ClassifyData">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToVerify" sourceRef="Gateway_ClassificationValid" targetRef="Task_VerifyClassification">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${classificationValid == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_GatewayToReclassify" sourceRef="Gateway_ClassificationValid" targetRef="Task_ClassifyData">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${classificationValid == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_MessageFlow_ICIPCheck" sourceRef="Task_ICIPAssessment" targetRef="Task_ClassifyData" messageRef="Message_ICIPCheckRequired" />
+    <bpmn:sequenceFlow id="Flow_MessageFlow_Classification" sourceRef="Task_ClassifyData" targetRef="Task_VerifyClassification" messageRef="Message_ClassificationComplete" />
+    <bpmn:sequenceFlow id="Flow_MessageFlow_ArchiveReady" sourceRef="Task_PrepareArchive" targetRef="Task_ExecuteArchive" messageRef="Message_ArchiveReady" />
+    <bpmn:sequenceFlow id="Flow_MessageFlow_QualityCheck" sourceRef="Task_VerifyArchive" targetRef="Task_QualityCheck" messageRef="Message_QualityCheckRequired" />
+    <bpmn:sequenceFlow id="Flow_DataAssociation_RequestToTask" sourceRef="DataObject_ArchiveRequest" targetRef="Task_InitialAssessment" />
+    <bpmn:sequenceFlow id="Flow_DataAssociation_TaskToClassification" sourceRef="Task_ClassifyData" targetRef="DataObject_ClassificationResult" />
+    <bpmn:sequenceFlow id="Flow_DataAssociation_ClassificationToTask" sourceRef="DataObject_ClassificationResult" targetRef="Task_VerifyClassification" />
+    <bpmn:sequenceFlow id="Flow_DataAssociation_TaskToMetadata" sourceRef="Task_UpdateMetadata" targetRef="DataObject_ArchiveMetadata" />
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
     <bpmndi:BPMNPlane id="BPMNPlane_1" bpmnElement="DataArchiving">
@@ -159,6 +267,30 @@
       <bpmndi:BPMNShape id="Shape_Task_RecordArchive" bpmnElement="Task_RecordArchive">
         <dc:Bounds x="1240" y="380" width="100" height="80" />
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_ICIPAssessment" bpmnElement="Task_ICIPAssessment">
+        <dc:Bounds x="440" y="180" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_VerifyClassification" bpmnElement="Task_VerifyClassification">
+        <dc:Bounds x="600" y="280" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ICIPRequired" bpmnElement="Gateway_ICIPRequired">
+        <dc:Bounds x="380" y="195" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ClassificationValid" bpmnElement="Gateway_ClassificationValid">
+        <dc:Bounds x="540" y="295" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_ArchiveRequest" bpmnElement="DataObject_ArchiveRequest">
+        <dc:Bounds x="280" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_ClassificationResult" bpmnElement="DataObject_ClassificationResult">
+        <dc:Bounds x="440" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_ArchiveMetadata" bpmnElement="DataObject_ArchiveMetadata">
+        <dc:Bounds x="1080" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataStore_ArchiveRegistry" bpmnElement="DataStore_ArchiveRegistry">
+        <dc:Bounds x="1240" y="40" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Edge_Flow_StartToAssessment" bpmnElement="Flow_StartToAssessment">
         <di:waypoint x="216" y="118" />
         <di:waypoint x="280" y="120" />
@@ -199,9 +331,79 @@
         <di:waypoint x="1180" y="420" />
         <di:waypoint x="1240" y="420" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_RecordToEnd" bpmnElement="Flow_RecordToEnd">
-        <di:waypoint x="1340" y="420" />
-        <di:waypoint x="1470" y="118" />
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentToICIP" bpmnElement="Flow_AssessmentToICIP">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="405" y="120" />
+        <di:waypoint x="405" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToClassify" bpmnElement="Flow_ICIPToClassify">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="540" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ClassifyToVerify" bpmnElement="Flow_ClassifyToVerify">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="565" y="120" />
+        <di:waypoint x="565" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToRetention" bpmnElement="Flow_VerifyToRetention">
+        <di:waypoint x="700" y="320" />
+        <di:waypoint x="700" y="220" />
+        <di:waypoint x="600" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessmentToGateway" bpmnElement="Flow_AssessmentToGateway">
+        <di:waypoint x="380" y="120" />
+        <di:waypoint x="405" y="120" />
+        <di:waypoint x="405" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToICIP" bpmnElement="Flow_GatewayToICIP">
+        <di:waypoint x="430" y="220" />
+        <di:waypoint x="440" y="220" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToClassify" bpmnElement="Flow_GatewayToClassify">
+        <di:waypoint x="380" y="220" />
+        <di:waypoint x="440" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToVerify" bpmnElement="Flow_GatewayToVerify">
+        <di:waypoint x="590" y="320" />
+        <di:waypoint x="600" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_GatewayToReclassify" bpmnElement="Flow_GatewayToReclassify">
+        <di:waypoint x="540" y="320" />
+        <di:waypoint x="540" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_ICIPCheck" bpmnElement="Flow_MessageFlow_ICIPCheck">
+        <di:waypoint x="540" y="220" />
+        <di:waypoint x="540" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_Classification" bpmnElement="Flow_MessageFlow_Classification">
+        <di:waypoint x="540" y="120" />
+        <di:waypoint x="540" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_ArchiveReady" bpmnElement="Flow_MessageFlow_ArchiveReady">
+        <di:waypoint x="1020" y="320" />
+        <di:waypoint x="1080" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_QualityCheck" bpmnElement="Flow_MessageFlow_QualityCheck">
+        <di:waypoint x="1340" y="320" />
+        <di:waypoint x="920" y="420" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_RequestToTask" bpmnElement="Flow_DataAssociation_RequestToTask">
+        <di:waypoint x="298" y="90" />
+        <di:waypoint x="330" y="90" />
+        <di:waypoint x="330" y="120" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToClassification" bpmnElement="Flow_DataAssociation_TaskToClassification">
+        <di:waypoint x="490" y="120" />
+        <di:waypoint x="458" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_ClassificationToTask" bpmnElement="Flow_DataAssociation_ClassificationToTask">
+        <di:waypoint x="458" y="90" />
+        <di:waypoint x="650" y="90" />
+        <di:waypoint x="650" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToMetadata" bpmnElement="Flow_DataAssociation_TaskToMetadata">
+        <di:waypoint x="1130" y="420" />
+        <di:waypoint x="1098" y="90" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNShape id="Shape_Lane_RecordsTeam" bpmnElement="Lane_RecordsTeam" isHorizontal="true">
         <dc:Bounds x="140" y="60" width="1600" height="120" />

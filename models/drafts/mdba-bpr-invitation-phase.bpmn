@@ -13,50 +13,135 @@
   <!-- Error Definitions -->
   <error id="Error_Legal_Compliance" name="Legal Compliance Error" errorCode="LEGAL_001">
     <documentation>
-      Legal compliance error indicating potential issues with legislative requirements.
+      Purpose: Indicates a legal compliance issue in the invitation phase
       Severity: High
-      Resolution Path: Requires legal team review and potential process modification.
-      Impact: May affect publication timeline and stakeholder engagement.
+      Resolution Path: Requires legal team review and approval
+      Impact: May delay publication until resolved
+      Owner: Legal Team
+      SLA: 24 hours
     </documentation>
   </error>
   
   <error id="Error_Publication_Failed" name="Publication Failed" errorCode="PUB_001">
     <documentation>
-      Publication failure in one or more channels.
-      Severity: Medium
-      Resolution Path: Channel-specific recovery procedures.
-      Impact: May require publication rescheduling or alternative channels.
+      Purpose: Indicates a failure in the publication process
+      Severity: High
+      Resolution Path: Requires immediate attention from communications team
+      Impact: Delays stakeholder notification
+      Owner: Communications Team
+      SLA: 4 hours
     </documentation>
   </error>
   
   <error id="Error_Review_Failed" name="Review Failed" errorCode="REV_001">
     <documentation>
-      Review process failure indicating quality or compliance issues.
+      Purpose: Indicates a failure in the review process
+      Severity: Medium
+      Resolution Path: Requires review team intervention
+      Impact: May delay publication timeline
+      Owner: Review Team
+      SLA: 48 hours
+    </documentation>
+  </error>
+  
+  <error id="Error_ICIP_Compliance" name="ICIP Compliance Error" errorCode="ICIP_001">
+    <documentation>
+      Purpose: Indicates an ICIP compliance issue
       Severity: High
-      Resolution Path: Quality control team intervention.
-      Impact: May delay publication and require process review.
+      Resolution Path: Requires ICIP team review and approval
+      Impact: May require content modification
+      Owner: ICIP Team
+      SLA: 24 hours
     </documentation>
   </error>
   
   <!-- Message Definitions -->
-  <message id="Message_Stakeholder_Ack" name="Stakeholder Acknowledgment" />
-  <message id="Message_Publication_Confirm" name="Publication Confirmation" />
-
-  <process id="Process_BPR_InvitationPhase" name="2026 Basin Plan Review Invitation Phase" isExecutable="false">
+  <message id="Message_Stakeholder_Ack" name="Stakeholder Acknowledgment">
     <documentation>
-      Purpose: Manages the invitation phase of the 2026 Basin Plan Review process
+      Purpose: Confirms stakeholder receipt of invitation
+      Content: Acknowledgment details, stakeholder information, timestamp
+      Sender: Stakeholder
+      Receiver: MDBA Review Team
+      Priority: Normal
+    </documentation>
+  </message>
+  <message id="Message_Publication_Confirm" name="Publication Confirmation">
+    <documentation>
+      Purpose: Confirms successful publication
+      Content: Publication details, channels used, timestamp
+      Sender: Communications Team
+      Receiver: MDBA Review Team
+      Priority: Normal
+    </documentation>
+  </message>
+
+  <process id="Process_BPR_InvitationPhase" name="2026 Basin Plan Review Invitation Phase" isExecutable="true">
+    <documentation>
+      Purpose: Manages the invitation phase of the Basin Plan Review, ensuring comprehensive stakeholder engagement and clear communication of review objectives and requirements.
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+      - Stakeholder engagement must be documented with:
+        * Engagement activities
+        * Participant details
+        * Feedback received
+        * Action items
+      - Review outcomes must be recorded including:
+        * Review findings
+        * Required changes
+        * Approval status
+        * Sign-off documentation
+      - Process variations must be tracked with:
+        * Variation details
+        * Impact assessment
+        * Resolution actions
+        * Lessons learned
+      
+      Quality Assurance:
+      - All documentation must be reviewed for:
+        * Completeness
+        * Accuracy
+        * Compliance
+        * Accessibility
+      - Documentation must be:
+        * Version controlled
+        * Accessible to stakeholders
+        * Maintained in approved systems
+        * Archived according to retention policies
+      
       Owner: MDBA Basin Plan Review Team
-      Version: 1.1.0
+      Quality Owner: MDBA Quality Assurance Team
+      Version: 1.0.0
       Last Updated: 20/03/2024
-      Description: This process coordinates the initial invitation phase of the Basin Plan Review,
-      including preparation and distribution of discussion papers and guidelines to basin states.
-      The process ensures proper communication and documentation of the review requirements.
+      
+      Description: This process coordinates the preparation and distribution of invitations to participate in the Basin Plan Review, including the development of discussion papers, submission guidelines, and stakeholder engagement materials. It ensures proper documentation, legal compliance, and ICIP considerations throughout the invitation phase.
+      
+      Roles and Responsibilities:
+      - MDBA Review Team: Primary process execution
+      - Communications Team: Publication and distribution
+      - Legal Team: Compliance review
+      - ICIP Team: Cultural consultation
+      - Quality Control Team: Process validation
+      
+      Success Criteria:
+      - All required stakeholders identified and invited
+      - Clear communication of review objectives
+      - Comprehensive submission guidelines published
+      - Legal and ICIP compliance verified
+      - Quality assurance checks completed
+      - Documentation standards met
     </documentation>
     <laneSet id="LaneSet_1">
       <lane id="Lane_MDBA_Review" name="MDBA Review Team">
         <flowNodeRef>StartEvent_Invitation_Phase</flowNodeRef>
         <flowNodeRef>Task_Prepare_DiscussionPaper</flowNodeRef>
         <flowNodeRef>Task_Legal_Review</flowNodeRef>
+        <flowNodeRef>Task_ICIP_Review</flowNodeRef>
         <flowNodeRef>Task_Editorial_Review</flowNodeRef>
         <flowNodeRef>Gateway_Publish_Parallel</flowNodeRef>
         <flowNodeRef>Task_Publish_Gazette</flowNodeRef>
@@ -70,7 +155,18 @@
       <lane id="Lane_Communications" name="Communications Team">
         <flowNodeRef>Task_Publish_Website</flowNodeRef>
       </lane>
-      <lane id="Lane_States" name="State Coordination" />
+      <lane id="Lane_States" name="State Coordination">
+        <documentation>
+          Purpose: Manages state-level coordination for the invitation phase
+          Responsibilities:
+          - Coordinate with state governments
+          - Manage state-level stakeholder engagement
+          - Ensure state compliance requirements
+          - Facilitate state-specific communications
+          Team: State Coordination Team
+          SLA: 48 hours for state responses
+        </documentation>
+      </lane>
       <lane id="Lane_Quality_Control" name="Quality Control Team">
         <flowNodeRef>Task_Quality_Review</flowNodeRef>
         <flowNodeRef>Task_Escalation_Handling</flowNodeRef>
@@ -85,9 +181,26 @@
     </startEvent>
     <userTask id="Task_Prepare_DiscussionPaper" name="Prepare Discussion Paper">
       <documentation>
-        Create the initial discussion paper outlining the scope and objectives
-        of the Basin Plan Review. This document will guide the review process
-        and inform stakeholders of key areas for consideration.
+        Purpose: Create the initial discussion paper for stakeholder consultation
+        Inputs: 
+        - Review scope and objectives
+        - Previous review outcomes
+        - Stakeholder feedback history
+        Actions:
+        - Draft discussion paper
+        - Include consultation questions
+        - Add supporting materials
+        Outputs:
+        - Draft discussion paper
+        - Consultation framework
+        Quality Requirements:
+        - Clear and accessible language
+        - Comprehensive coverage of topics
+        - Proper formatting and structure
+        Error Handling:
+        - Document version control
+        - Review checkpoints
+        SLA: 2 weeks
       </documentation>
       <incoming>Flow_Start_PreparePaper</incoming>
       <outgoing>Flow_PreparePaper_LegalReview</outgoing>
@@ -107,11 +220,28 @@
     </boundaryEvent>
     <userTask id="Task_Legal_Review" name="Legal Review">
       <documentation>
-        Conduct legal review of the Discussion Paper to ensure compliance
-        with legislative requirements and statutory obligations.
+        Purpose: Ensure legal compliance of invitation materials
+        Inputs:
+        - Draft discussion paper
+        - Legal requirements checklist
+        Actions:
+        - Review legal implications
+        - Check compliance requirements
+        - Verify statutory obligations
+        Outputs:
+        - Legal review report
+        - Compliance recommendations
+        Quality Requirements:
+        - Complete legal coverage
+        - Clear recommendations
+        - Documented decisions
+        Error Handling:
+        - Legal risk assessment
+        - Compliance tracking
+        SLA: 1 week
       </documentation>
       <incoming>Flow_PreparePaper_LegalReview</incoming>
-      <outgoing>Flow_LegalReview_EditorialReview</outgoing>
+      <outgoing>Flow_LegalReview_ICIPReview</outgoing>
     </userTask>
     <boundaryEvent id="BoundaryEvent_LegalReview_Error" attachedToRef="Task_Legal_Review">
       <documentation>
@@ -121,23 +251,75 @@
       </documentation>
       <errorEventDefinition errorRef="Error_Legal_Compliance" />
     </boundaryEvent>
+    <userTask id="Task_ICIP_Review" name="ICIP Compliance Review">
+      <documentation>
+        Purpose: Ensure ICIP compliance of invitation materials
+        Inputs:
+        - Draft materials
+        - ICIP guidelines
+        Actions:
+        - Review cultural implications
+        - Check ICIP requirements
+        - Consult with ICIP team
+        Outputs:
+        - ICIP assessment report
+        - Cultural consultation record
+        Quality Requirements:
+        - Cultural sensitivity
+        - Protocol compliance
+        - Consultation documentation
+        Error Handling:
+        - Cultural risk assessment
+        - Protocol verification
+        SLA: 1 week
+      </documentation>
+      <incoming>Flow_LegalReview_ICIPReview</incoming>
+      <outgoing>Flow_ICIPReview_EditorialReview</outgoing>
+    </userTask>
+    <boundaryEvent id="BoundaryEvent_ICIP_Error" attachedToRef="Task_ICIP_Review">
+      <documentation>
+        ICIP compliance error boundary event.
+        Triggers when ICIP review identifies compliance issues.
+        Resolution: ICIP specialist intervention and cultural consultation.
+      </documentation>
+      <errorEventDefinition errorRef="Error_ICIP_Compliance" />
+    </boundaryEvent>
     <userTask id="Task_Editorial_Review" name="Editorial Review">
       <documentation>
-        Review and refine the Discussion Paper for clarity, consistency,
-        and accessibility across all stakeholder audiences.
+        Purpose: Ensure quality and consistency of invitation materials
+        Inputs:
+        - Draft materials
+        - Style guide
+        Actions:
+        - Review content clarity
+        - Check formatting
+        - Verify consistency
+        Outputs:
+        - Editorial review report
+        - Style recommendations
+        Quality Requirements:
+        - Clear communication
+        - Consistent style
+        - Professional presentation
+        Error Handling:
+        - Version control
+        - Quality checkpoints
+        SLA: 3 days
       </documentation>
-      <incoming>Flow_LegalReview_EditorialReview</incoming>
+      <incoming>Flow_ICIPReview_EditorialReview</incoming>
       <outgoing>Flow_EditorialReview_PublishInvitation</outgoing>
     </userTask>
     <parallelGateway id="Gateway_Publish_Parallel" name="Publish Through All Channels">
       <documentation>
-        Parallel gateway that initiates concurrent publication through multiple channels.
-        All outgoing paths are executed simultaneously.
-        Requirements:
-        - All channels must be activated within 24 hours
-        - Each channel has independent error handling
-        - Progress must be monitored for all channels
-        - Synchronization point ensures all publications are complete
+        Purpose: Coordinate parallel publication through multiple channels
+        Validation:
+        - All channels ready
+        - Content approved
+        - Timing coordinated
+        Error Handling:
+        - Channel-specific errors
+        - Publication delays
+        SLA: 24 hours
       </documentation>
       <incoming>Flow_EditorialReview_PublishInvitation</incoming>
       <outgoing>Flow_Publish_Gazette</outgoing>
@@ -146,8 +328,25 @@
     </parallelGateway>
     <sendTask id="Task_Publish_Gazette" name="Publish in Commonwealth Gazette">
       <documentation>
-        Submit and confirm publication of the invitation in the
-        Commonwealth Government Gazette.
+        Purpose: Publish invitation in Commonwealth Gazette
+        Inputs:
+        - Approved content
+        - Gazette requirements
+        Actions:
+        - Format for Gazette
+        - Submit for publication
+        - Verify publication
+        Outputs:
+        - Gazette reference
+        - Publication confirmation
+        Quality Requirements:
+        - Gazette compliance
+        - Accurate content
+        - Timely publication
+        Error Handling:
+        - Publication delays
+        - Format issues
+        SLA: 5 business days
       </documentation>
       <incoming>Flow_Publish_Gazette</incoming>
       <outgoing>Flow_Gazette_Join</outgoing>
@@ -162,29 +361,65 @@
     </boundaryEvent>
     <sendTask id="Task_Publish_Newspapers" name="Publish in Basin State Newspapers">
       <documentation>
-        Coordinate publication of the invitation in newspapers
-        circulating in each Basin State and Territory.
+        Purpose: Publish invitation in Basin state newspapers
+        Inputs:
+        - Approved content
+        - Newspaper requirements
+        Actions:
+        - Format for newspapers
+        - Coordinate publication
+        - Verify placement
+        Outputs:
+        - Publication confirmations
+        - Newspaper references
+        Quality Requirements:
+        - Newspaper compliance
+        - State coverage
+        - Timely publication
+        Error Handling:
+        - Publication delays
+        - Coverage gaps
+        SLA: 7 business days
       </documentation>
       <incoming>Flow_Publish_Newspapers</incoming>
       <outgoing>Flow_Newspapers_Join</outgoing>
     </sendTask>
     <serviceTask id="Task_Publish_Website" name="Publish on MDBA Website">
       <documentation>
-        Upload and publish the invitation and supporting materials
-        to the MDBA website.
+        Purpose: Publish invitation on MDBA website
+        Inputs:
+        - Approved content
+        - Website requirements
+        Actions:
+        - Format for web
+        - Upload content
+        - Verify accessibility
+        Outputs:
+        - Web publication
+        - URL reference
+        Quality Requirements:
+        - Web accessibility
+        - Mobile responsiveness
+        - SEO compliance
+        Error Handling:
+        - Technical issues
+        - Access problems
+        SLA: 24 hours
       </documentation>
       <incoming>Flow_Publish_Website</incoming>
       <outgoing>Flow_Website_Join</outgoing>
     </serviceTask>
     <parallelGateway id="Gateway_Publish_Join" name="All Publications Complete">
       <documentation>
-        Parallel gateway that synchronizes all publication paths.
-        Process continues only when all publication tasks are complete.
-        Synchronization Requirements:
-        - All channels must report successful publication
-        - Any failures trigger appropriate error handling
-        - Timeout monitoring for each channel
-        - Verification of publication effectiveness
+        Purpose: Verify completion of all publication channels
+        Validation:
+        - All channels published
+        - Confirmations received
+        - References recorded
+        Error Handling:
+        - Missing publications
+        - Incomplete confirmations
+        SLA: 24 hours
       </documentation>
       <incoming>Flow_Gazette_Join</incoming>
       <incoming>Flow_Newspapers_Join</incoming>
@@ -193,25 +428,75 @@
     </parallelGateway>
     <sendTask id="Task_Distribute_BasinStates" name="Distribute Paper to Basin States">
       <documentation>
-        Distribute the discussion paper to all basin states and relevant stakeholders.
-        Ensure proper delivery and acknowledgment of receipt from all parties.
+        Purpose: Distribute discussion paper to Basin states
+        Inputs:
+        - Final paper
+        - State contact list
+        Actions:
+        - Package materials
+        - Send to states
+        - Track delivery
+        Outputs:
+        - Distribution confirmations
+        - State acknowledgments
+        Quality Requirements:
+        - Complete distribution
+        - Proper packaging
+        - Delivery tracking
+        Error Handling:
+        - Delivery issues
+        - Missing states
+        SLA: 3 business days
       </documentation>
       <incoming>Flow_Join_Distribute</incoming>
       <outgoing>Flow_DistributePaper_SpecifySubmission</outgoing>
     </sendTask>
     <businessRuleTask id="Task_Specify_SubmissionProcess" name="Specify Submission Process">
       <documentation>
-        Define and document the submission process requirements, including
-        timelines, formats, and evaluation criteria for stakeholder submissions.
+        Purpose: Define submission process requirements
+        Inputs:
+        - Review requirements
+        - Stakeholder needs
+        Actions:
+        - Define process rules
+        - Set requirements
+        - Document procedures
+        Outputs:
+        - Process specification
+        - Requirements document
+        Quality Requirements:
+        - Clear requirements
+        - Feasible process
+        - Documented rules
+        Error Handling:
+        - Process gaps
+        - Requirement conflicts
+        SLA: 1 week
       </documentation>
       <incoming>Flow_DistributePaper_SpecifySubmission</incoming>
       <outgoing>Flow_SpecifySubmission_DevelopGuideline</outgoing>
     </businessRuleTask>
     <userTask id="Task_Develop_SubmissionsGuideline" name="Develop &amp; Publish Submissions Guideline">
       <documentation>
-        Create and publish comprehensive guidelines for stakeholders to follow
-        when preparing their submissions. Include templates, examples, and
-        best practices to ensure quality and consistency in submissions.
+        Purpose: Create and publish guidelines for submissions
+        Inputs:
+        - Process requirements
+        - Stakeholder needs
+        Actions:
+        - Draft guidelines
+        - Include examples
+        - Add templates
+        Outputs:
+        - Submission guidelines
+        - Supporting materials
+        Quality Requirements:
+        - Clear instructions
+        - Helpful examples
+        - Accessible format
+        Error Handling:
+        - Guideline gaps
+        - Accessibility issues
+        SLA: 2 weeks
       </documentation>
       <incoming>Flow_SpecifySubmission_DevelopGuideline</incoming>
       <outgoing>Flow_DevelopGuideline_End</outgoing>
@@ -230,8 +515,11 @@
     <sequenceFlow id="Flow_PreparePaper_LegalReview" sourceRef="Task_Prepare_DiscussionPaper" targetRef="Task_Legal_Review">
       <documentation>Transitions to legal review after discussion paper preparation is complete. Legal review ensures compliance with legislative requirements.</documentation>
     </sequenceFlow>
-    <sequenceFlow id="Flow_LegalReview_EditorialReview" sourceRef="Task_Legal_Review" targetRef="Task_Editorial_Review">
-      <documentation>Proceeds to editorial review after legal compliance is confirmed. Editorial review focuses on clarity and accessibility.</documentation>
+    <sequenceFlow id="Flow_LegalReview_ICIPReview" sourceRef="Task_Legal_Review" targetRef="Task_ICIP_Review">
+      <documentation>Proceeds to ICIP review after legal compliance is confirmed. ICIP review ensures cultural appropriateness and compliance.</documentation>
+    </sequenceFlow>
+    <sequenceFlow id="Flow_ICIPReview_EditorialReview" sourceRef="Task_ICIP_Review" targetRef="Task_Editorial_Review">
+      <documentation>Proceeds to editorial review after ICIP compliance is confirmed. Editorial review focuses on clarity and accessibility.</documentation>
     </sequenceFlow>
     <sequenceFlow id="Flow_EditorialReview_PublishInvitation" sourceRef="Task_Editorial_Review" targetRef="Gateway_Publish_Parallel">
       <documentation>Initiates parallel publication process after all reviews are complete. All publication channels are activated simultaneously.</documentation>
@@ -286,84 +574,154 @@
     <!-- New Quality Control Tasks -->
     <userTask id="Task_Quality_Review" name="Quality Review">
       <documentation>
-        Conduct quality review of all documentation and processes.
-        Review Criteria:
-        - Compliance with standards
-        - Documentation completeness
-        - Process effectiveness
-        - Stakeholder impact
-        Output: Quality assessment report with recommendations.
+        Purpose: Conduct final quality review of invitation phase
+        Inputs:
+        - All phase outputs
+        - Quality checklist
+        Actions:
+        - Review completeness
+        - Check quality
+        - Verify compliance
+        Outputs:
+        - Quality report
+        - Compliance verification
+        Quality Requirements:
+        - Complete review
+        - Documented findings
+        - Action tracking
+        Error Handling:
+        - Quality issues
+        - Compliance gaps
+        SLA: 1 week
       </documentation>
     </userTask>
 
     <userTask id="Task_Escalation_Handling" name="Handle Escalations">
       <documentation>
-        Manage and resolve escalated issues from any process stage.
-        Escalation Process:
-        1. Assess escalation severity
-        2. Identify resolution team
-        3. Develop action plan
-        4. Monitor resolution
-        5. Update stakeholders
-        6. Document outcomes
+        Purpose: Manage escalated issues in invitation phase
+        Inputs:
+        - Escalation details
+        - Issue history
+        Actions:
+        - Assess situation
+        - Coordinate response
+        - Implement solution
+        Outputs:
+        - Resolution report
+        - Action taken
+        Quality Requirements:
+        - Timely response
+        - Proper escalation
+        - Documented actions
+        Error Handling:
+        - Escalation delays
+        - Resolution issues
+        SLA: 24 hours
       </documentation>
     </userTask>
 
     <!-- New Error Handling Events -->
     <intermediateCatchEvent id="Event_Catch_Publication_Error" name="Catch Publication Error">
       <documentation>
-        Catches publication errors from any channel.
-        Triggers error handling process:
-        1. Log error details
-        2. Notify relevant teams
-        3. Initiate recovery procedures
-        4. Update stakeholders
+        Purpose: Handle publication process errors
+        Triggers:
+        - Publication failures
+        - Channel issues
+        Actions:
+        - Log error
+        - Notify team
+        - Initiate recovery
+        Error Handling:
+        - Error logging
+        - Team notification
+        - Recovery process
+        SLA: 4 hours
       </documentation>
       <errorEventDefinition errorRef="Error_Publication_Failed" />
     </intermediateCatchEvent>
 
     <intermediateCatchEvent id="Event_Catch_Review_Error" name="Catch Review Error">
       <documentation>
-        Catches review process errors.
-        Triggers quality control intervention:
-        1. Assess error impact
-        2. Determine resolution path
-        3. Update review process
-        4. Document lessons learned
+        Purpose: Handle review process errors
+        Triggers:
+        - Review failures
+        - Compliance issues
+        Actions:
+        - Log error
+        - Notify team
+        - Initiate recovery
+        Error Handling:
+        - Error logging
+        - Team notification
+        - Recovery process
+        SLA: 24 hours
       </documentation>
       <errorEventDefinition errorRef="Error_Review_Failed" />
     </intermediateCatchEvent>
 
     <!-- New Message Events -->
     <intermediateCatchEvent id="Event_Catch_Stakeholder_Ack" name="Receive Stakeholder Acknowledgment">
+      <documentation>
+        Purpose: Process stakeholder acknowledgments
+        Triggers:
+        - Stakeholder response
+        - Acknowledgment receipt
+        Actions:
+        - Record acknowledgment
+        - Update tracking
+        - Notify team
+        Error Handling:
+        - Missing acknowledgments
+        - Processing delays
+        SLA: 24 hours
+      </documentation>
       <messageEventDefinition messageRef="Message_Stakeholder_Ack" />
     </intermediateCatchEvent>
 
     <intermediateThrowEvent id="Event_Throw_Publication_Confirm" name="Send Publication Confirmation">
+      <documentation>
+        Purpose: Send publication confirmation notifications
+        Triggers:
+        - Publication complete
+        - All channels verified
+        Actions:
+        - Generate confirmation
+        - Send notification
+        - Record delivery
+        Error Handling:
+        - Send failures
+        - Delivery issues
+        SLA: 24 hours
+      </documentation>
       <messageEventDefinition messageRef="Message_Publication_Confirm" />
     </intermediateThrowEvent>
 
     <!-- New Process Variations -->
     <exclusiveGateway id="Gateway_Review_Feedback" name="Review Feedback Decision">
       <documentation>
-        Determines if review feedback requires changes or can proceed.
-        Decision Criteria:
-        - If feedback indicates legal or compliance issues: Return to preparation
-        - If feedback suggests clarity improvements: Proceed to editorial review
-        - If feedback is positive: Continue to publication
-        All decisions must be documented with rationale.
+        Purpose: Evaluate review feedback and determine next steps
+        Validation:
+        - Feedback received
+        - Changes required
+        - Approval status
+        Error Handling:
+        - Missing feedback
+        - Unclear decisions
+        SLA: 48 hours
       </documentation>
     </exclusiveGateway>
 
     <exclusiveGateway id="Gateway_Publication_Status" name="Publication Status Check">
       <documentation>
-        Checks publication status and determines next steps.
-        Decision Criteria:
-        - If Gazette publication fails: Trigger error handling
-        - If newspaper publication incomplete: Extend timeline
-        - If website issues: Technical resolution path
-        - If all successful: Proceed to distribution
-        Status must be verified for each channel.
+        Purpose: Verify publication status across all channels
+        Validation:
+        - Channel status
+        - Publication timing
+        - Confirmation status
+        Error Handling:
+        - Status delays
+        - Missing confirmations
+        SLA: 24 hours
       </documentation>
     </exclusiveGateway>
 
@@ -382,6 +740,80 @@
 
     <sequenceFlow id="Flow_Timeout_Escalation" sourceRef="BoundaryEvent_PreparePaper_Timeout" targetRef="Task_Escalation_Handling">
       <documentation>Routes timeout events to escalation handling for timeline management.</documentation>
+    </sequenceFlow>
+
+    <!-- Add ICIP documentation task -->
+    <userTask id="Task_Document_ICIP" name="Document ICIP Compliance">
+      <documentation>
+        Purpose: Document ICIP compliance for invitation phase
+        Inputs:
+        - ICIP assessments
+        - Cultural consultations
+        Actions:
+        - Compile documentation
+        - Record decisions
+        - Update registry
+        Outputs:
+        - ICIP documentation
+        - Compliance record
+        Quality Requirements:
+        - Complete documentation
+        - Cultural sensitivity
+        - Protocol compliance
+        Error Handling:
+        - Documentation gaps
+        - Compliance issues
+        SLA: 1 week
+      </documentation>
+    </userTask>
+
+    <!-- Add ICIP documentation flow -->
+    <sequenceFlow id="Flow_ICIPReview_Document" sourceRef="Task_ICIP_Review" targetRef="Task_Document_ICIP">
+      <documentation>Routes to ICIP documentation after successful review.</documentation>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_Document_Editorial" sourceRef="Task_Document_ICIP" targetRef="Task_Editorial_Review">
+      <documentation>Proceeds to editorial review after ICIP documentation is complete.</documentation>
+    </sequenceFlow>
+
+    <!-- Update BPMN Diagram -->
+    <bpmndi:BPMNShape id="Task_ICIP_Review_di" bpmnElement="Task_ICIP_Review">
+      <dc:Bounds x="475" y="128" width="100" height="80" />
+      <bpmndi:BPMNLabel>
+        <dc:Bounds x="485" y="158" width="80" height="40" />
+      </bpmndi:BPMNLabel>
+    </bpmndi:BPMNShape>
+
+    <bpmndi:BPMNShape id="Task_Document_ICIP_di" bpmnElement="Task_Document_ICIP">
+      <dc:Bounds x="475" y="228" width="100" height="80" />
+      <bpmndi:BPMNLabel>
+        <dc:Bounds x="485" y="258" width="80" height="40" />
+      </bpmndi:BPMNLabel>
+    </bpmndi:BPMNShape>
+
+    <bpmndi:BPMNEdge id="Flow_LegalReview_ICIPReview_di" bpmnElement="Flow_LegalReview_ICIPReview">
+      <di:waypoint x="492" y="260" />
+      <di:waypoint x="525" y="260" />
+      <bpmndi:BPMNLabel />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Flow_ICIPReview_Document_di" bpmnElement="Flow_ICIPReview_Document">
+      <di:waypoint x="525" y="208" />
+      <di:waypoint x="525" y="228" />
+      <bpmndi:BPMNLabel />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Flow_Document_Editorial_di" bpmnElement="Flow_Document_Editorial">
+      <di:waypoint x="575" y="268" />
+      <di:waypoint x="600" y="268" />
+      <di:waypoint x="600" y="260" />
+      <di:waypoint x="625" y="260" />
+      <bpmndi:BPMNLabel />
+    </bpmndi:BPMNEdge>
+
+    <!-- Add ICIP error handling -->
+    <sequenceFlow id="Flow_ICIPError_QualityReview" sourceRef="BoundaryEvent_ICIP_Error" targetRef="Task_Quality_Review">
+      <documentation>Routes ICIP compliance errors to quality review for assessment and resolution.</documentation>
     </sequenceFlow>
 
   </process>
@@ -436,6 +868,13 @@
         <dc:Bounds x="400" y="128" width="100" height="80" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="410" y="158" width="80" height="40" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="Task_ICIP_Review_di" bpmnElement="Task_ICIP_Review">
+        <dc:Bounds x="475" y="128" width="100" height="80" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="485" y="158" width="80" height="40" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
 
@@ -523,14 +962,14 @@
         <di:waypoint x="392" y="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_LegalReview_EditorialReview_di" bpmnElement="Flow_LegalReview_EditorialReview">
+      <bpmndi:BPMNEdge id="Flow_LegalReview_ICIPReview_di" bpmnElement="Flow_LegalReview_ICIPReview">
         <di:waypoint x="492" y="260" />
-        <di:waypoint x="544" y="260" />
+        <di:waypoint x="525" y="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Flow_EditorialReview_PublishInvitation_di" bpmnElement="Flow_EditorialReview_PublishInvitation">
-        <di:waypoint x="644" y="260" />
-        <di:waypoint x="696" y="260" />
+      <bpmndi:BPMNEdge id="Flow_ICIPReview_EditorialReview_di" bpmnElement="Flow_ICIPReview_EditorialReview">
+        <di:waypoint x="544" y="260" />
+        <di:waypoint x="596" y="260" />
         <bpmndi:BPMNLabel />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Flow_Publish_Gazette_di" bpmnElement="Flow_Publish_Gazette">

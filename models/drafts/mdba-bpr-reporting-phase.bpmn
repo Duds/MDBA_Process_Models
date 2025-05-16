@@ -10,6 +10,33 @@
   <bpmn:process id="ReportingPhaseDetail" name="MDBA BPR Reporting Phase" isExecutable="true">
     <bpmn:documentation>
       This process details the reporting and analytics phase of the Basin Plan Review, including the preparation of What We've Heard Report and Final Report, along with analytics and metrics generation. The process ensures comprehensive documentation of the review outcomes and stakeholder engagement.
+      
+      ICIP Compliance Requirements:
+      - All reports and analytics must undergo ICIP compliance review
+      - Cultural consultation must be documented
+      - Indigenous stakeholder engagement must be tracked
+      - Cultural protocols must be followed
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+      - ICIP compliance and cultural consultation records must be maintained:
+        * Consultation dates, participants, and outcomes
+        * Protocols followed and feedback received
+      - Stakeholder engagement must be documented:
+        * Engagement activities, participants, and feedback
+      - Review and approval outcomes must be recorded:
+        * Findings, required changes, approval status, and sign-off
+      - Process variations must be tracked:
+        * Details, impact assessment, resolution actions, and lessons learned
+      
+      Quality Assurance:
+      - All documentation must be reviewed for completeness, accuracy, compliance, and accessibility
+      - Documentation must be version controlled, accessible to stakeholders, maintained in approved systems, and archived according to retention policies
     </bpmn:documentation>
     <bpmn:laneSet id="LaneSet_1">
       <bpmn:lane id="Lane_AnalyticsTeam" name="Analytics Team">
@@ -21,6 +48,7 @@
       <bpmn:lane id="Lane_ReportTeam" name="Report Team">
         <bpmn:flowNodeRef>Task_PrepareDraft</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_ReviewDraft</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_ICIP_Review</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_FinaliseReport</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_ApprovalTeam" name="Approval Team">
@@ -54,13 +82,53 @@
       <bpmn:outgoing>Flow_DraftToReview</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_ReviewDraft" name="Review Report Draft">
-      <bpmn:documentation>Internal review of report drafts for accuracy and completeness.</bpmn:documentation>
+      <bpmn:documentation>
+        Internal review of report drafts for accuracy and completeness.
+        
+        Documentation Requirements:
+        - Purpose: Review draft for accuracy, completeness, and compliance
+        - Inputs: Draft report
+        - Outputs: Review findings, required changes
+        - Quality Criteria: Accuracy, completeness, compliance
+        - Stakeholder: Report Team
+        - Review: Document findings, maintain review records
+      </bpmn:documentation>
       <bpmn:incoming>Flow_DraftToReview</bpmn:incoming>
-      <bpmn:outgoing>Flow_ReviewToFinalise</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ReviewToICIP</bpmn:outgoing>
+    </bpmn:task>
+    <bpmn:task id="Task_ICIP_Review" name="ICIP Compliance Review">
+      <bpmn:documentation>
+        Conduct ICIP compliance review of the report to ensure:
+        - Cultural sensitivity and appropriateness
+        - Proper acknowledgment of Indigenous knowledge
+        - Compliance with cultural protocols
+        - Appropriate stakeholder engagement
+        - Documentation of cultural consultation
+        
+        Documentation Requirements:
+        - Purpose: Ensure ICIP compliance
+        - Inputs: Reviewed draft report, ICIP guidelines
+        - Outputs: ICIP compliance report, recommendations
+        - Quality Criteria: Cultural appropriateness, protocol compliance
+        - Stakeholder: ICIP specialist, Report Team
+        - Review: Document findings, maintain consultation records
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ReviewToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIPToFinalise</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_FinaliseReport" name="Finalise Reports">
-      <bpmn:documentation>Incorporate review feedback and prepare final versions of reports.</bpmn:documentation>
-      <bpmn:incoming>Flow_ReviewToFinalise</bpmn:incoming>
+      <bpmn:documentation>
+        Incorporate review and ICIP feedback and prepare final versions of reports.
+        
+        Documentation Requirements:
+        - Purpose: Prepare final report for approval and distribution
+        - Inputs: ICIP compliance report, review findings
+        - Outputs: Final report
+        - Quality Criteria: Compliance, accuracy, accessibility
+        - Stakeholder: Report Team
+        - Review: Document finalisation, update version history
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ICIPToFinalise</bpmn:incoming>
       <bpmn:outgoing>Flow_FinaliseToApproval</bpmn:outgoing>
     </bpmn:task>
     <bpmn:task id="Task_ObtainApproval" name="Obtain Final Approval">
@@ -94,7 +162,8 @@
     <bpmn:sequenceFlow id="Flow_ProcessToMetrics" sourceRef="Task_ProcessAnalytics" targetRef="Task_GenerateMetrics" />
     <bpmn:sequenceFlow id="Flow_MetricsToDraft" sourceRef="Task_GenerateMetrics" targetRef="Task_PrepareDraft" />
     <bpmn:sequenceFlow id="Flow_DraftToReview" sourceRef="Task_PrepareDraft" targetRef="Task_ReviewDraft" />
-    <bpmn:sequenceFlow id="Flow_ReviewToFinalise" sourceRef="Task_ReviewDraft" targetRef="Task_FinaliseReport" />
+    <bpmn:sequenceFlow id="Flow_ReviewToICIP" sourceRef="Task_ReviewDraft" targetRef="Task_ICIP_Review" />
+    <bpmn:sequenceFlow id="Flow_ICIPToFinalise" sourceRef="Task_ICIP_Review" targetRef="Task_FinaliseReport" />
     <bpmn:sequenceFlow id="Flow_FinaliseToApproval" sourceRef="Task_FinaliseReport" targetRef="Task_ObtainApproval" />
     <bpmn:sequenceFlow id="Flow_ApprovalToDistribute" sourceRef="Task_ObtainApproval" targetRef="Task_DistributeReport" />
     <bpmn:sequenceFlow id="Flow_DistributeToEnd" sourceRef="Task_DistributeReport" targetRef="EndEvent_ReportingComplete" />
@@ -157,17 +226,21 @@
         <di:waypoint x="860" y="220" />
         <di:waypoint x="920" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_ReviewToFinalise" bpmnElement="Flow_ReviewToFinalise">
+      <bpmndi:BPMNEdge id="Edge_Flow_ReviewToICIP" bpmnElement="Flow_ReviewToICIP">
         <di:waypoint x="1020" y="220" />
         <di:waypoint x="1080" y="220" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_FinaliseToApproval" bpmnElement="Flow_FinaliseToApproval">
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIPToFinalise" bpmnElement="Flow_ICIPToFinalise">
         <di:waypoint x="1180" y="220" />
         <di:waypoint x="1240" y="320" />
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge id="Edge_Flow_ApprovalToDistribute" bpmnElement="Flow_ApprovalToDistribute">
+      <bpmndi:BPMNEdge id="Edge_Flow_FinaliseToApproval" bpmnElement="Flow_FinaliseToApproval">
         <di:waypoint x="1340" y="320" />
         <di:waypoint x="1400" y="320" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ApprovalToDistribute" bpmnElement="Flow_ApprovalToDistribute">
+        <di:waypoint x="1500" y="320" />
+        <di:waypoint x="1470" y="118" />
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge id="Edge_Flow_DistributeToEnd" bpmnElement="Flow_DistributeToEnd">
         <di:waypoint x="1500" y="320" />

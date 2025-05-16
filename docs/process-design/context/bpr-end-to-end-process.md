@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_EndToEnd
+process_name: 2026 Basin Plan Review End-to-End Process
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review End-to-End Process"
+description: "Context and detailed information about the End-to-End Basin Plan Review Process for the 2026 project"
+related_files:
+  - models/approved/mdba-bpr-end-to-end-process.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR End-to-End Basin Plan Review Process
 
 ## Overview

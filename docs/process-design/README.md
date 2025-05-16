@@ -6,26 +6,33 @@ This directory contains supporting documentation and context for the MDBA Proces
 
 ```
 docs/process-design/
-├── context/           # Business context, stakeholders, and domain information
-│   ├── stakeholders/  # Stakeholder analysis and requirements
-│   ├── domain/        # Domain-specific information and terminology
-│   └── regulations/   # Relevant regulations and compliance requirements
+├── [context/](../context/)           # Business context, stakeholders, and domain information
+│   ├── [stakeholders/](../context/stakeholders/)  # Stakeholder analysis and requirements
+│   ├── [domain/](../context/domain/)        # Domain-specific information and terminology
+│   └── [regulations/](../context/regulations/)   # Relevant regulations and compliance requirements
 │
-├── decisions/         # Design decisions and rationale
-│   ├── architecture/  # Process architecture decisions
-│   ├── patterns/      # Process patterns and their application
-│   └── trade-offs/    # Design trade-offs and alternatives considered
+├── [decisions/](../decisions/)         # Design decisions and rationale
+│   ├── [architecture/](../decisions/architecture/)  # Process architecture decisions
+│   ├── [patterns/](../decisions/patterns/)      # Process patterns and their application
+│   └── [trade-offs/](../decisions/trade-offs/)    # Design trade-offs and alternatives considered
 │
-├── requirements/      # Process requirements and specifications
-│   ├── functional/    # Functional requirements
-│   ├── non-functional/# Non-functional requirements
-│   └── constraints/   # Process constraints and limitations
+├── [requirements/](../requirements/)      # Process requirements and specifications
+│   ├── [functional/](../requirements/functional/)    # Functional requirements
+│   ├── [non-functional/](../requirements/non-functional/)# Non-functional requirements
+│   └── [constraints/](../requirements/constraints/)   # Process constraints and limitations
 │
-└── artifacts/         # Supporting artifacts and templates
-    ├── forms/         # Form templates and specifications
-    ├── checklists/    # Process checklists and guidelines
-    └── templates/     # Document templates and examples
+└── [artifacts/](../artifacts/)         # Supporting artifacts and templates
+    ├── [forms/](../artifacts/forms/)         # Form templates and specifications
+    ├── [checklists/](../artifacts/checklists/)    # Process checklists and guidelines
+    └── [templates/](../artifacts/templates/)     # Document templates and examples
 ```
+
+## Key Documentation
+
+- [Process Mapping](requirements/bpr-process-mapping.md) - Maps relationships between BPMN diagrams and documentation
+- [BPMN Diagram Requirements](requirements/bpr-bpmn-diagram-requirements.md) - Standards and requirements for BPMN diagrams
+- [Service Concept](requirements/bpr-service-concept.md) - High-level service design and architecture
+- [Naming Convention Migration](decisions/naming-convention-migration.md) - Documentation of naming convention changes
 
 ## Purpose
 
@@ -62,27 +69,27 @@ Each subdirectory serves a specific purpose in documenting the process design:
 ## Usage
 
 1. **For Process Designers**
-   - Reference context when creating new processes
-   - Document design decisions in the decisions folder
-   - Maintain requirements documentation
-   - Update artifacts as needed
+   - Reference [context](../context/) when creating new processes
+   - Document design decisions in the [decisions](../decisions/) folder
+   - Maintain [requirements](../requirements/) documentation
+   - Update [artifacts](../artifacts/) as needed
 
 2. **For Developers**
-   - Review context before implementation
-   - Follow documented design decisions
-   - Implement according to requirements
-   - Use provided artifacts and templates
+   - Review [context](../context/) before implementation
+   - Follow documented [design decisions](../decisions/)
+   - Implement according to [requirements](../requirements/)
+   - Use provided [artifacts](../artifacts/) and templates
 
 3. **For Business Analysts**
-   - Maintain stakeholder information
-   - Update requirements as needed
+   - Maintain [stakeholder information](../context/stakeholders/)
+   - Update [requirements](../requirements/) as needed
    - Document business rules and constraints
    - Review and validate process designs
 
 4. **For Reviewers**
-   - Check alignment with requirements
-   - Verify design decisions
-   - Validate against business context
+   - Check alignment with [requirements](../requirements/)
+   - Verify [design decisions](../decisions/)
+   - Validate against [business context](../context/)
    - Review completeness of documentation
 
 ## Documentation Standards
@@ -143,10 +150,10 @@ Each subdirectory serves a specific purpose in documenting the process design:
 
 ## Related Documentation
 
-- BPMN Models: `models/`
-- Process Rules: `.cursor/rules/`
-- Implementation: `src/`
-- Tests: `tests/`
+- [BPMN Models](../../models/)
+- [Process Rules](../../.cursor/rules/)
+- [Implementation](../../src/)
+- [Tests](../../tests/)
 
 @version "1.0.0"
 @last_updated "2024-03-19" 

@@ -1,12 +1,16 @@
 ---
 process_id: Process_BPR_InvitationPhase
 process_name: 2026 Basin Plan Review Invitation Phase
-version: 1.2.0
-last_updated: 16/05/2024
-status: draft
+version: "1.2.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Invitation Phase"
+description: "Context and detailed information about the Invitation Phase of the Basin Plan Review 2026 project"
 related_files:
-  - models/drafts/mdba-bpr-invitation-phase.bpmn
-  - .cursor/rules/bpmn-naming-conventions.mdc
+  - models/approved/mdba-bpr-invitation-phase.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
 ---
 
 # MDBA BPR Invitation Phase Process

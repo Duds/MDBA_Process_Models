@@ -1,30 +1,140 @@
 /**
- * Enhanced BPMN Validation Script
+ * Comprehensive BPMN Validation Script
  * 
- * This script validates all BPMN files in the models directory against
- * BPMN 2.0 standards and MDBA Enterprise Architecture requirements.
+ * This script validates all BPMN files in the models directory against:
+ * - BPMN 2.0 standards
+ * - XML schema validation
+ * - MDBA Enterprise Architecture requirements
+ * - Best practices and conventions
  */
 
 const fs = require('fs');
 const path = require('path');
+const { execSync } = require('child_process');
 const BpmnModdle = require('bpmn-moddle');
+const chalk = require('chalk');
 
 const moddle = new BpmnModdle();
 const MODELS_DIR = path.join(__dirname, '..', 'models');
+const REPORT_DIR = path.join(__dirname, '..', 'docs', 'process-design');
 
-// Validation categories from checklist
+// Validation categories with descriptions
 const VALIDATION_CATEGORIES = {
-  XML_STRUCTURE: 'XML Structure',
-  PROCESS_DEFINITION: 'Process Definition',
-  ERROR_HANDLING: 'Error Handling',
-  MESSAGE_HANDLING: 'Message Handling',
-  SUBPROCESS: 'Subprocess',
-  SWIMLANE: 'Swimlane',
-  DATA_MANAGEMENT: 'Data Management',
-  GATEWAY_LOGIC: 'Gateway Logic',
-  DOCUMENTATION: 'Documentation',
-  MDBA_REQUIREMENTS: 'MDBA Requirements'
+  XML_STRUCTURE: {
+    name: 'XML Structure',
+    description: 'Validates XML structure and schema compliance',
+    critical: true
+  },
+  PROCESS_DEFINITION: {
+    name: 'Process Definition',
+    description: 'Validates basic process structure and elements',
+    critical: true
+  },
+  ERROR_HANDLING: {
+    name: 'Error Handling',
+    description: 'Validates error definitions and handling',
+    critical: false
+  },
+  MESSAGE_HANDLING: {
+    name: 'Message Handling',
+    description: 'Validates message flows and definitions',
+    critical: false
+  },
+  SUBPROCESS: {
+    name: 'Subprocess',
+    description: 'Validates subprocess definitions and references',
+    critical: false
+  },
+  SWIMLANE: {
+    name: 'Swimlane',
+    description: 'Validates swimlane definitions and role assignments',
+    critical: false
+  },
+  DATA_MANAGEMENT: {
+    name: 'Data Management',
+    description: 'Validates data objects and stores',
+    critical: false
+  },
+  GATEWAY_LOGIC: {
+    name: 'Gateway Logic',
+    description: 'Validates gateway types and decision logic',
+    critical: true
+  },
+  DOCUMENTATION: {
+    name: 'Documentation',
+    description: 'Validates process and element documentation',
+    critical: false
+  },
+  MDBA_REQUIREMENTS: {
+    name: 'MDBA Requirements',
+    description: 'Validates MDBA-specific requirements',
+    critical: true
+  }
 };
+
+// MDBA-specific validation rules
+const MDBA_RULES = {
+  ICIP_COMPLIANCE: {
+    name: 'ICIP Compliance',
+    description: 'Checks for ICIP compliance validation points',
+    required: true
+  },
+  QUALITY_ASSURANCE: {
+    name: 'Quality Assurance',
+    description: 'Checks for quality assurance checkpoints',
+    required: true
+  },
+  DOCUMENTATION_STANDARDS: {
+    name: 'Documentation Standards',
+    description: 'Checks for MDBA documentation standards',
+    required: true
+  },
+  ROLE_ASSIGNMENTS: {
+    name: 'Role Assignments',
+    description: 'Checks for proper role assignments',
+    required: true
+  }
+};
+
+/**
+ * Check if xmllint is available
+ * @returns {boolean}
+ */
+function isXmllintAvailable() {
+  try {
+    execSync('which xmllint', { stdio: 'ignore' });
+    return true;
+  } catch (error) {
+    return false;
+  }
+}
+
+/**
+ * Validate XML structure using xmllint
+ * @param {string} filePath - Path to the BPMN file
+ * @returns {Object} Validation results
+ */
+function validateXmlWithXmllint(filePath) {
+  const results = {
+    valid: true,
+    warnings: [],
+    errors: []
+  };
+
+  if (!isXmllintAvailable()) {
+    results.warnings.push('xmllint not available - skipping XML validation');
+    return results;
+  }
+
+  try {
+    execSync(`xmllint --noout "${filePath}"`, { stdio: 'pipe' });
+  } catch (error) {
+    results.valid = false;
+    results.errors.push(`XML validation failed: ${error.message}`);
+  }
+
+  return results;
+}
 
 /**
  * Validate XML structure
@@ -39,13 +149,51 @@ function validateXmlStructure(definitions) {
   };
 
   // Check namespace declarations
-  if (!definitions.$attrs['xmlns:bpmn']) {
-    results.errors.push('Missing BPMN namespace declaration');
-    results.valid = false;
+  const requiredNamespaces = {
+    'xmlns:bpmn': 'http://www.omg.org/spec/BPMN/20100524/MODEL',
+    'xmlns:bpmndi': 'http://www.omg.org/spec/BPMN/20100524/DI',
+    'xmlns:dc': 'http://www.omg.org/spec/DD/20100524/DC',
+    'xmlns:di': 'http://www.omg.org/spec/DD/20100524/DI',
+    'xmlns:xsi': 'http://www.w3.org/2001/XMLSchema-instance'
+  };
+
+  // Get all attributes from the definitions object
+  const attrs = definitions.$attrs || {};
+  const nsAttrs = Object.entries(attrs)
+    .filter(([key]) => key.startsWith('xmlns:'))
+    .reduce((acc, [key, value]) => ({ ...acc, [key]: value }), {});
+
+  // Check namespace declarations
+  for (const [ns, value] of Object.entries(requiredNamespaces)) {
+    if (!nsAttrs[ns] || nsAttrs[ns] !== value) {
+      results.errors.push(`Missing or invalid namespace declaration: ${ns}`);
+      results.valid = false;
+    }
+  }
+
+  // Check for required attributes
+  const requiredAttrs = ['id', 'targetNamespace', 'exporter', 'exporterVersion'];
+  for (const attr of requiredAttrs) {
+    if (!attrs[attr]) {
+      // Try to find the attribute in the raw XML if available
+      const rawXml = definitions.$xml;
+      if (rawXml) {
+        const attrMatch = new RegExp(`${attr}="([^"]+)"`).exec(rawXml);
+        if (!attrMatch) {
+          results.errors.push(`Missing required attribute: ${attr}`);
+          results.valid = false;
+        }
+      } else {
+        results.errors.push(`Missing required attribute: ${attr}`);
+        results.valid = false;
+      }
+    }
   }
 
   // Check for required elements
-  const processes = definitions.rootElements.filter(el => el.$type === 'bpmn:Process');
+  const processes = definitions.rootElements.filter(el => 
+    el.$type === 'bpmn:Process' || el.$type === 'Process'
+  );
   if (processes.length === 0) {
     results.errors.push('No process elements found in rootElements');
     results.valid = false;
@@ -140,6 +288,15 @@ function validateErrorHandling(definitions, process) {
 }
 
 /**
+ * Helper to determine if a process is the main/root process in definitions
+ */
+function isMainProcess(definitions, process) {
+  if (!definitions || !process) return false;
+  // The main process is the one that appears in definitions.rootElements
+  return definitions.rootElements.some(el => el.$type === 'bpmn:Process' && el.id === process.id);
+}
+
+/**
  * Validate message handling
  * @param {Object} definitions - BPMN definitions object
  * @param {Object} process - BPMN process object
@@ -158,8 +315,17 @@ function validateMessageHandling(definitions, process) {
     results.warnings.push('No message definitions found');
   }
 
-  // Check message flows
-  const messageFlows = process.flowElements.filter(el => el.$type === 'bpmn:MessageFlow');
+  // Context-aware check for message flows
+  let messageFlows = [];
+  if (isMainProcess(definitions, process)) {
+    // For the main process, check both process.flowElements and definitions.rootElements
+    const processMessageFlows = (process.flowElements || []).filter(el => el.$type === 'bpmn:MessageFlow');
+    const rootMessageFlows = (definitions.rootElements || []).filter(el => el.$type === 'bpmn:MessageFlow');
+    messageFlows = [...processMessageFlows, ...rootMessageFlows];
+  } else {
+    // For subprocesses, only check their own flowElements
+    messageFlows = (process.flowElements || []).filter(el => el.$type === 'bpmn:MessageFlow');
+  }
   if (messageFlows.length === 0) {
     results.warnings.push('No message flows defined');
   }
@@ -196,10 +362,11 @@ function validateSwimlanes(process) {
 
 /**
  * Validate data management
+ * @param {Object} definitions - BPMN definitions object
  * @param {Object} process - BPMN process object
  * @returns {Object} Validation results
  */
-function validateDataManagement(process) {
+function validateDataManagement(definitions, process) {
   const results = {
     valid: true,
     warnings: [],
@@ -207,13 +374,28 @@ function validateDataManagement(process) {
   };
 
   // Check for data objects
-  const dataObjects = process.flowElements.filter(el => el.$type === 'bpmn:DataObject');
+  const dataObjects = (process.flowElements || []).filter(el => el.$type === 'bpmn:DataObject');
   if (dataObjects.length === 0) {
     results.warnings.push('No data objects defined');
   }
 
-  // Check for data stores
-  const dataStores = process.flowElements.filter(el => el.$type === 'bpmn:DataStoreReference');
+  // Context-aware check for data stores
+  let dataStores = [];
+  if (isMainProcess(definitions, process)) {
+    // For the main process, check both process.flowElements and definitions.rootElements
+    const processDataStores = (process.flowElements || []).filter(el => 
+      el.$type === 'bpmn:DataStoreReference' || el.$type === 'bpmn:DataStore'
+    );
+    const rootDataStores = (definitions.rootElements || []).filter(el => 
+      el.$type === 'bpmn:DataStoreReference' || el.$type === 'bpmn:DataStore'
+    );
+    dataStores = [...processDataStores, ...rootDataStores];
+  } else {
+    // For subprocesses, only check their own flowElements
+    dataStores = (process.flowElements || []).filter(el => 
+      el.$type === 'bpmn:DataStoreReference' || el.$type === 'bpmn:DataStore'
+    );
+  }
   if (dataStores.length === 0) {
     results.warnings.push('No data stores defined');
   }
@@ -233,8 +415,14 @@ function validateGatewayLogic(process) {
     errors: []
   };
 
-  // Check for gateways
-  const gateways = process.flowElements.filter(el => el.$type.startsWith('bpmn:Gateway'));
+  // Check for gateways with more specific type matching
+  const gateways = process.flowElements.filter(el => 
+    el.$type === 'bpmn:ExclusiveGateway' ||
+    el.$type === 'bpmn:InclusiveGateway' ||
+    el.$type === 'bpmn:ParallelGateway' ||
+    el.$type === 'bpmn:ComplexGateway' ||
+    el.$type === 'bpmn:EventBasedGateway'
+  );
   if (gateways.length === 0) {
     results.warnings.push('No gateways defined');
   } else {
@@ -290,88 +478,240 @@ function validateMDBARequirements(process) {
     errors: []
   };
 
-  // Check for ICIP compliance
-  const hasICIPCheck = process.flowElements.some(el => 
-    el.name && el.name.toLowerCase().includes('icip')
-  );
-  if (!hasICIPCheck) {
-    results.warnings.push('No ICIP compliance checks found');
-  }
+  // Check each MDBA rule
+  for (const [ruleKey, rule] of Object.entries(MDBA_RULES)) {
+    let ruleValid = false;
+    let ruleMessage = '';
 
-  // Check for quality assurance
-  const hasQualityCheck = process.flowElements.some(el => 
-    el.name && el.name.toLowerCase().includes('quality')
-  );
-  if (!hasQualityCheck) {
-    results.warnings.push('No quality assurance checks found');
+    switch (ruleKey) {
+      case 'ICIP_COMPLIANCE':
+        ruleValid = process.flowElements.some(el => 
+          el.name && el.name.toLowerCase().includes('icip')
+        );
+        ruleMessage = 'ICIP compliance checks';
+        break;
+
+      case 'QUALITY_ASSURANCE':
+        ruleValid = process.flowElements.some(el => 
+          el.name && (
+            el.name.toLowerCase().includes('quality') ||
+            el.name.toLowerCase().includes('validation') ||
+            el.name.toLowerCase().includes('review')
+          )
+        );
+        ruleMessage = 'Quality assurance checkpoints';
+        break;
+
+      case 'DOCUMENTATION_STANDARDS':
+        ruleValid = process.documentation && process.documentation.length > 0 &&
+          process.flowElements.every(el => 
+            !el.name || el.documentation && el.documentation.length > 0
+          );
+        ruleMessage = 'Documentation standards';
+        break;
+
+      case 'ROLE_ASSIGNMENTS':
+        ruleValid = process.laneSets && process.laneSets.length > 0 &&
+          process.laneSets[0].lanes.every(lane => lane.name);
+        ruleMessage = 'Role assignments';
+        break;
+    }
+
+    if (!ruleValid) {
+      if (rule.required) {
+        results.errors.push(`Missing required ${ruleMessage}`);
+        results.valid = false;
+      } else {
+        results.warnings.push(`Missing ${ruleMessage}`);
+      }
+    }
   }
 
   return results;
 }
 
 /**
- * Validate a BPMN file
+ * Validate subprocess definitions
+ * @param {Object} process - BPMN process object
+ * @returns {Object} Validation results
+ */
+function validateSubprocess(process) {
+  const results = {
+    valid: true,
+    warnings: [],
+    errors: []
+  };
+
+  // Check for subprocesses
+  const subprocesses = process.flowElements.filter(el => 
+    el.$type === 'bpmn:SubProcess' || 
+    el.$type === 'bpmn:CallActivity'
+  );
+
+  if (subprocesses.length === 0) {
+    // Not all processes need subprocesses, so this is just a warning
+    results.warnings.push('No subprocesses or call activities defined');
+  } else {
+    // Validate each subprocess
+    for (const subprocess of subprocesses) {
+      // Check for required attributes
+      if (!subprocess.id) {
+        results.errors.push(`Subprocess missing ID: ${subprocess.name || 'unnamed'}`);
+        results.valid = false;
+      }
+
+      if (!subprocess.name) {
+        results.warnings.push(`Subprocess missing name: ${subprocess.id}`);
+      }
+
+      // For call activities, check called element
+      if (subprocess.$type === 'bpmn:CallActivity' && !subprocess.calledElement) {
+        results.errors.push(`Call activity missing called element: ${subprocess.id}`);
+        results.valid = false;
+      }
+
+      // Check for start and end events in subprocesses
+      if (subprocess.$type === 'bpmn:SubProcess') {
+        const hasStartEvent = subprocess.flowElements?.some(el => el.$type === 'bpmn:StartEvent');
+        const hasEndEvent = subprocess.flowElements?.some(el => el.$type === 'bpmn:EndEvent');
+
+        if (!hasStartEvent) {
+          results.errors.push(`Subprocess missing start event: ${subprocess.id}`);
+          results.valid = false;
+        }
+        if (!hasEndEvent) {
+          results.errors.push(`Subprocess missing end event: ${subprocess.id}`);
+          results.valid = false;
+        }
+      }
+    }
+  }
+
+  return results;
+}
+
+/**
+ * Validate a single BPMN file
  * @param {string} filePath - Path to the BPMN file
  * @returns {Promise<Object>} Validation results
  */
 async function validateBpmnFile(filePath) {
+  const results = {
+    filePath,
+    valid: true,
+    warnings: [],
+    errors: [],
+    categories: {},
+    processes: []
+  };
+
   try {
+    // Read and parse the BPMN file
     const xml = fs.readFileSync(filePath, 'utf8');
-    const { rootElement: definitions } = await moddle.fromXML(xml);
+    let definitions;
+    try {
+      const parsed = await moddle.fromXML(xml);
+      definitions = parsed.rootElement;
+    } catch (parseErr) {
+      results.valid = false;
+      results.errors.push(`Failed to parse BPMN XML in file '${path.basename(filePath)}': ${parseErr.message}`);
+      return results;
+    }
     
-    console.log(`\nValidation results for ${path.basename(filePath)}:`);
-    
-    // Get the first process from rootElements
-    const process = definitions.rootElements.find(el => el.$type === 'bpmn:Process');
-    if (!process) {
-      console.log('✗ Error: No process element found');
-      return;
+    // Store the raw XML for attribute validation
+    definitions.$xml = xml;
+
+    // Validate XML structure
+    let xmlResults;
+    try {
+      xmlResults = validateXmlStructure(definitions);
+    } catch (xmlStructErr) {
+      results.valid = false;
+      results.errors.push(`XML structure validation failed in file '${path.basename(filePath)}': ${xmlStructErr.message}`);
+      return results;
+    }
+    results.categories.XML_STRUCTURE = xmlResults;
+    if (!xmlResults.valid) {
+      results.valid = false;
+      results.errors.push(...xmlResults.errors.map(e => `[XML_STRUCTURE] ${e}`));
+      results.warnings.push(...xmlResults.warnings.map(w => `[XML_STRUCTURE] ${w}`));
     }
 
-    // Validate each category
-    const xmlResults = validateXmlStructure(definitions);
-    const processResults = validateProcessDefinition(process);
-    const errorResults = validateErrorHandling(definitions, process);
-    const messageResults = validateMessageHandling(definitions, process);
-    const swimlaneResults = validateSwimlanes(process);
-    const dataResults = validateDataManagement(process);
-    const gatewayResults = validateGatewayLogic(process);
-    const docResults = validateDocumentation(process);
-    const mdbaResults = validateMDBARequirements(process);
+    // Get all processes
+    let processes;
+    try {
+      processes = definitions.rootElements.filter(el => el.$type === 'bpmn:Process');
+    } catch (procErr) {
+      results.valid = false;
+      results.errors.push(`Failed to extract process elements in file '${path.basename(filePath)}': ${procErr.message}`);
+      return results;
+    }
+    
+    if (!processes || processes.length === 0) {
+      results.valid = false;
+      results.errors.push(`No process elements found in file '${path.basename(filePath)}'`);
+      return results;
+    }
 
-    const results = {
-      file: path.basename(filePath),
-      valid: true,
-      processes: []
-    };
+    for (const process of processes) {
+      const processResults = {
+        id: process.id || '(no id)',
+        name: process.name || '(no name)',
+        valid: true,
+        categories: {}
+      };
 
-    const categories = {
-      [VALIDATION_CATEGORIES.XML_STRUCTURE]: xmlResults,
-      [VALIDATION_CATEGORIES.PROCESS_DEFINITION]: processResults,
-      [VALIDATION_CATEGORIES.ERROR_HANDLING]: errorResults,
-      [VALIDATION_CATEGORIES.MESSAGE_HANDLING]: messageResults,
-      [VALIDATION_CATEGORIES.SWIMLANE]: swimlaneResults,
-      [VALIDATION_CATEGORIES.DATA_MANAGEMENT]: dataResults,
-      [VALIDATION_CATEGORIES.GATEWAY_LOGIC]: gatewayResults,
-      [VALIDATION_CATEGORIES.DOCUMENTATION]: docResults,
-      [VALIDATION_CATEGORIES.MDBA_REQUIREMENTS]: mdbaResults
-    };
+      // Validate each category with error handling
+      for (const [catKey, catDef] of Object.entries(VALIDATION_CATEGORIES)) {
+        try {
+          let catResult;
+          switch (catKey) {
+            case 'PROCESS_DEFINITION':
+              catResult = validateProcessDefinition(process); break;
+            case 'ERROR_HANDLING':
+              catResult = validateErrorHandling(definitions, process); break;
+            case 'MESSAGE_HANDLING':
+              catResult = validateMessageHandling(definitions, process); break;
+            case 'SUBPROCESS':
+              catResult = validateSubprocess(process); break;
+            case 'SWIMLANE':
+              catResult = validateSwimlanes(process); break;
+            case 'DATA_MANAGEMENT':
+              catResult = validateDataManagement(definitions, process); break;
+            case 'GATEWAY_LOGIC':
+              catResult = validateGatewayLogic(process); break;
+            case 'DOCUMENTATION':
+              catResult = validateDocumentation(process); break;
+            case 'MDBA_REQUIREMENTS':
+              catResult = validateMDBARequirements(process); break;
+            default:
+              catResult = { valid: true, warnings: [], errors: [] };
+          }
+          processResults.categories[catDef.name] = catResult;
+          if (catDef.critical && !catResult.valid) {
+            processResults.valid = false;
+          }
+        } catch (catErr) {
+          processResults.valid = false;
+          processResults.categories[catDef.name] = {
+            valid: false,
+            warnings: [],
+            errors: [`[${catDef.name}] Validation failed: ${catErr.message}`]
+          };
+        }
+      }
 
-    const processValid = Object.values(categories).every(cat => cat.valid);
-    results.processes.push({
-      id: process.id || '(no id)',
-      valid: processValid,
-      categories
-    });
-    if (!processValid) results.valid = false;
+      if (!processResults.valid) {
+        results.valid = false;
+      }
+      results.processes.push(processResults);
+    }
 
     return results;
   } catch (error) {
-    return {
-      file: path.basename(filePath),
-      valid: false,
-      error: error.message
-    };
+    results.valid = false;
+    results.errors.push(`General failure in file '${path.basename(filePath)}': ${error.message}`);
+    return results;
   }
 }
 
@@ -398,45 +738,53 @@ function findBpmnFiles(dir, fileList = []) {
 }
 
 /**
- * Print validation results
+ * Print validation results with color coding
  * @param {Object} results - Validation results
  */
 function printResults(results) {
-  console.log(`\nValidation results for ${results.file}:`);
+  const fileName = results.filePath ? path.basename(results.filePath) : '(unknown file)';
+  console.log(`\n${chalk.bold(`Validation results for ${fileName}:`)}`);
   
   if (results.error) {
-    console.error(`✗ Error: ${results.error}`);
+    console.error(chalk.red(`✗ Error: ${results.error}`));
     return;
   }
 
   if (results.valid) {
-    console.log('✓ Overall: Valid');
+    console.log(chalk.green('✓ Overall: Valid'));
   } else {
-    console.error('✗ Overall: Invalid');
+    console.error(chalk.red('✗ Overall: Invalid'));
   }
 
   if (results.processes) {
     for (const proc of results.processes) {
-      console.log(`\nProcess: ${proc.id}`);
+      console.log(`\n${chalk.bold(`Process: ${proc.name} (${proc.id})`)}`);
+      
       if (proc.valid) {
-        console.log('  ✓ Valid');
+        console.log(chalk.green('  ✓ Valid'));
       } else {
-        console.error('  ✗ Invalid');
+        console.error(chalk.red('  ✗ Invalid'));
       }
+
       Object.entries(proc.categories).forEach(([category, result]) => {
-        console.log(`  ${category}:`);
+        const categoryInfo = Object.values(VALIDATION_CATEGORIES).find(c => c.name === category);
+        const critical = categoryInfo?.critical ? ' (Critical)' : '';
+        
+        console.log(`  ${category}${critical}:`);
         if (result.valid) {
-          console.log('    ✓ Valid');
+          console.log(chalk.green('    ✓ Valid'));
         } else {
-          console.error('    ✗ Invalid');
+          console.error(chalk.red('    ✗ Invalid'));
         }
-        if (result.errors.length > 0) {
+        
+        if (result.errors?.length > 0) {
           console.error('    Errors:');
-          result.errors.forEach(error => console.error(`      - ${error}`));
+          result.errors.forEach(error => console.error(chalk.red(`      - ${error}`)));
         }
-        if (result.warnings.length > 0) {
+        
+        if (result.warnings?.length > 0) {
           console.warn('    Warnings:');
-          result.warnings.forEach(warning => console.warn(`      - ${warning}`));
+          result.warnings.forEach(warning => console.warn(chalk.yellow(`      - ${warning}`)));
         }
       });
     }
@@ -444,20 +792,149 @@ function printResults(results) {
 }
 
 /**
+ * Generate HTML report
+ * @param {Array<Object>} validResults - Valid validation results
+ * @param {Array<Object>} invalidResults - Invalid validation results
+ * @param {Object} summary - Validation summary
+ */
+function generateHtmlReport(validResults, invalidResults, summary) {
+  const html = `
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BPMN Validation Report</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .summary { background: #f5f5f5; padding: 20px; border-radius: 5px; }
+        .file { margin: 20px 0; padding: 10px; border: 1px solid #ddd; }
+        .valid { color: green; }
+        .invalid { color: red; }
+        .warning { color: orange; }
+        .critical { font-weight: bold; }
+        .category { margin: 10px 0; }
+        .errors, .warnings { margin-left: 20px; }
+    </style>
+</head>
+<body>
+    <h1>BPMN Validation Report</h1>
+    <div class="summary">
+        <h2>Summary</h2>
+        <p>Generated: ${new Date().toLocaleString()}</p>
+        <p>Total files: ${summary.totalFiles}</p>
+        <p class="valid">Valid files: ${summary.validFiles}</p>
+        <p class="invalid">Invalid files: ${summary.invalidFiles}</p>
+    </div>
+    <h2>Valid Files</h2>
+    ${validResults.length === 0 ? '<p>None</p>' : validResults.map(result => {
+      const fileName = result.filePath ? path.basename(result.filePath) : '(unknown file)';
+      return `
+    <div class="file">
+        <h2>${fileName}</h2>
+        <p class="valid">
+            Overall: Valid
+        </p>
+        ${result.processes?.map(proc => `
+        <div class="process">
+            <h3>Process: ${proc.name} (${proc.id})</h3>
+            ${Object.entries(proc.categories).map(([category, catResult]) => `
+            <div class="category">
+                <h4>${category}</h4>
+                <p class="valid">
+                    ✓ Valid
+                </p>
+                ${catResult.warnings?.length ? `
+                <div class="warnings">
+                    <h5>Warnings:</h5>
+                    <ul>
+                        ${catResult.warnings.map(warning => `
+                        <li class="warning">${warning}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+            </div>
+            `).join('')}
+        </div>
+        `).join('')}
+    </div>
+      `;
+    }).join('')}
+    <h2>Invalid Files</h2>
+    ${invalidResults.length === 0 ? '<p>None</p>' : invalidResults.map(result => {
+      const fileName = result.filePath ? path.basename(result.filePath) : '(unknown file)';
+      return `
+    <div class="file">
+        <h2>${fileName}</h2>
+        <p class="invalid">
+            Overall: Invalid
+        </p>
+        ${result.processes?.map(proc => `
+        <div class="process">
+            <h3>Process: ${proc.name} (${proc.id})</h3>
+            ${Object.entries(proc.categories).map(([category, catResult]) => `
+            <div class="category">
+                <h4>${category}</h4>
+                <p class="${catResult.valid ? 'valid' : 'invalid'}">
+                    ${catResult.valid ? '✓ Valid' : '✗ Invalid'}
+                </p>
+                ${catResult.errors?.length ? `
+                <div class="errors">
+                    <h5>Errors:</h5>
+                    <ul>
+                        ${catResult.errors.map(error => `
+                        <li class="invalid">${error}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+                ${catResult.warnings?.length ? `
+                <div class="warnings">
+                    <h5>Warnings:</h5>
+                    <ul>
+                        ${catResult.warnings.map(warning => `
+                        <li class="warning">${warning}</li>
+                        `).join('')}
+                    </ul>
+                </div>
+                ` : ''}
+            </div>
+            `).join('')}
+        </div>
+        `).join('')}
+    </div>
+      `;
+    }).join('')}
+</body>
+</html>`;
+
+  // Ensure report directory exists
+  if (!fs.existsSync(REPORT_DIR)) {
+    fs.mkdirSync(REPORT_DIR, { recursive: true });
+  }
+
+  fs.writeFileSync(
+    path.join(REPORT_DIR, 'validation-report.html'),
+    html
+  );
+}
+
+/**
  * Main function to validate all BPMN files
  */
 async function validateAllBpmnFiles() {
-  console.log('Validating BPMN files...\n');
+  console.log(chalk.bold('Validating BPMN files...\n'));
   
   try {
     const bpmnFiles = findBpmnFiles(MODELS_DIR);
     
     if (bpmnFiles.length === 0) {
-      console.log('No BPMN files found.');
+      console.log(chalk.yellow('No BPMN files found.'));
       return;
     }
     
-    console.log(`Found ${bpmnFiles.length} BPMN files.`);
+    console.log(chalk.blue(`Found ${bpmnFiles.length} BPMN files.`));
     
     let validCount = 0;
     const allResults = [];
@@ -466,33 +943,49 @@ async function validateAllBpmnFiles() {
       const results = await validateBpmnFile(file);
       allResults.push(results);
       if (results.valid) validCount++;
-      printResults(results);
+    }
+
+    // Group results
+    const validResults = allResults.filter(r => r.valid);
+    const invalidResults = allResults.filter(r => !r.valid);
+
+    // Print grouped results
+    if (validResults.length > 0) {
+      console.log(chalk.green('\nValid files:'));
+      validResults.forEach(printResults);
+    }
+    if (invalidResults.length > 0) {
+      console.log(chalk.red('\nInvalid files:'));
+      invalidResults.forEach(printResults);
     }
     
-    console.log(`\nValidation Summary:`);
-    console.log(`Total files: ${bpmnFiles.length}`);
-    console.log(`Valid files: ${validCount}`);
-    console.log(`Invalid files: ${bpmnFiles.length - validCount}`);
-    
-    // Generate validation report
-    const report = {
+    const summary = {
       timestamp: new Date().toISOString(),
       totalFiles: bpmnFiles.length,
       validFiles: validCount,
-      invalidFiles: bpmnFiles.length - validCount,
-      results: allResults
+      invalidFiles: bpmnFiles.length - validCount
     };
     
+    // Generate reports
+    generateHtmlReport(validResults, invalidResults, summary);
     fs.writeFileSync(
-      path.join(__dirname, '..', 'docs', 'process-design', 'validation-report.json'),
-      JSON.stringify(report, null, 2)
+      path.join(REPORT_DIR, 'validation-report.json'),
+      JSON.stringify({ summary, results: allResults }, null, 2)
     );
+    
+    console.log(chalk.bold('\nValidation Summary:'));
+    console.log(chalk.blue(`Total files: ${bpmnFiles.length}`));
+    console.log(chalk.green(`Valid files: ${validCount}`));
+    console.log(chalk.red(`Invalid files: ${bpmnFiles.length - validCount}`));
+    console.log(chalk.blue('\nReports generated:'));
+    console.log(`- ${path.join(REPORT_DIR, 'validation-report.html')}`);
+    console.log(`- ${path.join(REPORT_DIR, 'validation-report.json')}`);
     
     if (validCount !== bpmnFiles.length) {
       process.exit(1);
     }
   } catch (error) {
-    console.error('Error during validation:', error);
+    console.error(chalk.red('Error during validation:'), error);
     process.exit(1);
   }
 }

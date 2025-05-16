@@ -1,22 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <bpmn:definitions xmlns:bpmn="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:dc="http://www.omg.org/spec/DD/20100524/DC" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:di="http://www.omg.org/spec/DD/20100524/DI" id="Definitions_BPR_SubmissionTracking" targetNamespace="http://bpmn.io/schema/bpmn" exporter="Camunda Modeler" exporterVersion="5.35.0">
-  <bpmn:error id="Error_RegistrationFailed" name="Registration Failed" errorCode="ST001" />
-  <bpmn:error id="Error_StatusUpdateFailed" name="Status Update Failed" errorCode="ST002" />
-  <bpmn:error id="Error_NotificationFailed" name="Notification Failed" errorCode="ST003" />
-  <bpmn:message id="Message_SubmissionRegistered" name="Submission Registered" />
-  <bpmn:message id="Message_StatusUpdated" name="Status Updated" />
-  <bpmn:message id="Message_NotificationSent" name="Notification Sent" />
-  <bpmn:process id="Process_BPR_SubmissionTracking" name="Submission Status Tracking" isExecutable="false">
+  <bpmn:error id="Error_RegistrationFailed" name="Registration Failed" errorCode="ST001">
     <bpmn:documentation>
-      Process: BPR Submission Tracking
-      Purpose: Manages the tracking and status monitoring of submissions throughout the Basin Plan Review process
+      Purpose: Indicates a failure in the submission registration process
+      Severity: High
+      Resolution Path: Requires intake team intervention
+      Impact: Delays submission processing
+      Owner: Intake Team
+      SLA: 4 hours
+    </bpmn:documentation>
+  </bpmn:error>
+  <bpmn:error id="Error_StatusUpdateFailed" name="Status Update Failed" errorCode="ST002">
+    <bpmn:documentation>
+      Purpose: Indicates a failure in updating submission status
+      Severity: Medium
+      Resolution Path: Requires processing team intervention
+      Impact: May delay tracking updates
+      Owner: Processing Team
+      SLA: 24 hours
+    </bpmn:documentation>
+  </bpmn:error>
+  <bpmn:error id="Error_NotificationFailed" name="Notification Failed" errorCode="ST003">
+    <bpmn:documentation>
+      Purpose: Indicates a failure in sending notifications
+      Severity: Medium
+      Resolution Path: Requires notification team intervention
+      Impact: May delay stakeholder communication
+      Owner: Notification Team
+      SLA: 24 hours
+    </bpmn:documentation>
+  </bpmn:error>
+  <bpmn:error id="Error_ICIP_Assessment_Failed" name="ICIP Assessment Failed" errorCode="ICIP001">
+    <bpmn:documentation>
+      Purpose: Indicates a failure in ICIP assessment process
+      Severity: High
+      Resolution Path: Requires ICIP team intervention
+      Impact: May delay submission processing
+      Owner: ICIP Team
+      SLA: 24 hours
+    </bpmn:documentation>
+  </bpmn:error>
+  <bpmn:error id="Error_ICIP_Protocol_Violation" name="ICIP Protocol Violation" errorCode="ICIP002">
+    <bpmn:documentation>
+      Purpose: Indicates a violation of ICIP protocols
+      Severity: High
+      Resolution Path: Requires immediate ICIP team review
+      Impact: May require submission modification
+      Owner: ICIP Team
+      SLA: 24 hours
+    </bpmn:documentation>
+  </bpmn:error>
+  <bpmn:message id="Message_SubmissionRegistered" name="Submission Registered">
+    <bpmn:documentation>
+      Purpose: Confirms successful registration of a submission
+      Content: Registration details, submission ID, timestamp
+      Sender: Intake Team
+      Receiver: Processing Team
+      Priority: High
+    </bpmn:documentation>
+  </bpmn:message>
+  <bpmn:message id="Message_StatusUpdated" name="Status Updated">
+    <bpmn:documentation>
+      Purpose: Confirms successful update of submission status
+      Content: Status details, update timestamp, changes made
+      Sender: Processing Team
+      Receiver: Notification Team
+      Priority: Normal
+    </bpmn:documentation>
+  </bpmn:message>
+  <bpmn:message id="Message_NotificationSent" name="Notification Sent">
+    <bpmn:documentation>
+      Purpose: Confirms successful sending of notification
+      Content: Notification details, recipient, delivery status
+      Sender: Notification Team
+      Receiver: Processing Team
+      Priority: Normal
+    </bpmn:documentation>
+  </bpmn:message>
+  <bpmn:message id="Message_ICIP_Assessment_Required" name="ICIP Assessment Required">
+    <bpmn:documentation>
+      Purpose: Indicates need for ICIP assessment
+      Content: Submission details, assessment requirements
+      Sender: Processing Team
+      Receiver: ICIP Team
+      Priority: High
+    </bpmn:documentation>
+  </bpmn:message>
+  <bpmn:message id="Message_ICIP_Assessment_Complete" name="ICIP Assessment Complete">
+    <bpmn:documentation>
+      Purpose: Confirms completion of ICIP assessment
+      Content: Assessment results, compliance status, recommendations
+      Sender: ICIP Team
+      Receiver: Processing Team
+      Priority: High
+    </bpmn:documentation>
+  </bpmn:message>
+  <bpmn:process id="Process_BPR_SubmissionTracking" name="Submission Status Tracking" isExecutable="true">
+    <bpmn:documentation>
+      Purpose: Manages the tracking and status monitoring of submissions throughout the Basin Plan Review process, ensuring comprehensive documentation, quality assurance, and compliance with ICIP requirements.
+      
+      Documentation Standards:
+      - All tasks, events, and gateways must have clear documentation including:
+        * Purpose and objectives
+        * Required inputs and outputs
+        * Success, quality, and compliance criteria
+        * Stakeholder responsibilities
+        * Review and approval requirements
+        * Error handling procedures
+        * SLA requirements
+      - Stakeholder engagement must be documented with:
+        * Engagement activities
+        * Participant details
+        * Feedback received
+        * Action items
+        * Communication records
+      - Review outcomes must be recorded including:
+        * Review findings
+        * Required changes
+        * Approval status
+        * Sign-off documentation
+        * Quality check results
+      - Process variations must be tracked with:
+        * Variation details
+        * Impact assessment
+        * Resolution actions
+        * Lessons learned
+        * Corrective measures
+      
+      Quality Assurance:
+      - All documentation must be reviewed for:
+        * Completeness
+        * Accuracy
+        * Compliance
+        * Accessibility
+        * Timeliness
+      - Documentation must be:
+        * Version controlled
+        * Accessible to stakeholders
+        * Maintained in approved systems
+        * Archived according to retention policies
+        * Regularly audited
+      
       Owner: MDBA Collection Team
-      Description: This process handles the tracking of submissions from receipt through to final disposition,
-      ensuring proper status updates, validation, and monitoring of all submissions.
-      Roles:
-      - Collection Team: Manages submission tracking and status updates
-      - Support Team: Provides technical support for tracking system
-      - Quality Team: Validates tracking accuracy
+      Quality Owner: MDBA Quality Assurance Team
+      Version: 1.0.0
+      Last Updated: 20/03/2024
+      
+      Description: This process handles the tracking of submissions from receipt through to final disposition, ensuring proper status updates, validation, and monitoring of all submissions. It includes comprehensive documentation of ICIP requirements, cultural protocols, and quality standards throughout the tracking lifecycle.
+      
+      Roles and Responsibilities:
+      - Collection Team: Primary process execution
+      - Quality Team: Process validation
+      - ICIP Team: Cultural compliance
+      - Support Team: Stakeholder assistance
+      - Reporting Team: Status monitoring
+      
+      Success Criteria:
+      - All submissions properly registered
+      - Status updates accurate and timely
+      - ICIP requirements met
+      - Quality checks completed
+      - Documentation standards met
+      - Stakeholder notifications sent
+      - Process metrics recorded
+      
+      Error Handling:
+      - Registration failures
+      - Status update errors
+      - Notification failures
+      - ICIP assessment issues
+      - Protocol violations
+      - Documentation gaps
+      
+      SLA Requirements:
+      - Registration: Within 24 hours
+      - Status updates: Within 4 hours
+      - Notifications: Within 2 hours
+      - Quality checks: Within 48 hours
+      - ICIP assessment: Within 72 hours
     </bpmn:documentation>
     <bpmn:laneSet id="LaneSet_SubmissionTracking">
       <bpmn:lane id="Lane_ReportingTeam" name="Reporting Team">
@@ -35,50 +196,420 @@
         <bpmn:flowNodeRef>Task_RegisterSubmission</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>StartEvent_ReceiveSubmission</bpmn:flowNodeRef>
       </bpmn:lane>
+      <bpmn:lane id="Lane_ICIPTeam" name="ICIP Review Team">
+        <bpmn:flowNodeRef>Task_Assess_ICIP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_Verify_ICIP_Compliance</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ICIP_Required</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_QualityTeam" name="Quality Team">
+        <bpmn:flowNodeRef>Task_QualityCheck_Registration</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_QualityCheck_Status</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Task_QualityCheck_ICIP</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_QualityCheck</bpmn:flowNodeRef>
+      </bpmn:lane>
     </bpmn:laneSet>
     <bpmn:startEvent id="StartEvent_ReceiveSubmission" name="Submission Received">
+      <bpmn:documentation>
+        Start Event: Submission Received
+        Purpose: Marks the beginning of the submission tracking process
+        
+        Documentation Requirements:
+        - Receipt timestamp
+        - Submission identifier
+        - Receiving officer
+        - Initial status
+        - Quality check status
+        
+        Quality Requirements:
+        - Timestamp accuracy
+        - Identifier uniqueness
+        - Status validity
+        - Documentation completeness
+        
+        Error Handling:
+        - Registration failure
+        - Status update failure
+        - Notification failure
+        - ICIP assessment failure
+        - Protocol violation
+        
+        SLA: Immediate processing required
+      </bpmn:documentation>
       <bpmn:outgoing>Flow_ReceiveToRegister</bpmn:outgoing>
     </bpmn:startEvent>
     <bpmn:userTask id="Task_RegisterSubmission" name="Register Submission">
       <bpmn:documentation>
-        Register new submission in tracking system
-        - Assign unique identifier
-        - Record submission details
-        - Set initial status
+        Purpose: Register new submissions in the tracking system
+        Inputs:
+        - Submission details
+        - Supporting documents
+        - Contact information
+        Actions:
+        - Validate submission
+        - Assign tracking number
+        - Record details
+        Outputs:
+        - Registration record
+        - Tracking number
+        - Initial status
+        Quality Requirements:
+        - Complete information
+        - Proper categorization
+        - Document verification
+        Error Handling:
+        - Missing information
+        - Invalid formats
+        - Duplicate submissions
+        SLA: 24 hours
       </bpmn:documentation>
       <bpmn:incoming>Flow_ReceiveToRegister</bpmn:incoming>
-      <bpmn:outgoing>Flow_RegisterToUpdate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_RegisterToICIP</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Task_UpdateStatus" name="Update Submission Status">
       <bpmn:documentation>
-        Update submission status
-        - Record status change
-        - Update tracking information
-        - Notify relevant teams
+        Purpose: Update the status of a registered submission
+        Inputs:
+        - Current status
+        - Update details
+        - Supporting information
+        Actions:
+        - Validate update
+        - Record change
+        - Update tracking
+        Outputs:
+        - Status update record
+        - Change history
+        - Notification trigger
+        Quality Requirements:
+        - Valid status change
+        - Complete documentation
+        - Proper authorization
+        Error Handling:
+        - Invalid updates
+        - Missing information
+        - Authorization issues
+        SLA: 24 hours
       </bpmn:documentation>
       <bpmn:incoming>Flow_RegisterToUpdate</bpmn:incoming>
       <bpmn:outgoing>Flow_UpdateToGateway</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:exclusiveGateway id="Gateway_StatusValid" name="Is Status Valid?">
+      <bpmn:documentation>
+        Purpose: Validates submission status updates
+        Validation:
+        - Status change is valid
+        - Required fields are complete
+        - Status transition is allowed
+        Error Handling:
+        - Invalid status changes
+        - Missing information
+        - Unauthorized transitions
+        SLA: 1 hour
+      </bpmn:documentation>
       <bpmn:incoming>Flow_UpdateToGateway</bpmn:incoming>
       <bpmn:outgoing>Flow_GatewayToNotify</bpmn:outgoing>
       <bpmn:outgoing>Flow_GatewayToError</bpmn:outgoing>
     </bpmn:exclusiveGateway>
     <bpmn:userTask id="Task_SendNotification" name="Send Notification">
+      <bpmn:documentation>
+        Purpose: Send notifications about submission status changes
+        Inputs:
+        - Status update
+        - Recipient details
+        - Notification template
+        Actions:
+        - Prepare notification
+        - Send to recipient
+        - Record delivery
+        Outputs:
+        - Notification record
+        - Delivery confirmation
+        - Response tracking
+        Quality Requirements:
+        - Clear communication
+        - Timely delivery
+        - Proper formatting
+        Error Handling:
+        - Delivery failures
+        - Format issues
+        - Recipient issues
+        SLA: 24 hours
+      </bpmn:documentation>
       <bpmn:incoming>Flow_GatewayToNotify</bpmn:incoming>
       <bpmn:outgoing>Flow_NotifyToLog</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:userTask id="Task_LogForReporting" name="Log for Reporting">
+      <bpmn:documentation>
+        Purpose: Record submission activities for reporting
+        Inputs:
+        - Activity details
+        - Status changes
+        - Timestamps
+        Actions:
+        - Record activity
+        - Update metrics
+        - Generate reports
+        Outputs:
+        - Activity log
+        - Performance metrics
+        - Status reports
+        Quality Requirements:
+        - Accurate recording
+        - Complete information
+        - Proper categorization
+        Error Handling:
+        - Recording errors
+        - Missing data
+        - System issues
+        SLA: 24 hours
+      </bpmn:documentation>
       <bpmn:incoming>Flow_NotifyToLog</bpmn:incoming>
       <bpmn:outgoing>Flow_LogToEnd</bpmn:outgoing>
     </bpmn:userTask>
     <bpmn:endEvent id="EndEvent_TrackingComplete" name="Tracking Complete">
+      <bpmn:documentation>
+        End Event: Tracking Complete
+        Purpose: Marks successful completion of submission tracking
+        
+        Documentation Requirements:
+        - Completion timestamp
+        - Final status
+        - Quality check results
+        - ICIP compliance status
+        - Process metrics
+        
+        Quality Requirements:
+        - All tasks completed
+        - All quality checks passed
+        - All documentation complete
+        - All ICIP requirements met
+        
+        Completion Criteria:
+        - Registration complete
+        - Status updates complete
+        - Notifications sent
+        - Quality checks passed
+        - ICIP assessment complete
+        - Documentation complete
+        
+        SLA: Process completion within 24 hours
+      </bpmn:documentation>
       <bpmn:incoming>Flow_LogToEnd</bpmn:incoming>
     </bpmn:endEvent>
     <bpmn:endEvent id="EndEvent_TrackingError" name="Tracking Error">
+      <bpmn:documentation>
+        End Event: Tracking Error
+        Purpose: Marks process termination due to error
+        
+        Documentation Requirements:
+        - Error timestamp
+        - Error type
+        - Error details
+        - Resolution status
+        - Impact assessment
+        
+        Error Types:
+        - Registration failure
+        - Status update failure
+        - Notification failure
+        - ICIP assessment failure
+        - Protocol violation
+        
+        Resolution Requirements:
+        - Error investigation
+        - Root cause analysis
+        - Corrective actions
+        - Preventive measures
+        - Documentation updates
+        
+        SLA: Error resolution within 24 hours
+      </bpmn:documentation>
       <bpmn:incoming>Flow_GatewayToError</bpmn:incoming>
       <bpmn:errorEventDefinition errorRef="Error_StatusUpdateFailed" />
     </bpmn:endEvent>
+    <bpmn:exclusiveGateway id="Gateway_ICIP_Required" name="ICIP Assessment Required?">
+      <bpmn:documentation>
+        Purpose: Determine if ICIP assessment is required
+        Validation:
+        - Submission type
+        - Content analysis
+        - Previous assessments
+        Error Handling:
+        - Unclear requirements
+        - Missing information
+        - Assessment conflicts
+        SLA: 24 hours
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_RegisterToICIP</bpmn:incoming>
+      <bpmn:outgoing>Flow_ICIP_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_ICIP_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+    <bpmn:userTask id="Task_Assess_ICIP" name="Assess ICIP Requirements">
+      <bpmn:documentation>
+        Purpose: Assess ICIP requirements for submission
+        Inputs:
+        - Submission content
+        - ICIP guidelines
+        - Cultural protocols
+        Actions:
+        - Review content
+        - Check compliance
+        - Document findings
+        Outputs:
+        - ICIP assessment
+        - Compliance report
+        - Recommendations
+        Quality Requirements:
+        - Cultural sensitivity
+        - Protocol compliance
+        - Complete assessment
+        Error Handling:
+        - Assessment issues
+        - Protocol violations
+        - Documentation gaps
+        SLA: 1 week
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ICIP_Yes</bpmn:incoming>
+      <bpmn:outgoing>Flow_AssessToVerify</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_ICIP_Error" attachedToRef="Task_Assess_ICIP">
+      <bpmn:errorEventDefinition errorRef="Error_ICIP_Assessment_Failed" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="Task_Verify_ICIP_Compliance" name="Verify ICIP Compliance">
+      <bpmn:documentation>
+        Purpose: Verify ICIP compliance of submission
+        Inputs:
+        - ICIP assessment
+        - Compliance requirements
+        - Cultural protocols
+        Actions:
+        - Verify compliance
+        - Check documentation
+        - Record verification
+        Outputs:
+        - Compliance verification
+        - Documentation record
+        - Approval status
+        Quality Requirements:
+        - Complete verification
+        - Protocol compliance
+        - Proper documentation
+        Error Handling:
+        - Compliance issues
+        - Missing documentation
+        - Verification delays
+        SLA: 3 days
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_AssessToVerify</bpmn:incoming>
+      <bpmn:outgoing>Flow_VerifyToUpdate</bpmn:outgoing>
+    </bpmn:userTask>
+    <bpmn:boundaryEvent id="BoundaryEvent_ICIP_Protocol_Error" attachedToRef="Task_Verify_ICIP_Compliance">
+      <bpmn:errorEventDefinition errorRef="Error_ICIP_Protocol_Violation" />
+    </bpmn:boundaryEvent>
+    <bpmn:userTask id="Task_QualityCheck_Registration" name="Quality Check Registration">
+      <bpmn:documentation>
+        Purpose: Perform quality check on submission registration
+        Inputs:
+        - Registration details
+        - Supporting documents
+        - Quality checklist
+        Actions:
+        - Review registration
+        - Verify information
+        - Check documentation
+        Outputs:
+        - Quality report
+        - Verification record
+        - Action items
+        Quality Requirements:
+        - Complete verification
+        - Accurate information
+        - Proper documentation
+        Error Handling:
+        - Quality issues
+        - Missing information
+        - Documentation gaps
+        SLA: 24 hours
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_RegisterToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToUpdate</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_QualityCheck_Status" name="Quality Check Status Update">
+      <bpmn:documentation>
+        Purpose: Perform quality check on status updates
+        Inputs:
+        - Status change
+        - Update details
+        - Quality checklist
+        Actions:
+        - Review update
+        - Verify changes
+        - Check documentation
+        Outputs:
+        - Quality report
+        - Verification record
+        - Action items
+        Quality Requirements:
+        - Complete verification
+        - Valid changes
+        - Proper documentation
+        Error Handling:
+        - Quality issues
+        - Invalid updates
+        - Documentation gaps
+        SLA: 24 hours
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_UpdateToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToGateway</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:userTask id="Task_QualityCheck_ICIP" name="Quality Check ICIP Assessment">
+      <bpmn:documentation>
+        Purpose: Perform quality check on ICIP assessment
+        Inputs:
+        - ICIP assessment
+        - Compliance verification
+        - Quality checklist
+        Actions:
+        - Review assessment
+        - Verify compliance
+        - Check documentation
+        Outputs:
+        - Quality report
+        - Verification record
+        - Action items
+        Quality Requirements:
+        - Complete verification
+        - Protocol compliance
+        - Proper documentation
+        Error Handling:
+        - Quality issues
+        - Compliance gaps
+        - Documentation issues
+        SLA: 24 hours
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_ICIPToQuality</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityToVerify</bpmn:outgoing>
+    </bpmn:userTask>
+    
+    <bpmn:exclusiveGateway id="Gateway_QualityCheck" name="Quality Check Passed?">
+      <bpmn:documentation>
+        Purpose: Verify quality check results
+        Validation:
+        - Quality criteria met
+        - Documentation complete
+        - Actions resolved
+        Error Handling:
+        - Quality failures
+        - Missing actions
+        - Documentation gaps
+        SLA: 24 hours
+      </bpmn:documentation>
+      <bpmn:incoming>Flow_QualityToGateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityPass</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QualityFail</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
     <bpmn:sequenceFlow id="Flow_ReceiveToRegister" sourceRef="StartEvent_ReceiveSubmission" targetRef="Task_RegisterSubmission" />
     <bpmn:sequenceFlow id="Flow_RegisterToUpdate" sourceRef="Task_RegisterSubmission" targetRef="Task_UpdateStatus" />
     <bpmn:sequenceFlow id="Flow_UpdateToGateway" sourceRef="Task_UpdateStatus" targetRef="Gateway_StatusValid" />
@@ -94,6 +625,84 @@
     </bpmn:sequenceFlow>
     <bpmn:sequenceFlow id="Flow_NotifyToLog" sourceRef="Task_SendNotification" targetRef="Task_LogForReporting" />
     <bpmn:sequenceFlow id="Flow_LogToEnd" sourceRef="Task_LogForReporting" targetRef="EndEvent_TrackingComplete" />
+    <bpmn:sequenceFlow id="Flow_RegisterToICIP" sourceRef="Task_RegisterSubmission" targetRef="Gateway_ICIP_Required" />
+    <bpmn:sequenceFlow id="Flow_ICIP_Yes" sourceRef="Gateway_ICIP_Required" targetRef="Task_Assess_ICIP">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ICIP_No" sourceRef="Gateway_ICIP_Required" targetRef="Task_UpdateStatus">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_AssessToVerify" sourceRef="Task_Assess_ICIP" targetRef="Task_Verify_ICIP_Compliance" />
+    <bpmn:sequenceFlow id="Flow_VerifyToUpdate" sourceRef="Task_Verify_ICIP_Compliance" targetRef="Task_UpdateStatus" />
+    <bpmn:sequenceFlow id="Flow_RegisterToQuality" sourceRef="Task_RegisterSubmission" targetRef="Task_QualityCheck_Registration" />
+    <bpmn:sequenceFlow id="Flow_QualityToUpdate" sourceRef="Task_QualityCheck_Registration" targetRef="Task_UpdateStatus" />
+    <bpmn:sequenceFlow id="Flow_UpdateToQuality" sourceRef="Task_UpdateStatus" targetRef="Task_QualityCheck_Status" />
+    <bpmn:sequenceFlow id="Flow_QualityToGateway" sourceRef="Task_QualityCheck_Status" targetRef="Gateway_QualityCheck" />
+    <bpmn:sequenceFlow id="Flow_QualityPass" sourceRef="Gateway_QualityCheck" targetRef="Task_SendNotification">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qualityCheckPassed == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_QualityFail" sourceRef="Gateway_QualityCheck" targetRef="Task_UpdateStatus">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qualityCheckPassed == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+    <bpmn:sequenceFlow id="Flow_ICIPToQuality" sourceRef="Task_Assess_ICIP" targetRef="Task_QualityCheck_ICIP" />
+    <bpmn:sequenceFlow id="Flow_QualityToVerify" sourceRef="Task_QualityCheck_ICIP" targetRef="Task_Verify_ICIP_Compliance" />
+    <bpmn:dataObject id="DataObject_ICIPAssessment" name="ICIP Assessment">
+      <bpmn:documentation>
+        Purpose: Store ICIP assessment information
+        Content:
+        - Assessment details
+        - Compliance status
+        - Cultural protocols
+        - Recommendations
+        Quality Requirements:
+        - Complete information
+        - Proper categorization
+        - Secure storage
+        Error Handling:
+        - Data validation
+        - Access control
+        - Version control
+        SLA: N/A
+      </bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataObject id="DataObject_QualityMetrics" name="Quality Metrics">
+      <bpmn:documentation>
+        Purpose: Store quality check metrics
+        Content:
+        - Quality scores
+        - Check results
+        - Action items
+        - Performance data
+        Quality Requirements:
+        - Accurate metrics
+        - Complete records
+        - Proper analysis
+        Error Handling:
+        - Data validation
+        - Calculation errors
+        - Missing metrics
+        SLA: N/A
+      </bpmn:documentation>
+    </bpmn:dataObject>
+    <bpmn:dataStore id="DataStore_ICIPRegistry" name="ICIP Registry">
+      <bpmn:documentation>
+        Purpose: Store ICIP compliance records
+        Content:
+        - Compliance history
+        - Cultural protocols
+        - Assessment records
+        - Verification logs
+        Quality Requirements:
+        - Complete records
+        - Secure storage
+        - Proper access
+        Error Handling:
+        - Data integrity
+        - Access control
+        - Backup issues
+        SLA: N/A
+      </bpmn:documentation>
+    </bpmn:dataStore>
   </bpmn:process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_SubmissionTracking">
     <bpmndi:BPMNPlane id="BPMNPlane_SubmissionTracking" bpmnElement="Process_BPR_SubmissionTracking">
@@ -119,6 +728,18 @@
         <dc:Bounds x="160" y="80" width="800" height="150" />
         <bpmndi:BPMNLabel>
           <dc:Bounds x="10" y="10" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_ICIPTeam_di" bpmnElement="Lane_ICIPTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="680" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="610" width="100" height="20" />
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Lane_QualityTeam_di" bpmnElement="Lane_QualityTeam" isHorizontal="true">
+        <dc:Bounds x="160" y="480" width="800" height="150" />
+        <bpmndi:BPMNLabel>
+          <dc:Bounds x="10" y="410" width="100" height="20" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape id="StartEvent_ReceiveSubmission_di" bpmnElement="StartEvent_ReceiveSubmission">
@@ -169,6 +790,21 @@
           <dc:Bounds x="468" y="622" width="48" height="27" />
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Assess_ICIP" bpmnElement="Task_Assess_ICIP">
+        <dc:Bounds x="310" y="710" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Task_Verify_ICIP" bpmnElement="Task_Verify_ICIP_Compliance">
+        <dc:Bounds x="460" y="710" width="100" height="80" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_Gateway_ICIP" bpmnElement="Gateway_ICIP_Required">
+        <dc:Bounds x="210" y="725" width="50" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataObject_ICIP" bpmnElement="DataObject_ICIPAssessment">
+        <dc:Bounds x="310" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape id="Shape_DataStore_ICIP" bpmnElement="DataStore_ICIPRegistry">
+        <dc:Bounds x="460" y="40" width="50" height="50" />
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge id="Flow_ReceiveToRegister_di" bpmnElement="Flow_ReceiveToRegister">
         <di:waypoint x="246" y="148" />
         <di:waypoint x="310" y="150" />
@@ -197,6 +833,70 @@
       <bpmndi:BPMNEdge id="Flow_LogToEnd_di" bpmnElement="Flow_LogToEnd">
         <di:waypoint x="410" y="600" />
         <di:waypoint x="472" y="600" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_RegisterToICIP" bpmnElement="Flow_RegisterToICIP">
+        <di:waypoint x="410" y="150" />
+        <di:waypoint x="235" y="150" />
+        <di:waypoint x="235" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIP_Yes" bpmnElement="Flow_ICIP_Yes">
+        <di:waypoint x="260" y="750" />
+        <di:waypoint x="310" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_ICIP_No" bpmnElement="Flow_ICIP_No">
+        <di:waypoint x="235" y="775" />
+        <di:waypoint x="235" y="300" />
+        <di:waypoint x="310" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_AssessToVerify" bpmnElement="Flow_AssessToVerify">
+        <di:waypoint x="410" y="750" />
+        <di:waypoint x="460" y="750" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Flow_VerifyToUpdate" bpmnElement="Flow_VerifyToUpdate">
+        <di:waypoint x="510" y="750" />
+        <di:waypoint x="510" y="300" />
+        <di:waypoint x="410" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Data_ICIP_Assessment" bpmnElement="Flow_Data_ICIP_Assessment">
+        <di:waypoint x="360" y="710" />
+        <di:waypoint x="328" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Edge_Data_ICIP_Registry" bpmnElement="Flow_Data_ICIP_Registry">
+        <di:waypoint x="510" y="710" />
+        <di:waypoint x="485" y="90" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_RegisterToQuality_di" bpmnElement="Flow_RegisterToQuality">
+        <di:waypoint x="410" y="150" />
+        <di:waypoint x="235" y="150" />
+        <di:waypoint x="235" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QualityToUpdate_di" bpmnElement="Flow_QualityToUpdate">
+        <di:waypoint x="410" y="450" />
+        <di:waypoint x="460" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_UpdateToQuality_di" bpmnElement="Flow_UpdateToQuality">
+        <di:waypoint x="460" y="450" />
+        <di:waypoint x="460" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QualityToGateway_di" bpmnElement="Flow_QualityToGateway">
+        <di:waypoint x="485" y="450" />
+        <di:waypoint x="485" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QualityPass_di" bpmnElement="Flow_QualityPass">
+        <di:waypoint x="485" y="325" />
+        <di:waypoint x="485" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QualityFail_di" bpmnElement="Flow_QualityFail">
+        <di:waypoint x="510" y="450" />
+        <di:waypoint x="510" y="300" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_ICIPToQuality_di" bpmnElement="Flow_ICIPToQuality">
+        <di:waypoint x="460" y="750" />
+        <di:waypoint x="460" y="450" />
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge id="Flow_QualityToVerify_di" bpmnElement="Flow_QualityToVerify">
+        <di:waypoint x="485" y="450" />
+        <di:waypoint x="485" y="750" />
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

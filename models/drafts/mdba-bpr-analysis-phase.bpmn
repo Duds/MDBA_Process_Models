@@ -101,6 +101,82 @@
     </documentation>
   </message>
 
+  <!-- Data Object Definitions -->
+  <bpmn:dataObject id="DataObject_Submissions" name="Submissions Collection">
+    <bpmn:documentation>
+      Collection of all submissions received for analysis.
+      Contains:
+      - Submission content
+      - Metadata
+      - Classification data
+      - Analysis status
+    </bpmn:documentation>
+  </bpmn:dataObject>
+
+  <bpmn:dataObject id="DataObject_AnalysisReport" name="Analysis Report">
+    <bpmn:documentation>
+      Final analysis report containing:
+      - Thematic analysis results
+      - Expert review findings
+      - Quality check outcomes
+      - ICIP compliance status
+    </bpmn:documentation>
+  </bpmn:dataObject>
+
+  <bpmn:dataStore id="DataStore_SubmissionArchive" name="Submission Archive">
+    <bpmn:documentation>
+      Long-term storage for all submissions and analysis artifacts.
+      Retention period: 7 years
+      Access: Restricted
+      Purpose: Historical record and audit trail
+    </bpmn:documentation>
+  </bpmn:dataStore>
+
+  <!-- Message Definitions -->
+  <bpmn:message id="Message_ExpertReviewRequest" name="Expert Review Request">
+    <bpmn:documentation>
+      Request for subject matter expert review.
+      Contains:
+      - Analysis scope
+      - Review requirements
+      - Timeline
+      - Priority level
+    </bpmn:documentation>
+  </bpmn:message>
+
+  <bpmn:message id="Message_ExpertReviewResponse" name="Expert Review Response">
+    <bpmn:documentation>
+      Response from subject matter experts.
+      Contains:
+      - Review findings
+      - Technical validation
+      - Recommendations
+      - Approval status
+    </bpmn:documentation>
+  </bpmn:message>
+
+  <bpmn:message id="Message_QualityReviewRequest" name="Quality Review Request">
+    <bpmn:documentation>
+      Request for quality team review.
+      Contains:
+      - Analysis artifacts
+      - Quality criteria
+      - Review timeline
+      - Priority indicators
+    </bpmn:documentation>
+  </bpmn:message>
+
+  <bpmn:message id="Message_QualityReviewResponse" name="Quality Review Response">
+    <bpmn:documentation>
+      Response from quality team.
+      Contains:
+      - Quality assessment
+      - Validation results
+      - Action items
+      - Approval status
+    </bpmn:documentation>
+  </bpmn:message>
+
   <bpmn:process id="Process_BPR_AnalysisPhase" name="2026 Basin Plan Review Analysis Phase" isExecutable="false">
     <bpmn:documentation>
       Purpose: Manages the analysis of submissions for the 2026 Basin Plan Review
@@ -125,10 +201,15 @@
         <bpmn:flowNodeRef>Task_Quality_Review</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Verify_Classification</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Validate_Analysis</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_ClassificationVerified</bpmn:flowNodeRef>
+        <bpmn:flowNodeRef>Gateway_QualityPassed</bpmn:flowNodeRef>
       </bpmn:lane>
       <bpmn:lane id="Lane_Subject_Matter" name="Subject Matter Experts">
         <bpmn:flowNodeRef>Task_Expert_Review</bpmn:flowNodeRef>
         <bpmn:flowNodeRef>Task_Technical_Validation</bpmn:flowNodeRef>
+      </bpmn:lane>
+      <bpmn:lane id="Lane_Compliance" name="Compliance">
+        <bpmn:flowNodeRef>Task_ICIPComplianceCheck</bpmn:flowNodeRef>
       </bpmn:lane>
     </bpmn:laneSet>
 
@@ -168,7 +249,25 @@
         Quality team verifies the accuracy and consistency
         of submission classification.
       </bpmn:documentation>
+      <bpmn:outgoing>Flow_VerifyClassification_Gateway</bpmn:outgoing>
     </bpmn:userTask>
+
+    <bpmn:exclusiveGateway id="Gateway_ClassificationVerified" name="Is classification correct?">
+      <bpmn:documentation>Decision point: Is the classification of submissions correct and complete?</bpmn:documentation>
+      <bpmn:incoming>Flow_VerifyClassification_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_Classification_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_Classification_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:sequenceFlow id="Flow_VerifyClassification_Gateway" sourceRef="Task_Verify_Classification" targetRef="Gateway_ClassificationVerified" />
+
+    <bpmn:sequenceFlow id="Flow_Classification_Yes" sourceRef="Gateway_ClassificationVerified" targetRef="Task_Thematic_Analysis">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${classificationCorrect == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:sequenceFlow id="Flow_Classification_No" sourceRef="Gateway_ClassificationVerified" targetRef="Task_Classify_Submissions">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${classificationCorrect == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
 
     <bpmn:userTask id="Task_Thematic_Analysis" name="Conduct Thematic Analysis">
       <bpmn:documentation>
@@ -208,16 +307,35 @@
 
     <bpmn:userTask id="Task_Quality_Review" name="Quality Review">
       <bpmn:documentation>
-        Quality team reviews final analysis report
-        for accuracy, completeness, and compliance.
+        Quality team reviews the analysis for completeness and accuracy.
       </bpmn:documentation>
-      <bpmn:incoming>Flow_Prepare_Quality</bpmn:incoming>
-      <bpmn:outgoing>Flow_Quality_Validate</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QualityReview_Gateway</bpmn:outgoing>
     </bpmn:userTask>
 
-    <bpmn:boundaryEvent id="BoundaryEvent_Quality_Error" attachedToRef="Task_Quality_Review">
-      <bpmn:errorEventDefinition errorRef="Error_Quality_Check_Failed" />
-    </bpmn:boundaryEvent>
+    <bpmn:exclusiveGateway id="Gateway_QualityPassed" name="Is quality review passed?">
+      <bpmn:documentation>Decision point: Has the analysis passed quality review?</bpmn:documentation>
+      <bpmn:incoming>Flow_QualityReview_Gateway</bpmn:incoming>
+      <bpmn:outgoing>Flow_QualityPassed_Yes</bpmn:outgoing>
+      <bpmn:outgoing>Flow_QualityPassed_No</bpmn:outgoing>
+    </bpmn:exclusiveGateway>
+
+    <bpmn:sequenceFlow id="Flow_QualityReview_Gateway" sourceRef="Task_Quality_Review" targetRef="Gateway_QualityPassed" />
+
+    <bpmn:sequenceFlow id="Flow_QualityPassed_Yes" sourceRef="Gateway_QualityPassed" targetRef="Task_Prepare_Analysis_Report">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qualityPassed == true}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:sequenceFlow id="Flow_QualityPassed_No" sourceRef="Gateway_QualityPassed" targetRef="Task_Validate_Analysis">
+      <bpmn:conditionExpression xsi:type="bpmn:tFormalExpression">${qualityPassed == false}</bpmn:conditionExpression>
+    </bpmn:sequenceFlow>
+
+    <bpmn:userTask id="Task_ICIPComplianceCheck" name="ICIP Compliance Check">
+      <bpmn:documentation>Checkpoint: Ensure analysis outputs comply with Indigenous Cultural and Intellectual Property (ICIP) protocols before completion.</bpmn:documentation>
+    </bpmn:userTask>
+
+    <bpmn:sequenceFlow id="Flow_AnalysisReportToICIP" sourceRef="Task_Prepare_Analysis_Report" targetRef="Task_ICIPComplianceCheck" />
+
+    <bpmn:sequenceFlow id="Flow_ICIPToEnd" sourceRef="Task_ICIPComplianceCheck" targetRef="EndEvent_Analysis_Complete" />
 
     <bpmn:userTask id="Task_Validate_Analysis" name="Validate Analysis">
       <bpmn:documentation>
@@ -306,6 +424,37 @@
       <text>Quality standards ensure consistent and reliable analysis outcomes</text>
     </textAnnotation>
     <association id="Association_Quality_Standards" sourceRef="Task_Verify_Analysis_Quality" targetRef="TextAnnotation_Quality_Standards" />
+
+    <!-- Add Validation Subprocess -->
+    <bpmn:subProcess id="SubProcess_ValidationWorkflow" name="Validation Workflow">
+      <bpmn:documentation>
+        Manages the validation workflow for analysis outputs.
+        Includes:
+        - Classification validation
+        - Quality verification
+        - Technical validation
+        - ICIP compliance checks
+      </bpmn:documentation>
+      <bpmn:startEvent id="StartEvent_Validation" name="Start Validation">
+        <bpmn:outgoing>Flow_Validation_Start</bpmn:outgoing>
+      </bpmn:startEvent>
+      <bpmn:endEvent id="EndEvent_Validation" name="Validation Complete">
+        <bpmn:incoming>Flow_Validation_End</bpmn:incoming>
+      </bpmn:endEvent>
+      <bpmn:sequenceFlow id="Flow_Validation_Start" sourceRef="StartEvent_Validation" targetRef="Task_Validate_Classification" />
+      <bpmn:sequenceFlow id="Flow_Validation_End" sourceRef="Task_Verify_Analysis_Quality" targetRef="EndEvent_Validation" />
+    </bpmn:subProcess>
+
+    <!-- Add Message Flows -->
+    <bpmn:messageFlow id="MessageFlow_ExpertRequest" sourceRef="Task_Thematic_Analysis" targetRef="Task_Expert_Review" messageRef="Message_ExpertReviewRequest" />
+    <bpmn:messageFlow id="MessageFlow_ExpertResponse" sourceRef="Task_Expert_Review" targetRef="Task_Technical_Validation" messageRef="Message_ExpertReviewResponse" />
+    <bpmn:messageFlow id="MessageFlow_QualityRequest" sourceRef="Task_Prepare_Analysis_Report" targetRef="Task_Quality_Review" messageRef="Message_QualityReviewRequest" />
+    <bpmn:messageFlow id="MessageFlow_QualityResponse" sourceRef="Task_Quality_Review" targetRef="Task_Validate_Analysis" messageRef="Message_QualityReviewResponse" />
+
+    <!-- Add Data Associations -->
+    <bpmn:dataInputAssociation id="DataAssociation_SubmissionsToAnalysis" sourceRef="DataObject_Submissions" targetRef="Task_Thematic_Analysis" />
+    <bpmn:dataOutputAssociation id="DataAssociation_AnalysisToReport" sourceRef="Task_Prepare_Analysis_Report" targetRef="DataObject_AnalysisReport" />
+    <bpmn:dataStoreReference id="DataStoreRef_Archive" dataStoreRef="DataStore_SubmissionArchive" />
 
   </bpmn:process>
 
@@ -492,6 +641,56 @@
       <bpmndi:BPMNEdge id="Association_Quality_Standards_di" bpmnElement="Association_Quality_Standards">
         <di:waypoint x="594" y="420" />
         <di:waypoint x="644" y="380" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add Data Object Shapes -->
+      <bpmndi:BPMNShape id="DataObject_Submissions_di" bpmnElement="DataObject_Submissions">
+        <dc:Bounds x="240" y="120" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="DataObject_AnalysisReport_di" bpmnElement="DataObject_AnalysisReport">
+        <dc:Bounds x="1000" y="120" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <bpmndi:BPMNShape id="DataStoreRef_Archive_di" bpmnElement="DataStoreRef_Archive">
+        <dc:Bounds x="1200" y="120" width="50" height="50" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add Message Flow Edges -->
+      <bpmndi:BPMNEdge id="MessageFlow_ExpertRequest_di" bpmnElement="MessageFlow_ExpertRequest">
+        <di:waypoint x="644" y="260" />
+        <di:waypoint x="746" y="260" />
+        <di:waypoint x="746" y="560" />
+        <di:waypoint x="696" y="560" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="MessageFlow_ExpertResponse_di" bpmnElement="MessageFlow_ExpertResponse">
+        <di:waypoint x="796" y="560" />
+        <di:waypoint x="848" y="560" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="MessageFlow_QualityRequest_di" bpmnElement="MessageFlow_QualityRequest">
+        <di:waypoint x="1100" y="260" />
+        <di:waypoint x="1202" y="260" />
+        <di:waypoint x="1202" y="460" />
+        <di:waypoint x="1152" y="460" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="MessageFlow_QualityResponse_di" bpmnElement="MessageFlow_QualityResponse">
+        <di:waypoint x="1252" y="460" />
+        <di:waypoint x="1304" y="460" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add Data Association Edges -->
+      <bpmndi:BPMNEdge id="DataAssociation_SubmissionsToAnalysis_di" bpmnElement="DataAssociation_SubmissionsToAnalysis">
+        <di:waypoint x="258" y="170" />
+        <di:waypoint x="594" y="170" />
+        <di:waypoint x="594" y="260" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="DataAssociation_AnalysisToReport_di" bpmnElement="DataAssociation_AnalysisToReport">
+        <di:waypoint x="1050" y="260" />
+        <di:waypoint x="1018" y="170" />
       </bpmndi:BPMNEdge>
       
     </bpmndi:BPMNPlane>

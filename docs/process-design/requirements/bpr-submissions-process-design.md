@@ -1,3 +1,12 @@
+---
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Submissions Process Design"
+description: "High-level summary of the proposed submissions process for the 2026 Basin Plan Review, including process phases, key tasks, and requirements"
+---
+
 BPR Submissions Process Design and Mapping
 
 Murray-Darling Basin Authority
@@ -16,7 +25,7 @@ This document provides a high-level summary of the proposed submissions process 
 The objectives of this summary report are to:
 
 - Present a clear overview of the 2026 BPR submissions process, from initiation through to reporting;
-- Identify the key tasks and sub-processes required to manage and meet MDBA’s legislative obligations;
+- Identify the key tasks and sub-processes required to manage and meet MDBA's legislative obligations;
 - Highlight user needs, content handling requirements, and key process features that will inform solution design and implementation;
 - Provide a reference point for internal engagement and planning;
 - Support alignment between business process requirements and supporting technology systems.
@@ -30,7 +39,7 @@ This document focuses on the public submissions process supporting the 2026 Basi
 - **Analysis** – initial review, validation, and categorisation of submissions;
 - **Consideration** – detailed examination of valid submissions and their influence on final BPR outcomes;
 - **Publication of Submissions** – publication of valid submissions with appropriate permissions, redactions, and acknowledgements;
-- **Reporting** – preparation and release of the What We’ve Heard and Final 2026 BPR reports.
+- **Reporting** – preparation and release of the What We've Heard and Final 2026 BPR reports.
 
 This report outlines the key activities, decision points, and responsibilities associated with each phase, and includes specific considerations around legislative compliance, Indigenous Cultural and Intellectual Property (ICIP), consent and anonymity, campaign submissions, and high-value insights.
 
@@ -44,7 +53,7 @@ This summary should be read alongside the **Final Report – Service Concept**, 
 
 The Invitation Phase marks the official commencement of public consultation for the 2026 Basin Plan Review (BPR). This phase ensures that the MDBA meets its legislative obligations under the Water Act 2007 by formally inviting submissions from the public and key stakeholders, and setting out a transparent process for participation.
 
-The process begins with the publication of the invitation to respond to the Discussion Paper. This must occur via the Commonwealth Government Gazette, a newspaper circulating in each Basin State and Territory, and on the MDBA’s website. The consultation period must remain open for at least 12 weeks, but will likely be extended to 16 weeks to support broader engagement.
+The process begins with the publication of the invitation to respond to the Discussion Paper. This must occur via the Commonwealth Government Gazette, a newspaper circulating in each Basin State and Territory, and on the MDBA's website. The consultation period must remain open for at least 12 weeks, but will likely be extended to 16 weeks to support broader engagement.
 
 The invitation must include:
 
@@ -69,11 +78,11 @@ This task involves the finalisation of the 2026 BPR Discussion Paper. It ensures
 
 Publish Official Invitation
 
-This task initiates the consultation process by formally publishing the invitation to make submissions. The invitation must be published in the Commonwealth Gazette, in newspapers across all Basin jurisdictions, and on the MDBA’s website to meet legislative requirements and inform the public.
+This task initiates the consultation process by formally publishing the invitation to make submissions. The invitation must be published in the Commonwealth Gazette, in newspapers across all Basin jurisdictions, and on the MDBA's website to meet legislative requirements and inform the public.
 
 Distribute Discussion Paper to Basin States
 
-This task fulfils the MDBA’s obligation to formally notify Basin State governments. It includes sending a copy of the Discussion Paper to each relevant Minister and inviting them to make submissions on the review.
+This task fulfils the MDBA's obligation to formally notify Basin State governments. It includes sending a copy of the Discussion Paper to each relevant Minister and inviting them to make submissions on the review.
 
 Specify Submission Process and Conditions
 
@@ -96,7 +105,7 @@ Table 1 - Invitation Process Steps
 | 1.2.3 | Sub-process | Publish Invitation on MDBA Website | Upload the official invitation with clear submission instructions. |     |
 | **1.3** | **Task** | **Distribute Discussion Paper to Basin States** | **Provide the Discussion Paper to each relevant State Minister and invite formal submissions.** |     |
 | 1.3.1 | Sub-process | Send Formal Correspondence to State Ministers | Provide physical and/or digital copies of the Discussion Paper with formal letters of invitation. |     |
-| 1.3.2 | Sub-process | Confirm Receipt and Record Acknowledgements | Log and confirm receipt of materials by each State/Territory Minister’s office. |     |
+| 1.3.2 | Sub-process | Confirm Receipt and Record Acknowledgements | Log and confirm receipt of materials by each State/Territory Minister's office. |     |
 | **1.4** | **Task** | **Specify Submission Process and Conditions** | **Clearly state how the public can make submissions and the conditions of publication or confidentiality.** |     |
 | 1.4.1 | Sub-process | Define Submission Channels | Specify email, online portal, and physical addresses for submissions. |     |
 | 1.4.2 | Sub-process | Clarify Publication and Confidentiality Conditions | Include clear guidance on when submissions will be published and how confidentiality can be requested. |     |
@@ -183,7 +192,7 @@ Another essential component of this phase is the identification and careful hand
 - AI-assisted keyword detection, and
 - Manual identification by reviewers.
 
-Flagged submissions are confirmed, protected, and handled in line with MDBA’s Consent to Gather and Use Form and Guide to Engagement. These submissions are transferred to a locked working environment and assigned only to authorised personnel, ensuring respectful and secure processing.
+Flagged submissions are confirmed, protected, and handled in line with MDBA's Consent to Gather and Use Form and Guide to Engagement. These submissions are transferred to a locked working environment and assigned only to authorised personnel, ensuring respectful and secure processing.
 
 This triage phase establishes a transparent and auditable foundation for the careful consideration of all valid submissions throughout the BPR process.
 
@@ -194,7 +203,7 @@ Verify Submission Validity
 Confirms that submissions meet the minimum content and accessibility requirements. This includes checking for completion, relevance to the four BPR themes, and appropriateness of content. Submissions that are incomplete or irrelevant are flagged and removed from further review. This task also includes identifying:
 
 - **Campaign submissions** — identical or near-identical responses coordinated by advocacy groups—to be counted and processed as a single collective submission.
-- **ICIP –** Indigenous Cultural and Intellectual Property-to be identified, triaged, handled and assessed in line with each submitters’ Consent to Gather and Use Form (i.e., within a locked-down online workspace (SharePoint) and in compliance with the agreed purpose).
+- **ICIP –** Indigenous Cultural and Intellectual Property-to be identified, triaged, handled and assessed in line with each submitters' Consent to Gather and Use Form (i.e., within a locked-down online workspace (SharePoint) and in compliance with the agreed purpose).
 
 Categorise Submission by Theme and Type
 
@@ -242,7 +251,7 @@ All submissions are assessed using a consistent and auditable method—principal
 
 The phase involves multiple steps, including: confirming submission assignment, completing the template for each submission, identifying key insights or proposals, and recording how each submission shaped analysis and findings. High-value submissions or those containing technical, policy, or implementation-specific insights are triaged to subject matter experts (SMEs), Theme Leads, or technical working groups to validate, contextualise, and incorporate them appropriately.
 
-A tracking system will also ensure every submission can be traced from intake to its influence on the final recommendations—fulfilling the MDBA’s requirement for a defensible and inclusive consultation process.
+A tracking system will also ensure every submission can be traced from intake to its influence on the final recommendations—fulfilling the MDBA's requirement for a defensible and inclusive consultation process.
 
 ## Key Tasks
 
@@ -252,7 +261,7 @@ All valid submissions must be formally allocated to staff for review and complet
 
 Complete Submissions Consideration Template
 
-Each reviewer completes the Consideration Template, documenting the key insights, relevance, and implications of the submission. This template also includes fields for noting if the submission has been addressed in the "What We’ve Heard" Report or warrants further consideration in the Final Report.
+Each reviewer completes the Consideration Template, documenting the key insights, relevance, and implications of the submission. This template also includes fields for noting if the submission has been addressed in the "What We've Heard" Report or warrants further consideration in the Final Report.
 
 Identify and Summarise Insights
 
@@ -264,7 +273,7 @@ Where submissions contain technical recommendations, novel evidence, or implemen
 
 Record Submission Impact and Reporting Linkage
 
-Each submission’s influence must be explicitly recorded, including how it contributes to the "What We’ve Heard" Report or is carried forward into final drafting. This ensures traceability, completeness, and compliance with legislated requirements.
+Each submission's influence must be explicitly recorded, including how it contributes to the "What We've Heard" Report or is carried forward into final drafting. This ensures traceability, completeness, and compliance with legislated requirements.
 
 Table 4 - Consideration Process Steps
 
@@ -286,8 +295,8 @@ Table 4 - Consideration Process Steps
 | 4.4.1 | Sub-process | Identify Submissions of Strategic Value | Review submissions for unique ideas, evidence, or relevance to future Basin planning. |     |
 | 4.4.2 | Sub-process | Assign to SME or Theme Lead | Allocate flagged submissions to technical experts or Leads for in-depth review. |     |
 | 4.4.3 | Sub-process | Record SME or Lead Commentary | Ensure their assessment is captured and reflected in final reporting. |     |
-| **4.5** | **Task** | **Record Submission Impact and Reporting Linkage** | **Track each submission’s influence on reporting outputs for auditability and transparency.** |     |
-| 4.5.1 | Sub-process | Link Submission to “What We’ve Heard” Report | Indicate how insights informed the interim summary of consultation. |     |
+| **4.5** | **Task** | **Record Submission Impact and Reporting Linkage** | **Track each submission's influence on reporting outputs for auditability and transparency.** |     |
+| 4.5.1 | Sub-process | Link Submission to "What We've Heard" Report | Indicate how insights informed the interim summary of consultation. |     |
 | 4.5.2 | Sub-process | Track Influence on Final Report | Note if submission was incorporated into final recommendations or drafting. |     |
 | 4.5.3 | Sub-process | Maintain Submission Impact Register | Maintain an auditable log showing how all submissions were considered and responded to. |     |
 
@@ -321,7 +330,7 @@ Approved submissions are published to the MDBA website, with content categorised
 
 Maintain Publication Log
 
-A publication log records all metadata associated with each submission, including redactions, consent preferences, ICIP status, publication status, and any subsequent changes. This ensures transparency and supports MDBA’s legislative and cultural obligations.
+A publication log records all metadata associated with each submission, including redactions, consent preferences, ICIP status, publication status, and any subsequent changes. This ensures transparency and supports MDBA's legislative and cultural obligations.
 
 Table 5 - Publication Process Steps
 
@@ -342,7 +351,7 @@ Table 5 - Publication Process Steps
 | 5.3.2 | Sub-process | Apply Submitter Name Preferences | Display names or labels as per submitter request. |     |
 | 5.3.3 | Sub-process | Acknowledge ICIP Content | Attribute ICIP respectfully and with permission. |     |
 | 5.3.4 | Sub-process | Conduct Final Quality Check | Confirm formatting, permissions, and cultural protocols are upheld. |     |
-| **5.4** | **Task** | **Publish to MDBA Website** | **Upload valid submissions to MDBA’s website and categorise by theme, while ensuring ICIP protections.** |     |
+| **5.4** | **Task** | **Publish to MDBA Website** | **Upload valid submissions to MDBA's website and categorise by theme, while ensuring ICIP protections.** |     |
 | 5.4.1 | Sub-process | Upload to Submissions Directory | Place formatted content in appropriate website location. |     |
 | 5.4.2 | Sub-process | Tag by Theme or Topic | Classify submission according to the BPR themes. |     |
 | 5.4.3 | Sub-process | Confirm Successful Publication | Test access and confirm public availability. |     |
@@ -357,17 +366,17 @@ Table 5 - Publication Process Steps
 
 # Reporting
 
-The Reporting Phase marks the final stage of the 2026 Basin Plan Review (BPR) submissions process. It focuses on synthesising and documenting the insights gathered through public submissions and stakeholder input, culminating in the release of two key deliverables: the What We’ve Heard Report and the Final Report on the BPR.
+The Reporting Phase marks the final stage of the 2026 Basin Plan Review (BPR) submissions process. It focuses on synthesising and documenting the insights gathered through public submissions and stakeholder input, culminating in the release of two key deliverables: the What We've Heard Report and the Final Report on the BPR.
 
-The What We’ve Heard Report is the first public output from the consideration of submissions. It presents a thematic summary of the feedback received, reflecting the range of views, values, concerns, and recommendations provided across different stakeholder groups and geographic regions. The report does not include policy decisions but aims to transparently convey the breadth and diversity of input. All relevant insights must be traceable to source submissions through an auditable process established in the Consideration Phase.
+The What We've Heard Report is the first public output from the consideration of submissions. It presents a thematic summary of the feedback received, reflecting the range of views, values, concerns, and recommendations provided across different stakeholder groups and geographic regions. The report does not include policy decisions but aims to transparently convey the breadth and diversity of input. All relevant insights must be traceable to source submissions through an auditable process established in the Consideration Phase.
 
-The Final Report presents the outcomes of the BPR process, including any proposed amendments to the Basin Plan. It draws on the What We’ve Heard Report, detailed submission consideration records, and supporting analysis from internal and external experts. Both reports must uphold the MDBA’s standards of transparency and traceability, including accurate representation of ICIP content and high-value contributions from stakeholders.
+The Final Report presents the outcomes of the BPR process, including any proposed amendments to the Basin Plan. It draws on the What We've Heard Report, detailed submission consideration records, and supporting analysis from internal and external experts. Both reports must uphold the MDBA's standards of transparency and traceability, including accurate representation of ICIP content and high-value contributions from stakeholders.
 
-This phase also includes an organised notification and communication process to inform submitters, stakeholders, and the public of the reports' release. Where possible, tailored messages are sent to stakeholders who made a submission, especially where their input is directly referenced in the reports. Communication products are aligned with the MDBA’s broader engagement and media strategy.
+This phase also includes an organised notification and communication process to inform submitters, stakeholders, and the public of the reports' release. Where possible, tailored messages are sent to stakeholders who made a submission, especially where their input is directly referenced in the reports. Communication products are aligned with the MDBA's broader engagement and media strategy.
 
 ## Key Tasks
 
-Draft and Finalise the What We’ve Heard Report
+Draft and Finalise the What We've Heard Report
 
 Collates and summarises submission content under relevant BPR themes, stakeholder groups, and geographic zones. Highlights key issues and values raised, without making policy decisions. Ensures transparent referencing of submission data and incorporation of ICIP content in line with established permissions.
 
@@ -387,7 +396,7 @@ Table 6 - Reporting Process Steps
 
 | No. | Type | Name | Description | Stakeholder(s) |
 | --- | --- | --- | --- | --- |
-| **6.1** | **Task** | **Draft and Finalise the What We’ve Heard Report** | **Prepare a thematic summary of submission insights, with transparent references to source content.** |     |
+| **6.1** | **Task** | **Draft and Finalise the What We've Heard Report** | **Prepare a thematic summary of submission insights, with transparent references to source content.** |     |
 | 6.1.1 | Sub-process | Synthesise Key Themes by Submission Type | Identify common themes and insights by stakeholder group and region. |     |
 | 6.1.2 | Sub-process | Incorporate ICIP Content Responsibly | Ensure ICIP content is appropriately referenced in line with consent and attribution protocols. |     |
 | 6.1.3 | Sub-process | Ensure Transparent Referencing of Input | Link themes and findings to original submission records. |     |
@@ -401,7 +410,7 @@ Table 6 - Reporting Process Steps
 | 6.3.2 | Sub-process | Issue Notifications and Log Delivery | Send and record delivery of notification messages through agreed channels. |     |
 | **6.4** | **Task** | **Publish Reports to MDBA Website and Systems** | **Upload final reports and ensure long-term access and archival.** |     |
 | 6.4.1 | Sub-process | Upload Reports and Metadata | Ensure the documents are properly tagged and accessible online. |     |
-| 6.4.2 | Sub-process | Archive to Recordkeeping Systems | File official versions in MDBA’s digital recordkeeping system. |     |
+| 6.4.2 | Sub-process | Archive to Recordkeeping Systems | File official versions in MDBA's digital recordkeeping system. |     |
 | 6.4.3 | Sub-process | Confirm Accessibility and Legal Compliance | Validate accessibility standards and compliance with statutory requirements. |     |
 
 1. BPMN Process Maps

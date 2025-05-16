@@ -1,12 +1,16 @@
 ---
 process_id: Process_BPR_CollectionPhase
 process_name: 2026 Basin Plan Review Collection Phase
-version: 1.1.0
-last_updated: 21/03/2024
-status: draft
+version: "1.1.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Collection Phase"
+description: "Context and detailed information about the Collection Phase of the Basin Plan Review 2026 project"
 related_files:
-  - models/drafts/mdba-bpr-collection-phase.bpmn
-  - .cursor/rules/bpmn-naming-conventions.mdc
+  - models/approved/mdba-bpr-collection-phase.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
 ---
 
 # Basin Plan Review Collection Phase Context

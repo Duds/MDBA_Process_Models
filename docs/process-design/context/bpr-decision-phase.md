@@ -1,3 +1,18 @@
+---
+process_id: Process_BPR_DecisionPhase
+process_name: 2026 Basin Plan Review Decision Phase
+version: "1.0.0"
+last_updated: "16/05/2024"
+status: "complete"
+author: "MDBA Process Design Team"
+title: "Basin Plan Review Decision Phase"
+description: "Context and detailed information about the Decision Phase of the Basin Plan Review 2026 project"
+related_files:
+  - models/approved/mdba-bpr-decision-phase.bpmn
+  - docs/process-design/requirements/bpr-bpmn-diagram-requirements.md
+  - docs/process-design/requirements/bpr-process-design-summary-damf.md
+---
+
 # MDBA BPR Decision Phase Process
 
 ## Overview

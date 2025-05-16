@@ -157,15 +157,132 @@
     </documentation>
   </message>
 
+  <!-- Add new Data Objects -->
+  <dataObject id="DataObject_ImpactAssessment" name="Impact Assessment Results">
+    <documentation>
+      Stores impact assessment findings and analysis.
+      Contains:
+      - Assessment methodology
+      - Key findings
+      - Risk analysis
+      - Mitigation strategies
+      - Supporting evidence
+    </documentation>
+  </dataObject>
+
+  <dataObject id="DataObject_StakeholderFeedback" name="Stakeholder Feedback">
+    <documentation>
+      Records stakeholder consultation outcomes.
+      Contains:
+      - Consultation results
+      - Feedback summary
+      - Action items
+      - Response tracking
+      - Resolution status
+    </documentation>
+  </dataObject>
+
+  <dataObject id="DataObject_LegalCompliance" name="Legal Compliance Documentation">
+    <documentation>
+      Documents legal review and compliance verification.
+      Contains:
+      - Legal assessment
+      - Compliance status
+      - Risk evaluation
+      - Required actions
+      - Verification evidence
+    </documentation>
+  </dataObject>
+
+  <dataObject id="DataObject_QualityReview" name="Quality Review Outcomes">
+    <documentation>
+      Records quality review and validation results.
+      Contains:
+      - Validation status
+      - Quality metrics
+      - Review findings
+      - Action items
+      - Resolution tracking
+    </documentation>
+  </dataObject>
+
+  <!-- Add new Message Definitions -->
+  <message id="Message_ImpactAssessment_Ready" name="Impact Assessment Ready">
+    <documentation>
+      Notification that impact assessment is complete and ready for review.
+      Content:
+      - Assessment status
+      - Key findings
+      - Risk level
+      - Next steps
+    </documentation>
+  </message>
+
+  <message id="Message_StakeholderFeedback_Complete" name="Stakeholder Feedback Complete">
+    <documentation>
+      Notification that stakeholder consultation is complete.
+      Content:
+      - Consultation status
+      - Feedback summary
+      - Action items
+      - Next steps
+    </documentation>
+  </message>
+
+  <message id="Message_LegalReview_Complete" name="Legal Review Complete">
+    <documentation>
+      Notification that legal review is complete.
+      Content:
+      - Review status
+      - Compliance status
+      - Risk assessment
+      - Required actions
+    </documentation>
+  </message>
+
+  <message id="Message_QualityReview_Complete" name="Quality Review Complete">
+    <documentation>
+      Notification that quality review is complete.
+      Content:
+      - Review status
+      - Quality metrics
+      - Action items
+      - Next steps
+    </documentation>
+  </message>
+
+  <!-- Add Message Flows -->
+  <messageFlow id="MessageFlow_ImpactAssessment" sourceRef="Task_Conduct_Impact_Assessment" targetRef="Task_Review_Impacts" messageRef="Message_ImpactAssessment_Ready" />
+  <messageFlow id="MessageFlow_StakeholderFeedback" sourceRef="Task_Review_Feedback" targetRef="Task_Update_Consideration" messageRef="Message_StakeholderFeedback_Complete" />
+  <messageFlow id="MessageFlow_LegalReview" sourceRef="Task_Legal_Review" targetRef="Task_Verify_Compliance" messageRef="Message_LegalReview_Complete" />
+  <messageFlow id="MessageFlow_QualityReview" sourceRef="Task_Quality_Check_Recommendations" targetRef="Task_Peer_Review" messageRef="Message_QualityReview_Complete" />
+
+  <!-- Add Data Associations -->
+  <dataInputAssociation id="DataAssociation_ImpactToTask" sourceRef="DataObject_ImpactAssessment" targetRef="Task_Review_Impacts" />
+  <dataOutputAssociation id="DataAssociation_TaskToImpact" sourceRef="Task_Conduct_Impact_Assessment" targetRef="DataObject_ImpactAssessment" />
+  <dataInputAssociation id="DataAssociation_FeedbackToTask" sourceRef="DataObject_StakeholderFeedback" targetRef="Task_Review_Feedback" />
+  <dataOutputAssociation id="DataAssociation_TaskToFeedback" sourceRef="Task_Consult_Stakeholders" targetRef="DataObject_StakeholderFeedback" />
+  <dataInputAssociation id="DataAssociation_LegalToTask" sourceRef="DataObject_LegalCompliance" targetRef="Task_Verify_Compliance" />
+  <dataOutputAssociation id="DataAssociation_TaskToLegal" sourceRef="Task_Legal_Review" targetRef="DataObject_LegalCompliance" />
+  <dataInputAssociation id="DataAssociation_QualityToTask" sourceRef="DataObject_QualityReview" targetRef="Task_Peer_Review" />
+  <dataOutputAssociation id="DataAssociation_TaskToQuality" sourceRef="Task_Quality_Check_Recommendations" targetRef="DataObject_QualityReview" />
+
   <process id="Process_BPR_ConsiderationPhase" name="2026 Basin Plan Review Consideration Phase" isExecutable="false">
     <documentation>
       Purpose: Manages the consideration of analyzed submissions for the 2026 Basin Plan Review
       Owner: MDBA Basin Plan Review Team
-      Version: 1.0.0
-      Last Updated: 20/03/2024
+      Version: 1.1.0
+      Last Updated: 16/05/2025
       Description: This process coordinates the consideration of analyzed submissions,
-      including impact assessment, stakeholder consultation, and preparation of recommendations.
-      Ensures systematic and thorough consideration of all stakeholder inputs and their implications.
+      including impact assessment, stakeholder consultation, ICIP (Indigenous Cultural and Intellectual Property) assessment, and preparation of recommendations.
+      Ensures systematic and thorough consideration of all stakeholder inputs, their implications, and compliance with ICIP protocols and cultural requirements.
+      
+      ICIP Requirements:
+      1. All submissions must be checked for ICIP content.
+      2. If ICIP is present, an ICIP Review Team must assess compliance and cultural protocols.
+      3. ICIP assessment documentation must be created and stored.
+      4. Recommendations must not proceed without ICIP clearance if required.
+      5. All ICIP-related actions must be documented and auditable.
     </documentation>
 
     <laneSet id="LaneSet_1">
@@ -194,6 +311,11 @@
         <flowNodeRef>Task_Verify_Stakeholder_Feedback</flowNodeRef>
         <flowNodeRef>Task_Quality_Check_Recommendations</flowNodeRef>
         <flowNodeRef>Task_Peer_Review</flowNodeRef>
+      </lane>
+      <lane id="Lane_ICIP_Review_Team" name="ICIP Review Team">
+        <flowNodeRef>Gateway_ICIP_Required</flowNodeRef>
+        <flowNodeRef>Task_Assess_ICIP</flowNodeRef>
+        <flowNodeRef>Task_Verify_ICIP_Compliance</flowNodeRef>
       </lane>
     </laneSet>
 
@@ -456,6 +578,174 @@
     </textAnnotation>
     <association id="Association_Quality_Standards" sourceRef="Task_Quality_Check_Recommendations" targetRef="TextAnnotation_Quality_Standards" />
 
+    <!-- Add new Data Object Shapes -->
+    <bpmndi:BPMNShape id="Shape_DataObject_ImpactAssessment" bpmnElement="DataObject_ImpactAssessment">
+      <dc:Bounds x="440" y="40" width="36" height="50" />
+    </bpmndi:BPMNShape>
+
+    <bpmndi:BPMNShape id="Shape_DataObject_StakeholderFeedback" bpmnElement="DataObject_StakeholderFeedback">
+      <dc:Bounds x="696" y="40" width="36" height="50" />
+    </bpmndi:BPMNShape>
+
+    <bpmndi:BPMNShape id="Shape_DataObject_LegalCompliance" bpmnElement="DataObject_LegalCompliance">
+      <dc:Bounds x="1152" y="40" width="36" height="50" />
+    </bpmndi:BPMNShape>
+
+    <bpmndi:BPMNShape id="Shape_DataObject_QualityReview" bpmnElement="DataObject_QualityReview">
+      <dc:Bounds x="1304" y="40" width="36" height="50" />
+    </bpmndi:BPMNShape>
+
+    <!-- Add new Message Flow Edges -->
+    <bpmndi:BPMNEdge id="Edge_MessageFlow_ImpactAssessment" bpmnElement="MessageFlow_ImpactAssessment">
+      <di:waypoint x="492" y="220" />
+      <di:waypoint x="544" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_MessageFlow_StakeholderFeedback" bpmnElement="MessageFlow_StakeholderFeedback">
+      <di:waypoint x="948" y="220" />
+      <di:waypoint x="1000" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_MessageFlow_LegalReview" bpmnElement="MessageFlow_LegalReview">
+      <di:waypoint x="1252" y="220" />
+      <di:waypoint x="1304" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_MessageFlow_QualityReview" bpmnElement="MessageFlow_QualityReview">
+      <di:waypoint x="1252" y="1020" />
+      <di:waypoint x="1304" y="1020" />
+    </bpmndi:BPMNEdge>
+
+    <!-- Add new Data Association Edges -->
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_ImpactToTask" bpmnElement="DataAssociation_ImpactToTask">
+      <di:waypoint x="458" y="90" />
+      <di:waypoint x="594" y="90" />
+      <di:waypoint x="594" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToImpact" bpmnElement="DataAssociation_TaskToImpact">
+      <di:waypoint x="442" y="220" />
+      <di:waypoint x="458" y="90" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_FeedbackToTask" bpmnElement="DataAssociation_FeedbackToTask">
+      <di:waypoint x="714" y="90" />
+      <di:waypoint x="898" y="90" />
+      <di:waypoint x="898" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToFeedback" bpmnElement="DataAssociation_TaskToFeedback">
+      <di:waypoint x="746" y="220" />
+      <di:waypoint x="714" y="90" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_LegalToTask" bpmnElement="DataAssociation_LegalToTask">
+      <di:waypoint x="1170" y="90" />
+      <di:waypoint x="1354" y="90" />
+      <di:waypoint x="1354" y="220" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToLegal" bpmnElement="DataAssociation_TaskToLegal">
+      <di:waypoint x="1202" y="220" />
+      <di:waypoint x="1170" y="90" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_QualityToTask" bpmnElement="DataAssociation_QualityToTask">
+      <di:waypoint x="1322" y="90" />
+      <di:waypoint x="1354" y="90" />
+      <di:waypoint x="1354" y="1020" />
+    </bpmndi:BPMNEdge>
+
+    <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToQuality" bpmnElement="DataAssociation_TaskToQuality">
+      <di:waypoint x="1202" y="1020" />
+      <di:waypoint x="1322" y="90" />
+    </bpmndi:BPMNEdge>
+
+    <!-- Add new Exclusive Gateway -->
+    <exclusiveGateway id="Gateway_ICIP_Required" name="ICIP Assessment Required?">
+      <documentation>
+        Determines if the submission or consideration contains ICIP content requiring assessment and compliance review.
+      </documentation>
+      <incoming>Flow_Review_Impact</incoming>
+      <outgoing>Flow_ICIP_Yes</outgoing>
+      <outgoing>Flow_ICIP_No</outgoing>
+    </exclusiveGateway>
+
+    <!-- Add new User Tasks -->
+    <userTask id="Task_Assess_ICIP" name="Assess ICIP Requirements">
+      <documentation>
+        ICIP Review Team assesses the submission for ICIP requirements:
+        - Review for Indigenous knowledge or cultural content
+        - Consult with Indigenous representatives as needed
+        - Document cultural protocols and permissions
+        - Record access restrictions and usage permissions
+        - Flag any cultural sensitivities
+      </documentation>
+      <incoming>Flow_ICIP_Yes</incoming>
+      <outgoing>Flow_AssessToVerifyICIP</outgoing>
+    </userTask>
+
+    <userTask id="Task_Verify_ICIP_Compliance" name="Verify ICIP Compliance">
+      <documentation>
+        ICIP Review Team verifies that all ICIP protocols and permissions are met:
+        - Review assessment documentation
+        - Confirm cultural protocol compliance
+        - Validate access and usage permissions
+        - Document compliance status
+      </documentation>
+      <incoming>Flow_AssessToVerifyICIP</incoming>
+      <outgoing>Flow_VerifyICIPToConsult</outgoing>
+    </userTask>
+
+    <!-- Add new Data Objects -->
+    <dataObject id="DataObject_ICIPAssessment" name="ICIP Assessment Documentation">
+      <documentation>
+        Documentation of ICIP assessment:
+        - Cultural significance
+        - Traditional knowledge
+        - Protocols and permissions
+        - Consultation records
+        - Access and usage restrictions
+      </documentation>
+    </dataObject>
+
+    <!-- Add new Message Definitions -->
+    <message id="Message_ICIP_Assessment_Required" name="ICIP Assessment Required">
+      <documentation>
+        Notification that ICIP assessment is required for a submission or consideration.
+        Content:
+        - Submission details
+        - Cultural context
+        - Required assessments
+        - Timeline
+        - Contact information
+      </documentation>
+    </message>
+
+    <message id="Message_ICIP_Assessment_Complete" name="ICIP Assessment Complete">
+      <documentation>
+        Notification of completed ICIP assessment.
+        Content:
+        - Assessment results
+        - Cultural protocols applied
+        - Access restrictions
+        - Usage permissions
+        - Next steps
+      </documentation>
+    </message>
+
+    <!-- Add new Sequence Flows -->
+    <sequenceFlow id="Flow_ICIP_Yes" sourceRef="Gateway_ICIP_Required" targetRef="Task_Assess_ICIP">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == true}</conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_ICIP_No" sourceRef="Gateway_ICIP_Required" targetRef="Task_Conduct_Impact_Assessment">
+      <conditionExpression xsi:type="bpmn:tFormalExpression">${icipRequired == false}</conditionExpression>
+    </sequenceFlow>
+
+    <sequenceFlow id="Flow_AssessToVerifyICIP" sourceRef="Task_Assess_ICIP" targetRef="Task_Verify_ICIP_Compliance" />
+    <sequenceFlow id="Flow_VerifyICIPToConsult" sourceRef="Task_Verify_ICIP_Compliance" targetRef="Task_Consult_Stakeholders" />
+
   </process>
 
   <bpmndi:BPMNDiagram id="BPMNDiagram_1">
@@ -544,12 +834,12 @@
         <dc:Bounds x="1304" y="820" width="100" height="80" />
       </bpmndi:BPMNShape>
 
-      <bpmndi:BPMNShape id="Task_Assess_Implications_di" bpmnElement="Task_Assess_Implications">
+      <bpmndi:BPMNShape id="Task_Assess_ICIP_di" bpmnElement="Task_Assess_ICIP">
         <dc:Bounds x="1152" y="220" width="100" height="80" />
       </bpmndi:BPMNShape>
 
-      <bpmndi:BPMNShape id="Task_Prepare_Recommendations_di" bpmnElement="Task_Prepare_Recommendations">
-        <dc:Bounds x="1304" y="220" width="100" height="80" />
+      <bpmndi:BPMNShape id="Task_Verify_ICIP_Compliance_di" bpmnElement="Task_Verify_ICIP_Compliance">
+        <dc:Bounds x="1304" y="1020" width="100" height="80" />
       </bpmndi:BPMNShape>
 
       <!-- Add Validation Task Shapes -->
@@ -714,6 +1004,29 @@
       <bpmndi:BPMNEdge id="Association_Quality_Standards_di" bpmnElement="Association_Quality_Standards">
         <di:waypoint x="1202" y="1020" />
         <di:waypoint x="1252" y="980" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add new Data Object Shapes -->
+      <bpmndi:BPMNShape id="Shape_DataObject_ICIPAssessment" bpmnElement="DataObject_ICIPAssessment">
+        <dc:Bounds x="440" y="40" width="36" height="50" />
+      </bpmndi:BPMNShape>
+
+      <!-- Add new Message Flow Edges -->
+      <bpmndi:BPMNEdge id="Edge_MessageFlow_ICIP_Assessment" bpmnElement="MessageFlow_ICIP_Assessment">
+        <di:waypoint x="492" y="220" />
+        <di:waypoint x="544" y="220" />
+      </bpmndi:BPMNEdge>
+
+      <!-- Add new Data Association Edges -->
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_ICIPToTask" bpmnElement="DataAssociation_ICIPToTask">
+        <di:waypoint x="458" y="90" />
+        <di:waypoint x="594" y="90" />
+        <di:waypoint x="594" y="220" />
+      </bpmndi:BPMNEdge>
+
+      <bpmndi:BPMNEdge id="Edge_DataAssociation_TaskToICIP" bpmnElement="DataAssociation_TaskToICIP">
+        <di:waypoint x="442" y="220" />
+        <di:waypoint x="458" y="90" />
       </bpmndi:BPMNEdge>
 
     </bpmndi:BPMNPlane>
