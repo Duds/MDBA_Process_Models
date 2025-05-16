@@ -1,60 +1,75 @@
-# MDBA Process Models
+# MDBA Basin Plan Review 2026 Process Models
 
-This repository contains Business Process Model and Notation (BPMN) diagrams for MDBA processes.
+This repository contains the Business Process Model and Notation (BPMN) process models for the Murray-Darling Basin Authority (MDBA) Basin Plan Review 2026 project.
 
-## Contents
+## Overview
 
-- `test-diagram.bpmn` - Test BPMN diagram
-- `example.bpmn` - Example BPMN diagram
+The repository includes:
+- End-to-end process models for the Basin Plan Review 2026
+- Supporting process models for submissions management
+- Process documentation and requirements
+- Validation tools and standards
 
-## Getting Started
+## Structure
+
+```
+.
+├── docs/
+│   └── process-design/
+│       ├── context/         # Process context documentation
+│       ├── requirements/    # Process requirements
+│       └── decisions/       # Design decisions
+├── models/
+│   ├── drafts/             # Draft BPMN models
+│   └── approved/           # Approved BPMN models
+└── scripts/                # Validation and utility scripts
+```
+
+## Process Models
+
+### Core Process Phases
+- End-to-End Basin Plan Review Process
+- Invitation Process
+- Submission Intake
+- Analysis Phase
+- Consideration Phase
+- Decision Phase
+- Publication Management
+- Reporting and Analytics
+
+### Supporting Processes
+- Consent and Privacy Capture
+- Triage and Categorisation
+- SME and Legal Review Routing
+- Redaction Workflow
+- Submission Status Tracking
+- Data Archiving & Retention
+
+## Standards
+
+All BPMN models follow:
+- BPMN 2.0 standards
+- MDBA Enterprise Architecture requirements
+- DAMF compliance requirements
+- Australian Government standards
+
+## Development
 
 ### Prerequisites
+- Camunda Modeler or compatible BPMN editor
+- Node.js (for validation scripts)
+- Git
 
-To work with these BPMN files, you'll need a BPMN editor such as:
-- [Camunda Modeler](https://camunda.com/download/modeler/)
-- [bpmn.io](https://bpmn.io/)
-- Cursor IDE with the recommended extensions in `.cursor/extensions.json`
-
-### Usage
-
-1. Open the BPMN files using your preferred BPMN editor or Cursor IDE
-2. Make changes as needed
-3. Validate your BPMN files:
-   ```
-   npm run validate
-   ```
-   Or use the "Validate BPMN" task in Cursor (Ctrl+Shift+B)
-4. Save and commit your changes
-5. Use provided snippets when editing BPMN files in Cursor (type `bpmn-` and press Tab)
-
-## Project Structure
-
-```
-MDBA_Process_Models/
-├── README.md
-├── package.json
-├── .gitignore
-├── .cursor/                 # Cursor IDE configuration
-│   ├── settings.json
-│   ├── tasks.json
-│   ├── extensions.json
-│   ├── snippets.json
-│   └── README.md
-├── models/
-│   ├── example.bpmn
-│   ├── test-diagram.bpmn
-│   ├── drafts/
-│   └── approved/
-├── scripts/
-│   └── validate-bpmn.js
-└── docs/
-    └── README.md
+### Validation
+Run the validation script to check BPMN models:
+```bash
+./scripts/validate_bpmn.sh
 ```
 
-## Contributing
+## License
 
-When contributing to this repository, please follow these guidelines:
-- Create descriptive names for process diagrams
-- Document any significant changes
-- Follow Australian standards and conventions 
+Copyright © 2024 Murray-Darling Basin Authority. All rights reserved.
+
+## Contact
+
+For questions about this repository, please contact the MDBA Digital Team. 
